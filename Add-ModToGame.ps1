@@ -14,7 +14,7 @@ $CPPFolder = "$($ProjectDir)\Modloader\"
 $PreZipDir = "$($ProjectDir)\PreZipDir"
 $ZipDir = "$($ProjectDir)\ZipDir"
 
-$Version="1.0.0"
+$Version="1.0.1"
 
 
 if((Test-Path "$($PakDir)\FactoryGame\*") -eq $true){
@@ -39,7 +39,7 @@ if((Test-Path "$($GameDir)\FactoryGame\Content\Paks\$($ModName)_p.sig") -eq $fal
 write-host "Copying Mod Pak to Content Folder"
 Copy-Item -Path "$($PakDir)\$($ModName).pak" -Destination "$($GameDir)\FactoryGame\Content\Paks\$($ModName)_p.pak" | out-null
 write-host "Copying Mod DLL to mods folder"
-Copy-Item -Path "$($CPPFolder)\x64\Release\$($ModName).dll" -Destination "$($GameDir)\FactoryGame\Binaries\Win64\mods\" | out-null
+Copy-Item -Path "$($CPPFolder)\x64\Release\$($ModName).dll" -Destination "$($GameDir)\FactoryGame\Binaries\Win64\mods\$($ModName).dll" | out-null
 
 
 if((Test-Path "$($PreZipDir)") -eq $false){
@@ -47,7 +47,7 @@ if((Test-Path "$($PreZipDir)") -eq $false){
     New-Item -ItemType Directory -Path "$($PreZipDir)" -Force | out-null
 }
 
-Copy-Item -Path "$($CPPFolder)\x64\Release\$($ModName).dll" -Destination "$($PreZipDir)\$($ModName)-$($Version).dll"
+Copy-Item -Path "$($CPPFolder)\x64\Release\$($ModName).dll" -Destination "$($PreZipDir)\$($ModName).dll"
 Copy-Item -Path "$($GameDir)\FactoryGame\Content\Paks\$($ModName)_p.pak" -Destination "$($PreZipDir)\$($ModName)_p.pak"
 Copy-Item -Path "$($GameDir)\FactoryGame\Content\Paks\$($ModName)_p.sig" -Destination "$($PreZipDir)\$($ModName)_p.sig"
 
@@ -68,6 +68,6 @@ if((Test-Path "$($ZipDir)") -eq $false){
     New-Item -ItemType Directory -Path "$($ZipDir)" -Force | out-null
 }
 
-$CompressPaths = @("$($PreZipDir)\$($ModName)-$($Version).dll", "$($PreZipDir)\$($ModName)_p.pak", "$($PreZipDir)\$($ModName)_p.sig","$($PreZipDir)\data.json")
+$CompressPaths = @("$($PreZipDir)\$($ModName).dll", "$($PreZipDir)\$($ModName)_p.pak", "$($PreZipDir)\$($ModName)_p.sig","$($PreZipDir)\data.json")
 
 Compress-Archive -Path $CompressPaths -DestinationPath "$($ZipDir)\$($ModName)_$($Version).zip" -force

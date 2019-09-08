@@ -56,15 +56,6 @@ json config = SML::Utility::JsonConfig::load(MOD_NAME, {
 // Global variables required by the mod
 AFGPlayerController* player;
 
-// Function to be called as a command (called when /kill is called)
-// All command functions need to have the same parameters, which is SML::CommandData
-// CommandData has two things in it, the amount of parameters and a vector of the parameters.
-// The first item in the vector is always the command, so if someone did "/kill me" data.argc would be 2 and data.argv would be {"/kill", "me"}.
-void killPlayer(Functions::CommandData data) {
-	LOG("Killed Player");
-	::call<&AFGPlayerController::Suicide>(player);
-}
-
 // A custom event handler for when ExampleMod's post setup is complete.
 // Other mods can also make a handler for ExampleMod_PostSetupComplete if they want to do something when the event is broadcast.
 void postSetupComplete() {
@@ -102,11 +93,11 @@ class RenewablePower : public Mod {
 	// The second is a pointer to an object of the base class of the function, which in this case is AFGPlayerController.
 	void beginPlay(Functions::ModReturns* modReturns, AFGPlayerController* playerIn) {
 		LOG("Renewable Power adding recipes...");
-		SDK::UClass* add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/WindTurbine/Recipe_WindTurbine.Recipe_WindTurbine_C"));
-		Functions::addRecipe(add);
+		//SDK::UClass* add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/WindTurbine/Recipe_WindTurbine.Recipe_WindTurbine_C"));
+		//Functions::addRecipe(add);
 
-		add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/WaterTurbine/Recipe_WaterTurbine.Recipe_WaterTurbine_C"));
-		Functions::addRecipe(add);
+		//add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/WaterTurbine/Recipe_WaterTurbine.Recipe_WaterTurbine_C"));
+		//Functions::addRecipe(add);
 		LOG("Got Player");
 		player = playerIn;
 	}
@@ -132,19 +123,6 @@ public:
 
 		// Hook a lambda with captured this-ptr as handler
 		::subscribe<&PlayerInput::InputKey>([this](Functions::ModReturns* modReturns, PlayerInput* playerInput, FKey key, InputEvent event, float amount, bool gamePad) {
-			if(GetAsyncKeyState('G')) {
-				LOG("G key pressed");
-				//::call<&AFGPlayerController::Suicide>(player);
-			}
-			if (GetAsyncKeyState('H')) {
-				//get this object back from the asset cache
-				//If an object is not found in the cache, it will automatically register it, causing a slowdown, so make sure that your assets are cached before calling retrieving them.
-				//If you call this function before satisfactory is done loading, it will also throw an error as assets cannot be loaded at the time due to unreal limitations.
-				//P.S. you can also use forward slashes instead of back slashes if you want.
-				SDK::UObject* obj = Functions::getAssetFromCache(L"\\Game\\FactoryGame\\Character\\Creature\\Wildlife\\SpaceRabbit\\Char_SpaceRabbit.Char_SpaceRabbit_C");
-				//spawn the object at the player's location and rotation
-				Functions::spawnActorAtPlayer(obj);
-			}
 			return false;
 		});
 
@@ -156,20 +134,11 @@ public:
 		
 		//Here, we do some registring. Registring must be done in setup to make sure that the registration will be available for later use.
 
-		// Register /kill to call the killPlayer function
-		Functions::registerCommand("kill", killPlayer); //functions registered like this must exist outside of the class or be static members of the class
-
-		// Register killPlayer as a function that other mods can use if this mod is loaded.
-		Functions::registerAPIFunction("KillPlayer", killPlayer);
-
 		//Register a custom event. This does not call the event, you have to do that with Functions::broadcastEvent.
-		Functions::registerEvent("ExampleMod_PostSetupComplete", postSetupComplete);
+		Functions::registerEvent("RenewablePower_PostSetupComplete", postSetupComplete);
 
-		//cache this asset at loading to make sure that when it's spawned, slowdowns won't occur at runtime
-		//calling this function while in game will cache the asset immediately, causing a slowdown.
-		Functions::registerAssetForCache(L"\\Game\\FactoryGame\\Character\\Creature\\Wildlife\\SpaceRabbit\\Char_SpaceRabbit.Char_SpaceRabbit_C");
 
-		LOG("Finished ExampleMod setup!");
+		LOG("Finished RenewablePower setup!");
 	}
 
 	//The postSetup function is where you do things based on other mods' setup functions
@@ -190,7 +159,7 @@ public:
 		}
 
 		//Broadcast the event for ExampleMod and other mods that do something for ExampleMod_PostSetupComplete.
-		Functions::broadcastEvent("ExampleMod_PostSetupComplete");
+		Functions::broadcastEvent("RenewablePower_PostSetupComplete");
 
 		//Broadcast an event from RandomMod. Since this doesn't exist, nothing will be done and no error will be thrown.
 		Functions::broadcastEvent("RandomMod_SomeEvent");
@@ -198,7 +167,7 @@ public:
 
 	~RenewablePower() {
 		// Cleanup
-		LOG("ExampleMod finished cleanup!");
+		LOG("RenewablePower finished cleanup!");
 	}
 };
 
