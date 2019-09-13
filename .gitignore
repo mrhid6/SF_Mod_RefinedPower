@@ -92,3 +92,5 @@ ModLoader/*/x64
 # Mod Zip Files
 ZipDir
 PreZipDir
+
+GitNoCommit
