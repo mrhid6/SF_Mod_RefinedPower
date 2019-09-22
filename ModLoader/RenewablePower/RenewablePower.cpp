@@ -50,7 +50,11 @@ using namespace SML::Objects;
 
 // Config
 json config = SML::Utility::JsonConfig::load(MOD_NAME, {
-	{"Float", 1.0}
+	{
+		"ArcReactor", {
+			{"ParticlesEnabled", true}
+		}
+	}
 });
 
 // Global variables required by the mod
@@ -71,7 +75,7 @@ Mod::Info modInfo {
 	MOD_NAME,
 
 	// Version
-	"1.0.4",
+	"1.1.0",
 
 	// Description
 	"Renewable Power Solutions",
@@ -96,8 +100,34 @@ class RenewablePower : public Mod {
 		SDK::UClass* add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/ArcReactorMk1/Recipe_ArcReactorMk1.Recipe_ArcReactorMk1_C"));
 		Functions::addRecipe(add);
 
-		//add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/WaterTurbine/Recipe_WaterTurbine.Recipe_WaterTurbine_C"));
-		//Functions::addRecipe(add);
+		add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Items/Deuterium/Recipe_Deuterium.Recipe_Deuterium_C"));
+		Functions::addRecipe(add);
+
+		add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Items/Scandium/Recipe_Scandium.Recipe_Scandium_C"));
+		Functions::addRecipe(add);
+
+		// Particle Settings
+
+		SDK::UObject* clazz = Functions::loadObjectFromPak(L"/Game/FactoryGame/RenewablePower/Settings/ParticleChanger.ParticleChanger_C");
+
+		LOG(config["ArcReactor"]["ParticlesEnabled"]);
+
+		// Spawn the actor somewhere
+		SDK::FVector position = SML::Mod::Functions::makeVector(0, 0, 0);
+		SDK::FRotator rotation = SML::Mod::Functions::makeRotator(0, 0, 0);
+		FActorSpawnParameters spawnParams;
+		SML::Objects::UObject* modActor = (SML::Objects::UObject*)::call<&SML::Objects::UWorld::SpawnActor>((SML::Objects::UWorld*) * SDK::UWorld::GWorld, (SDK::UClass*)clazz, &position, &rotation, &spawnParams);
+
+		SML::Objects::FOutputDevice IDontEvenKnowWhatThisIs; // lel
+
+		if (config["ArcReactor"]["ParticlesEnabled"] == true) {
+			::call<&SML::Objects::UObject::CallFunctionByNameWithArguments>(modActor, L"EnableParticles", &IDontEvenKnowWhatThisIs, (SDK::UObject*)NULL, true);
+		}else {
+			::call<&SML::Objects::UObject::CallFunctionByNameWithArguments>(modActor, L"DisableParticles", &IDontEvenKnowWhatThisIs, (SDK::UObject*)NULL, true);
+		}
+
+		::call<&SML::Objects::AActor::Destroy>((SML::Objects::AActor*)modActor, false, true);
+
 		LOG("Got Player");
 		player = playerIn;
 	}
