@@ -75,7 +75,7 @@ Mod::Info modInfo {
 	MOD_NAME,
 
 	// Version
-	"1.1.0",
+	"1.1.1",
 
 	// Description
 	"Renewable Power Solutions",
@@ -97,14 +97,6 @@ class RenewablePower : public Mod {
 	// The second is a pointer to an object of the base class of the function, which in this case is AFGPlayerController.
 	void beginPlay(Functions::ModReturns* modReturns, AFGPlayerController* playerIn) {
 		LOG("Renewable Power adding recipes...");
-		SDK::UClass* add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/ArcReactorMk1/Recipe_ArcReactorMk1.Recipe_ArcReactorMk1_C"));
-		Functions::addRecipe(add);
-
-		add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Items/Deuterium/Recipe_Deuterium.Recipe_Deuterium_C"));
-		Functions::addRecipe(add);
-
-		add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Items/Scandium/Recipe_Scandium.Recipe_Scandium_C"));
-		Functions::addRecipe(add);
 
 		// Particle Settings
 

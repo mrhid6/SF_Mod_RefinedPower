@@ -14,7 +14,9 @@ $CPPFolder = "$($ProjectDir)\Modloader\"
 $PreZipDir = "$($ProjectDir)\PreZipDir"
 $ZipDir = "$($ProjectDir)\ZipDir"
 
-$Version="1.1.0"
+$RunGame = $true;
+
+$Version="1.1.1"
 
 
 if((Test-Path "$($PakDir)\FactoryGame\*") -eq $true){
@@ -74,4 +76,7 @@ Compress-Archive -Path $CompressPaths -DestinationPath "$($ZipDir)\$($ModName)_$
 
 [System.Media.SystemSounds]::Beep.Play()
 
-& "$($GameDir)\FactoryGame\Binaries\Win64\FactoryGame-Win64-Shipping.exe"
+
+if($RunGame -eq $true){
+    & "$($GameDir)\FactoryGame\Binaries\Win64\FactoryGame-Win64-Shipping.exe"
+}
