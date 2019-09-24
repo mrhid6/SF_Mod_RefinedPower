@@ -14,9 +14,9 @@ $CPPFolder = "$($ProjectDir)\Modloader\"
 $PreZipDir = "$($ProjectDir)\PreZipDir"
 $ZipDir = "$($ProjectDir)\ZipDir"
 
-$RunGame = $true;
+$RunGame = $false;
 
-$Version="1.1.1"
+$Version="1.1.2"
 
 
 if((Test-Path "$($PakDir)\FactoryGame\*") -eq $true){

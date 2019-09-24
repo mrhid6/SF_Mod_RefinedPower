@@ -75,7 +75,7 @@ Mod::Info modInfo {
 	MOD_NAME,
 
 	// Version
-	"1.1.1",
+	"1.1.2",
 
 	// Description
 	"Renewable Power Solutions",
