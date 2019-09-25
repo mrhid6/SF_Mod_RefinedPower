@@ -1,7 +1,7 @@
 ﻿
 $ModName = "RenewablePower"
 $ModId = "DGiLzB3ZErWu2V"
-$GameDir = "E:\Program Files\Epic Games\SatisfactoryEarlyAccess"
+$GameDir = "E:\Program Files\Epic Games\SatisfactoryExperimental"
 
 
 $CurrentDir = $PSScriptRoot
@@ -14,9 +14,9 @@ $CPPFolder = "$($ProjectDir)\Modloader\"
 $PreZipDir = "$($ProjectDir)\PreZipDir"
 $ZipDir = "$($ProjectDir)\ZipDir"
 
-$RunGame = $false;
+$RunGame = $true;
 
-$Version="1.1.2"
+$Version="1.1.3"
 
 
 if((Test-Path "$($PakDir)\FactoryGame\*") -eq $true){
