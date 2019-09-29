@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="11" SoundbankVersion="134">
+	<RootPaths>
+		<ProjectRoot>D:\Development\UnrealProjects\RenewablePower\RenewablePower_Project_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>D:\Development\UnrealProjects\RenewablePower\RenewablePower_Project_WwiseProject\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>D:\Development\UnrealProjects\RenewablePower\Content\WwiseAudio\Windows\</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>D:\Development\UnrealProjects\RenewablePower\RenewablePower_Project_WwiseProject\GeneratedSoundBanks\Windows</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<StreamedFiles/>
+	<MediaFilesNotInAnyBank/>
+	<SoundBanks>
+		<SoundBank Id="1355168291" Language="SFX">
+			<ObjectPath>Init</ObjectPath>
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+		</SoundBank>
+		<SoundBank Id="2445503389" Language="SFX">
+			<ObjectPath>\SoundBanks\Default Work Unit\ArcReactor_SoundBank</ObjectPath>
+			<ShortName>ArcReactor_SoundBank</ShortName>
+			<Path>ArcReactor_SoundBank.bnk</Path>
+			<IncludedEvents>
+				<Event Id="1043174391" Name="ArcReactor_Running" ObjectPath="\Events\Default Work Unit\ArcReactor_Running"/>
+				<Event Id="2688108520" Name="ArcReactor_Shutdown" ObjectPath="\Events\Default Work Unit\ArcReactor_Shutdown"/>
+				<Event Id="2966299001" Name="ArcReactor_Startup" ObjectPath="\Events\Default Work Unit\ArcReactor_Startup"/>
+			</IncludedEvents>
+			<IncludedMemoryFiles>
+				<File Id="344214559" Language="SFX">
+					<ShortName>ArcReactor_Startup.wav</ShortName>
+					<Path>SFX\ArcReactor_Startup_10C4C929.wem</Path>
+				</File>
+				<File Id="455042860" Language="SFX">
+					<ShortName>ArcReactor_Running.wav</ShortName>
+					<Path>SFX\ArcReactor_Running_D79FB2B7.wem</Path>
+				</File>
+				<File Id="535587830" Language="SFX">
+					<ShortName>ArcReactor_Shutdown.wav</ShortName>
+					<Path>SFX\ArcReactor_Shutdown_10C4C929.wem</Path>
+				</File>
+			</IncludedMemoryFiles>
+		</SoundBank>
+	</SoundBanks>
+</SoundBanksInfo>

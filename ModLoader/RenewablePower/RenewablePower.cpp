@@ -98,6 +98,13 @@ class RenewablePower : public Mod {
 	void beginPlay(Functions::ModReturns* modReturns, AFGPlayerController* playerIn) {
 		LOG("Renewable Power adding recipes...");
 
+
+		SDK::UClass* add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/TPBlock/Recipe_TPBlock.Recipe_TPBlock_C"));
+		Functions::addRecipe(add);
+
+		add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/GasCollector/Recipe_GasCollector.Recipe_GasCollector_C"));
+		Functions::addRecipe(add);
+
 		// Particle Settings
 
 		SDK::UObject* clazz = Functions::loadObjectFromPak(L"/Game/FactoryGame/RenewablePower/Settings/ParticleChanger.ParticleChanger_C");
@@ -135,6 +142,8 @@ public:
 		using namespace std::placeholders;
 
 		SDK::InitSDK(); //Initialize the SDK in ExampleMod so the functions work properly
+
+		Functions::setDependsOnPak("RenewablePower_p");
 
 		// More on namespaces:
 		// * The functions that will be of use to you are in the SML::Mods::Functions namespace. A tip is to type Functions:: and see what functions are available for you to use. 

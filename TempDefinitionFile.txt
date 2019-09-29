@@ -1,0 +1,3 @@
+ArcReactor_SoundBank	"ArcReactor_Startup"
+ArcReactor_SoundBank	"ArcReactor_Running"
+ArcReactor_SoundBank	"ArcReactor_Shutdown"
