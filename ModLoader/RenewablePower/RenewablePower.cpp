@@ -99,17 +99,17 @@ class RenewablePower : public Mod {
 		LOG("Renewable Power adding recipes...");
 
 
-		SDK::UClass* add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/TPBlock/Recipe_TPBlock.Recipe_TPBlock_C"));
-		Functions::addRecipe(add);
+		//SDK::UClass* add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/TPBlock/Recipe_TPBlock.Recipe_TPBlock_C"));
+		//Functions::addRecipe(add);
 
-		add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/GasCollector/Recipe_GasCollector.Recipe_GasCollector_C"));
-		Functions::addRecipe(add);
+		//add = static_cast<SDK::UClass*>(Functions::loadObjectFromPak(SDK::UClass::StaticClass(), L"/Game/FactoryGame/RenewablePower/Buildable/Factory/GasCollector/Recipe_GasCollector.Recipe_GasCollector_C"));
+		//Functions::addRecipe(add);
 
 		// Particle Settings
 
 		SDK::UObject* clazz = Functions::loadObjectFromPak(L"/Game/FactoryGame/RenewablePower/Settings/ParticleChanger.ParticleChanger_C");
 
-		LOG(config["ArcReactor"]["ParticlesEnabled"]);
+		//LOG(config["ArcReactor"]["ParticlesEnabled"]);
 
 		// Spawn the actor somewhere
 		SDK::FVector position = SML::Mod::Functions::makeVector(0, 0, 0);

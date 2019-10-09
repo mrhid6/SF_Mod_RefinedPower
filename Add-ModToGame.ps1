@@ -2,21 +2,30 @@
 $ModName = "RenewablePower"
 $ModId = "DGiLzB3ZErWu2V"
 $GameDir = "E:\Program Files\Epic Games\SatisfactoryExperimental"
+$RunGame = $true;
+$Version="1.1.3"
+
+$DataJson = @"
+{
+  "mod_id": "$($ModId)",
+  "name": "$($ModName)",
+  "version": "$($Version)",
+  "sml_version": "v1.0.0",
+  "description": "Renewable Power for Satisfactory",
+  "authors": ["Mrhid6"]
+}
+"@
 
 
+## Do Not Change!
 $CurrentDir = $PSScriptRoot
 $ProjectDir = "$($CurrentDir)"
 $CookedDir = "$($ProjectDir)\Saved\Cooked\WindowsNoEditor"
 $PakDir = "$($ProjectDir)\Saved\Pak"
-
 $CPPFolder = "$($ProjectDir)\Modloader\"
-
 $PreZipDir = "$($ProjectDir)\PreZipDir"
 $ZipDir = "$($ProjectDir)\ZipDir"
 
-$RunGame = $true;
-
-$Version="1.1.3"
 
 
 if((Test-Path "$($PakDir)\FactoryGame\*") -eq $true){
@@ -53,16 +62,7 @@ Copy-Item -Path "$($CPPFolder)\x64\Release\$($ModName).dll" -Destination "$($Pre
 Copy-Item -Path "$($GameDir)\FactoryGame\Content\Paks\$($ModName)_p.pak" -Destination "$($PreZipDir)\$($ModName)_p.pak"
 Copy-Item -Path "$($GameDir)\FactoryGame\Content\Paks\$($ModName)_p.sig" -Destination "$($PreZipDir)\$($ModName)_p.sig"
 
-echo @"
-{
-  "mod_id": "$($ModId)",
-  "name": "$($ModName)",
-  "version": "$($Version)",
-  "sml_version": "v1.0.0-pr7",
-  "description": "Renewable Power for Satisfactory",
-  "authors": ["Mrhid6"]
-}
-"@ | set-content -Path "$($PreZipDir)\data.json"
+echo $DataJson | set-content -Path "$($PreZipDir)\data.json"
 
 
 if((Test-Path "$($ZipDir)") -eq $false){
