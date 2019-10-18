@@ -1,8 +1,13 @@
 ﻿
 $ModName = "RenewablePower"
 $ModId = "DGiLzB3ZErWu2V"
-$GameDir = "E:\Program Files\Epic Games\SatisfactoryExperimental"
+$GameDir = "E:\Program Files\Epic Games\SatisfactoryEarlyAccess"
+$UnrealEngine = "E:\Program Files\Epic Games\UE_4.21\Engine"
+
+$CookUnreal = $true;
 $RunGame = $true;
+
+
 $Version="1.1.3"
 
 $DataJson = @"
@@ -16,8 +21,8 @@ $DataJson = @"
 }
 "@
 
+## Do Not Edit
 
-## Do Not Change!
 $CurrentDir = $PSScriptRoot
 $ProjectDir = "$($CurrentDir)"
 $CookedDir = "$($ProjectDir)\Saved\Cooked\WindowsNoEditor"
@@ -27,7 +32,11 @@ $PreZipDir = "$($ProjectDir)\PreZipDir"
 $ZipDir = "$($ProjectDir)\ZipDir"
 
 
+echo "Packing: $($ModName) - v$($Version)"
 
+if($CookUnreal -eq $true){
+    & "$($UnrealEngine)\Binaries\Win64\UE4Editor-Cmd.exe" "$($ProjectDir)\FactoryGame.uproject" -run=Cook  -TargetPlatform=WindowsNoEditor -fileopenlog -unversioned -abslog="$($UnrealEngine)\Programs\AutomationTool\Saved\Cook.txt" -stdout -CrashForUAT -unattended -NoLogTimes  -UTF8Output
+}
 if((Test-Path "$($PakDir)\FactoryGame\*") -eq $true){
     write-host "Cleaning Pak Dir"
     Remove-Item -Path "$($PakDir)\FactoryGame\*" -Recurse | out-null
