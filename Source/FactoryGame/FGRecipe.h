@@ -67,6 +67,10 @@ public:
 	UFUNCTION( BlueprintPure, Category = "Recipe", meta = ( DeprecatedFunction, DeprecationMessage = "MAM is rewritten, use the new system instead!" ) )
 	static TArray< TSubclassOf< UFGRecipe > > GetRewardedRecipes( TSubclassOf< UFGRecipe > inClass ){ return TArray< TSubclassOf< UFGRecipe > >(); }
 
+	/** Can the given player afford the recipe */
+	UFUNCTION( BlueprintCallable, Category = "Recipe" )
+	static bool IsRecipeAffordable( class AFGCharacterPlayer* player, TSubclassOf< class UFGRecipe > recipe );
+
 protected:
 	friend class FRecipeDetails;
 

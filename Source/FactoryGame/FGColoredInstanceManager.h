@@ -26,7 +26,7 @@ public:
 
 	struct InstanceHandle
 	{
-		FORCEINLINE bool isInstanced() const
+		FORCEINLINE bool IsInstanced() const
 		{
 			return handleID >= 0;
 		}
@@ -35,8 +35,6 @@ public:
 		uint8 colorIndex = UINT8_MAX;
 		friend UFGColoredInstanceManager;
 	};
-
-
 
 	virtual void OnUnregister() override;
 	virtual void OnRegister() override;
@@ -47,26 +45,25 @@ public:
 	void RemoveInstance( InstanceHandle& handle );
 	void MoveInstance( const FTransform& transform, InstanceHandle& handle, uint8 newColorIndex ); //[DavalliusA:Fri/15-02-2019] wish we could remove the need to send the transform, but didn't find a way to read it from the current instance, so let's send it for now. In worst case we can store it in the handle later... or something.
 
-	//virtual bool RequiresGameThreadEndOfFrameUpdates() const override { return true; }
 	virtual bool RequiresGameThreadEndOfFrameRecreate() const override { return true; }
 
 	void SetupInstanceLists( UStaticMesh* staticMesh, bool makeCingleColor = false );
 
 	void UpdateMaterialColors();
 
-	UHierarchicalInstancedStaticMeshComponent* getHirachricalMesh( uint8 colorIndex );
+	UHierarchicalInstancedStaticMeshComponent* GetHierarchicalMesh( uint8 colorIndex );
 
-	bool isSingleColorOnly(){
-		return mSingleColorOnly;
-	}
+	bool IsSingleColorOnly() { return mSingleColorOnly; }
 
 	//[DavalliusA:Fri/22-02-2019] olny used for local quick reference. Don't need to be a property. Will be fetching color slot data from it when updating color slots.
 	AFGBuildableSubsystem* mBuildableSubSystem = nullptr;
 private:
 
 	bool mSingleColorOnly = false;
+
 	UPROPERTY()
-		UHierarchicalInstancedStaticMeshComponent* mInstanceComponents[ BUILDABLE_COLORS_MAX_SLOTS ];
+	UHierarchicalInstancedStaticMeshComponent* mInstanceComponents[ BUILDABLE_COLORS_MAX_SLOTS ];
+
 	TArray< InstanceHandle* > mHandles[ BUILDABLE_COLORS_MAX_SLOTS ];
 
 };

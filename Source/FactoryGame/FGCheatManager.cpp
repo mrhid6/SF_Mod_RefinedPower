@@ -4,9 +4,19 @@
 
 void UFGCheatManager::InitCheatManager(){ }
 void UFGCheatManager::NoCost( bool enabled){ }
+bool UFGCheatManager::NoCost_Get(){ return bool(); }
 void UFGCheatManager::NoPower( bool enabled){ }
+bool UFGCheatManager::NoPower_Get(){ return bool(); }
+void UFGCheatManager::NoMessages( bool enabled){ }
+bool UFGCheatManager::NoMessages_Get(){ return bool(); }
 void UFGCheatManager::TurboMode( bool enabled){ }
-void UFGCheatManager::GiveItem( TSubclassOf<  UFGItemDescriptor > resource, int32 amount){ }
+bool UFGCheatManager::TurboMode_Get(){ return bool(); }
+void UFGCheatManager::GiveItemStacks( TSubclassOf<  UFGItemDescriptor > resource, int32 NumberOfStacks){ }
+void UFGCheatManager::GiveItemsSingle( TSubclassOf<  UFGItemDescriptor > resource, int32 NumberOfItems){ }
+void UFGCheatManager::PlayerFly( bool flyModeEnabled){ }
+bool UFGCheatManager::PlayerFly_Get(){ return bool(); }
+void UFGCheatManager::PlayerNoClipModeOnFly( bool gohstMode){ }
+bool UFGCheatManager::PlayerNoClipModeOnFly_Get(){ return bool(); }
 void UFGCheatManager::ClearGiveItemPopularList(){ }
 void UFGCheatManager::GiefALLSchematics(){ }
 void UFGCheatManager::GiefAllSchematicsAndPhases(){ }
@@ -16,23 +26,32 @@ void UFGCheatManager::GiefStorySchematics(){ }
 void UFGCheatManager::GiefStartingResearch(){ }
 void UFGCheatManager::RebuildPowerCircuits(){ }
 void UFGCheatManager::EnableBuildableTick( bool enable){ }
+bool UFGCheatManager::EnableBuildableTick_Get(){ return bool(); }
 void UFGCheatManager::EnablePlayerFOV( bool enable){ }
+bool UFGCheatManager::EnablePlayerFOV_Get(){ return bool(); }
 void UFGCheatManager::DestroyPawn(){ }
 void UFGCheatManager::RemoveAllFoliage( int32 maxNumInstances ){ }
 void UFGCheatManager::PardonAllPlayers(){ }
 void UFGCheatManager::ClearPardon(){ }
 void UFGCheatManager::SetTimeOfDay( int32 hour, int32 minute ){ }
+int32 UFGCheatManager::SetTimeOfDay_hour_Get(){ return int32(); }
+int32 UFGCheatManager::SetTimeOfDay_minute_Get(){ return int32(); }
 void UFGCheatManager::ShowFactoryOnly( bool environmentHidden){ }
+bool UFGCheatManager::ShowFactoryOnly_Get(){ return bool(); }
 void UFGCheatManager::HideFactoryOnly( bool factoryHidden){ }
+bool UFGCheatManager::HideFactoryOnly_Get(){ return bool(); }
 void UFGCheatManager::DumpAllAvailableRecipes(){ }
+void UFGCheatManager::EnableAudioDebug(bool isEnabled){ }
 void UFGCheatManager::ToggleAudioDebug(){ }
 void UFGCheatManager::SetSlomo( float slomo){ }
 void UFGCheatManager::OpenModMap(){ }
 void UFGCheatManager::PumpiMode( bool enable){ }
+bool UFGCheatManager::PumpiMode_Get(){ return bool(); }
 void UFGCheatManager::SplitAllConveyors(){ }
 void UFGCheatManager::MergeAllConveyors(){ }
 void UFGCheatManager::SetTimeSpeedMultiplier( float speed){ }
 void UFGCheatManager::SetFactoryDetailReplication( bool enable){ }
+bool UFGCheatManager::SetFactoryDetailReplication_Get(){ return bool(); }
 void UFGCheatManager::ResetFuses(){ }
 void UFGCheatManager::ToggleCameraMode(){ }
 void UFGCheatManager::DumpFactoryStatsToLog(){ }
@@ -47,6 +66,7 @@ void UFGCheatManager::DumpTicking( bool detailed ){ }
 void UFGCheatManager::DumpActiveGPUParticles(){ }
 void UFGCheatManager::ReplayBuildingEffects(){ }
 void UFGCheatManager::HideAllBuildings( bool inVisibility){ }
+bool UFGCheatManager::HideAllBuildings_Get(){ return bool(); }
 void UFGCheatManager::RandomizeBuildingsColorSlot( uint8 slotIndex ){ }
 void UFGCheatManager::UpdateSessionToOSS(){ }
 void UFGCheatManager::VisitAllMapAreas(){ }
@@ -54,6 +74,7 @@ void UFGCheatManager::SetAITickDistance( float distance){ }
 void UFGCheatManager::DumpPlayerStates(){ }
 void UFGCheatManager::EnableInstancingOnFactory( bool enabled){ }
 void UFGCheatManager::DumpActorRepresentations(){ }
+void UFGCheatManager::DumpSignificanceManagedObjects(){ }
 void UFGCheatManager::PurgeInactiveClientsFromSave( bool fetchInventories){ }
 void UFGCheatManager::PurgeAllBeaconsFromSave(){ }
 void UFGCheatManager::ListItemPickups(){ }
@@ -75,6 +96,7 @@ void UFGCheatManager::SendInviteToFriend( FString friendName){ }
 void UFGCheatManager::DebugCrash(){ }
 void UFGCheatManager::ResetHubTutorial(){ }
 void UFGCheatManager::ResetSchematics(){ }
+void UFGCheatManager::ResetRecipes(){ }
 void UFGCheatManager::DumpSchematics(){ }
 void UFGCheatManager::FixupBuiltByRecipeInOldSave( bool reapplyRecipeIfBetterMatchFound ){ }
 void UFGCheatManager::PrintStatichMeshesHirarchy(){ }
@@ -84,3 +106,5 @@ void UFGCheatManager::SetDebugStartingPoint( FName startingPoint){ }
 void UFGCheatManager::SetRandomDebugStartingPoint(){ }
 void UFGCheatManager::CompleteResearch(){ }
 void UFGCheatManager::PurgeAllTrainState(){ }
+void UFGCheatManager::ResetAllFactoryLegsToZero( bool repopulateEmptyLegs){ }
+void UFGCheatManager::RebuildFactoryLegsOneTileAroundPlayer(){ }

@@ -3,6 +3,7 @@
 #include "FGDestructibleActor.h"
 
 AFGDestructibleActor::AFGDestructibleActor(){ }
+void AFGDestructibleActor::BeginPlay(){ }
 float AFGDestructibleActor::TakeDamage( float damage,  FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser){ return float(); }
 void AFGDestructibleActor::PreSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void AFGDestructibleActor::PostSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }

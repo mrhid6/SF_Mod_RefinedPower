@@ -5,3 +5,4 @@
 void UFGMapObjectWidget::NativeConstruct(){ }
 void UFGMapObjectWidget::NativeTick( const FGeometry& MyGeometry, float InDeltaTime){ }
 void UFGMapObjectWidget::initMapObject(){ }
+void UFGMapObjectWidget::OnActorRepresentationFiltered( ERepresentationType representationType, bool visible){ }

@@ -13,11 +13,27 @@ void SFGCheatBoardWidget::ShowInputWindowFor( UNumericProperty* prop){ }
 void SFGCheatBoardWidget::ShowInputWindowFor( UClass* inClass){ }
 void SFGCheatBoardWidget::ShowInputWindowFor( UStrProperty* prop){ }
 void SFGCheatBoardWidget::ShowInputWindowFor( FLinearColor color){ }
+void SFGCheatBoardWidget::SetFilterTextboxFocus() const{ }
+void SFGCheatBoardWidget::ResetMenu(){ }
+void SFGCheatBoardWidget::ShowMenu( CheatMenuCategory* newMenu, FString title, FString filtervalue){ }
 TArray< UFunction* > SFGCheatBoardWidget::GetAllCheats(){ return TArray<UFunction*>(); }
-FReply SFGCheatBoardWidget::OnCheatClicked( UFunction* func){ return FReply::Unhandled(); }
+FReply SFGCheatBoardWidget::OnCheatClicked( CheatMenuElementPtr cheat){ return FReply::Unhandled(); }
+FReply SFGCheatBoardWidget::OnCheatFavoriteToggle( CheatMenuElementPtr cheat){ return FReply::Unhandled(); }
 void SFGCheatBoardWidget::OnInputTextCommited( const FText& InText, ETextCommit::Type InCommitType){ }
+FReply SFGCheatBoardWidget::OnInputFilterKeyDown( const FGeometry&, const FKeyEvent& InKeyEv){ return FReply::Unhandled(); }
+void SFGCheatBoardWidget::OnInputFilterChanged( const FText& InText){ }
+void SFGCheatBoardWidget::OnInputFilterCommited( const FText& InText, ETextCommit::Type InCommitType){ }
+FReply SFGCheatBoardWidget::OnClearFilter(){ return FReply::Unhandled(); }
+void SFGCheatBoardWidget::OnHoverClearFilter(){ }
+void SFGCheatBoardWidget::applyFilterWithFilterString( bool selectTypItemIfNoSelection, bool handleAndPreserveSelection ){ }
 FReply SFGCheatBoardWidget::OnBoolParm( bool value){ return FReply::Unhandled(); }
 FReply SFGCheatBoardWidget::OnClassParm( UClass* inClass){ return FReply::Unhandled(); }
+void SFGCheatBoardWidget::OnClassParmAction( UClass* inClass){ }
 void SFGCheatBoardWidget::OnSetColorFromColorPicker( FLinearColor newColor){ }
 UProperty* SFGCheatBoardWidget::GetNextProperty(){ return nullptr; }
+TSharedRef<ITableRow> SFGCheatBoardWidget::CheatMenu_OnGenerateRow( CheatMenuElementPtr Item, const TSharedRef<STableViewBase>& OwnerTable){ return TSharedRef<ITableRow>(); }
+void SFGCheatBoardWidget::GetVisibleChildren( CheatMenuElement* Item, TArray< CheatMenuElementPtr >& OutChildren){ }
+void SFGCheatBoardWidget::CheatMenu_OnGetChildren( CheatMenuElementPtr Item, TArray< CheatMenuElementPtr >& OutChildren){ }
+void SFGCheatBoardWidget::CheatMenu_OnSelectionChanged( CheatMenuElementPtr Item, ESelectInfo::Type SelectInfo){ }
+void SFGCheatBoardWidget::CheatMenu_OnMouseClick( CheatMenuElementPtr Item){ }
 #endif

@@ -153,6 +153,13 @@ public:
 	/** Called every time by timer to trigger a autosave. Can be called manually if we want to trigger a autosave for key events */
 	UFUNCTION()
 	void Autosave();
+
+	/** Gets the autosave interval */
+	FORCEINLINE int32 GetAutosaveInterval(){ return mAutosaveInterval; }
+
+	/** Updates the autosave interval */
+	void SetAutosaveInterval( int32 newInterval );
+
 protected:
 	/** 
 	 * Deletes a existing save of the session id that has that autosave number
@@ -227,7 +234,7 @@ protected:
 	FTimerHandle mAutosaveHandle;
 
 	/** How often in seconds to autosave, a value of < 0 means disabled */
-	UPROPERTY( Config )
+	UPROPERTY( Transient )
 	float mAutosaveInterval;
 
 	/** The number of autosaves to rotate */

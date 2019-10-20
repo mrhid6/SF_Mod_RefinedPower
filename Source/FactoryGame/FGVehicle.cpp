@@ -75,3 +75,4 @@ void AFGVehicle::SetSelfDriving( bool newSelfDriving){ }
 void AFGVehicle::OnRep_PrimaryColor(){ }
 void AFGVehicle::OnRep_SecondaryColor(){ }
 void AFGVehicle::UpdatePhysicsVolume( APhysicsVolume* physicsVolume){ }
+FName AFGVehicle::VehicleMeshComponentName = FName();

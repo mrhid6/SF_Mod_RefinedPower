@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "UObject/Class.h"
 
-#include "../FGFactoryConnectionComponent.h"
 #include "FGBuildable.h"
 #include "FGBuildablePole.generated.h"
 

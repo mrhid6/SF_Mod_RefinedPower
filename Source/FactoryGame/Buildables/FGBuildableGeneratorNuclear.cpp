@@ -4,5 +4,8 @@
 
 void AFGBuildableGeneratorNuclear::GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps) const{ }
 void AFGBuildableGeneratorNuclear::BeginPlay(){ }
+void AFGBuildableGeneratorNuclear::Factory_Tick( float dt){ }
 void AFGBuildableGeneratorNuclear::LoadFuel(){ }
+bool AFGBuildableGeneratorNuclear::CanStartPowerProduction_Implementation() const{ return bool(); }
 bool AFGBuildableGeneratorNuclear::CanLoadFuel() const{ return bool(); }
+void AFGBuildableGeneratorNuclear::TryProduceWaste(){ }

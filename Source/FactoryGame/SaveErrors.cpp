@@ -12,3 +12,4 @@ void FSaveErrors::SetSaveErrors( const FErrors& errors, bool save){ }
 FString FSaveErrors::GetSaveErrorDirectory(){ return FString(); }
 FString FSaveErrors::GetSaveErrorFileName(){ return FString(); }
 void FSaveErrors::DumpErrorsToFile(){ }
+FErrors FSaveErrors::Errors = FErrors();

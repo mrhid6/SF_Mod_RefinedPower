@@ -192,4 +192,7 @@ protected:
 
 	// Set to true when loaded so that we know that we need to go through and verify data in mRemovedInstances
 	uint8 mIsLoaded:1;
+
+	// Flag to indicate whether this removal actor is allowed to run apply. Needs to be setup by FoliageSubSystem first. 
+	uint8 mMarkedByFoliageSubSystem:1;
 };

@@ -57,6 +57,10 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "FactoryGame|Recipe" )
 	void GetAvailableRecipesForProducer( TSubclassOf< UObject > forProducer, TArray< TSubclassOf< UFGRecipe > >& out_recipes );
 
+	/** Gets the available and affordable recipes for the given class, may not be null. */
+	UFUNCTION( BlueprintCallable, Category = "FactoryGame|Recipe" )
+	void GetAffordableRecipesForProducer( class AFGCharacterPlayer* player, TSubclassOf< UObject > forProducer, TArray< TSubclassOf< UFGRecipe > >& out_recipes );
+
 	/** Is the past recipe available? */
 	UFUNCTION( BlueprintPure, Category = "FactoryGame|Recipe" )
 	bool IsRecipeAvailable( TSubclassOf< UFGRecipe > recipeClass );
@@ -68,6 +72,9 @@ public:
 	/** Find all recipes having the given item as an product. */
 	UFUNCTION( BlueprintCallable, BlueprintPure = false, Category = "FactoryGame|Recipe" )
 	TArray< TSubclassOf< UFGRecipe > > FindRecipesByProduct( TSubclassOf< UFGItemDescriptor > product ) const;
+
+	/** Resets recipes to their defaults, also cleans up pre alpha save state. */
+	void ResetAllRecipes();
 
 	/** Debug */
 	void Debug_DumpStateToLog() const;

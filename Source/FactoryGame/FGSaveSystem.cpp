@@ -28,3 +28,5 @@ void UFGSaveSystem::FindSaveGames_Internal( const FString& saveDirectory, TArray
 FString UFGSaveSystem::SaveNameToFileName( const FString& directory, const FString& saveName){ return FString(); }
 UWorld* UFGSaveSystem::GetWorld() const{ return nullptr; }
 void UFGSaveSystem::GatherUsedSaveIds(){ }
+bool UFGSaveSystem::mIsVerifyingSaveSystem = bool();
+bool UFGSaveSystem::mIsUsingBundledSaves = bool();

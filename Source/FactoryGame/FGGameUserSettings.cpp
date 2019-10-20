@@ -19,13 +19,20 @@ void UFGGameUserSettings::SetFOV( int32 newFOV){ }
 void UFGGameUserSettings::SetMotionBlurEnabled( bool enable){ }
 bool UFGGameUserSettings::IsMotionBlurEnabled(){ return bool(); }
 bool UFGGameUserSettings::IsMotionBlurDirty() const{ return bool(); }
+void UFGGameUserSettings::SetHZBOEnabled( bool enable){ }
+bool UFGGameUserSettings::IsHZBOEnabled(){ return bool(); }
+bool UFGGameUserSettings::IsHZBODirty() const{ return bool(); }
 int32 UFGGameUserSettings::GetDefaultQualitySetting( FString settingName){ return int32(); }
 void UFGGameUserSettings::SetNeworkQuality( int32 newNetworkQuality){ }
 void UFGGameUserSettings::RefreshNetworkQualityValues(){ }
+void UFGGameUserSettings::UpdateIsRestartRequired(){ }
 bool UFGGameUserSettings::IsUsingCustomQualitySetting( FString settingName){ return bool(); }
 bool UFGGameUserSettings::IsPostProcessUsingCustomSettings(){ return bool(); }
 void UFGGameUserSettings::UpdatePostProcessSettings(){ }
 void UFGGameUserSettings::AddCustomActionMapping( FFGKeyMapping newMapping){ }
 void UFGGameUserSettings::RemoveAllCustomActionMappings(){ }
 void UFGGameUserSettings::SetHeadBobScale( float newHeadBobScale){ }
+void UFGGameUserSettings::SetAutosaveInterval( int32 newInterval){ }
+void UFGGameUserSettings::ApplyAutosaveInterval(){ }
+void UFGGameUserSettings::SetShowBreakNotification( bool enabled){ }
 void UFGGameUserSettings::UpdateFoliageQualityChanges(){ }

@@ -5,7 +5,7 @@
 AFGCharacterPlayer::AFGCharacterPlayer( const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) { }
 void AFGCharacterPlayer::GetLifetimeReplicatedProps( TArray< FLifetimeProperty >& OutLifetimeProps) const{ }
 void AFGCharacterPlayer::PostActorCreated(){ }
-void AFGCharacterPlayer::PostInitializeComponents(){ }
+//void AFGCharacterPlayer::PostInitializeComponents(){ }
 void AFGCharacterPlayer::BeginPlay(){ }
 void AFGCharacterPlayer::EndPlay( const EEndPlayReason::Type endPlayReason){ }
 void AFGCharacterPlayer::Tick( float deltaTime){ }
@@ -92,6 +92,17 @@ void AFGCharacterPlayer::SetWantSprintBobbing( bool wantBobbing){ }
 FVector AFGCharacterPlayer::GetInventoryDropLocation_Implementation( const  UFGInventoryComponent* component, FInventoryStack stack){ return FVector(); }
 void AFGCharacterPlayer::AddRadiationImmunity( float toAdd){ }
 void AFGCharacterPlayer::SetRadiationImmunity( float newImmunity){ }
+void AFGCharacterPlayer::ClientCheatFly_Implementation(){ }
+void AFGCharacterPlayer::CheatJump(){ }
+void AFGCharacterPlayer::StopCheatJump(){ }
+void AFGCharacterPlayer::CheatCrouch(){ }
+void AFGCharacterPlayer::StopCheatCrouch(){ }
+void AFGCharacterPlayer::CheatToggleGhostFly(){ }
+void AFGCharacterPlayer::CheatToggleGhostFly( bool ghostModeActive){ }
+bool AFGCharacterPlayer::CheatToggleGhostFlyIsActive(){ return bool(); }
+bool AFGCharacterPlayer::CheatToggleFlyModeIsActive(){ return bool(); }
+void AFGCharacterPlayer::CheatToggleFlyMode(){ }
+void AFGCharacterPlayer::CheatTeleport(){ }
 void AFGCharacterPlayer::SetupPlayerInputComponent(  UInputComponent* InputComponent){ }
 void AFGCharacterPlayer::OnInventorySlotsUnlocked( int32 newUnlockedSlots){ }
 void AFGCharacterPlayer::OnArmsSlotsUnlocked( int32 newUnlockedSlots){ }
@@ -154,3 +165,7 @@ void AFGCharacterPlayer::OnRep_DrivenVehicle(){ }
 void AFGCharacterPlayer::OnRep_PickupCounter(){ }
 void AFGCharacterPlayer::OnRep_InRadioactiveZone(){ }
 void AFGCharacterPlayer::OnRep_RadiationIntensity(){ }
+FOnPersistentEquipmentSpawned AFGCharacterPlayer::OnPersistentEquipmentSpawned = FOnPersistentEquipmentSpawned();
+FOnEquipmentEquipped AFGCharacterPlayer::OnEquipmentEquipped = FOnEquipmentEquipped();
+FOnEquipmentUnequipped AFGCharacterPlayer::OnEquipmentUnequipped = FOnEquipmentUnequipped();
+FOnFoliagePickupSpawned AFGCharacterPlayer::OnFoliagePickupSpawned = FOnFoliagePickupSpawned();

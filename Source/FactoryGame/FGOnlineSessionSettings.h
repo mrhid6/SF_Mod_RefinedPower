@@ -47,7 +47,7 @@ struct FFGOnlineSessionSettings
 	int32				PlayDuration;
 
 	/** The build version on the form ++FactoryGame+Main-4.20-CL-123456 */
-	UPROPERTY()
+	UPROPERTY( BlueprintReadOnly )
 	FString				BuildVersion;
 
 	/** Name of the session, same as the name exposed in the Save/Load menus */

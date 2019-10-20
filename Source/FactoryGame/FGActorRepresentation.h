@@ -11,17 +11,20 @@
 UENUM( BlueprintType )
 enum class ERepresentationType : uint8
 {
-	RT_Default			UMETA( DisplayName = "Default" ),
-	RT_Beacon			UMETA( DisplayName = "Beacon" ),
-	RT_Crate			UMETA( DisplayName = "Crate" ),
-	RT_Hub				UMETA( DisplayName = "Hub" ),
-	RT_Ping				UMETA( DisplayName = "Ping" ),
-	RT_Player			UMETA( DisplayName = "Player" ),
-	RT_RadarTower		UMETA( DisplayName = "RadarTower" ),
-	RT_Resource			UMETA( DisplayName = "Resource" ),
-	RT_SpaceElevator	UMETA( DisplayName = "SpaceElevator" ),
-	RT_StartingPod		UMETA( DisplayName = "StartingPod" ),
-	RT_Vehicle			UMETA( DisplayName = "Vehicle" )
+	RT_Default					UMETA( DisplayName = "Default" ),
+	RT_Beacon					UMETA( DisplayName = "Beacon" ),
+	RT_Crate					UMETA( DisplayName = "Crate" ),
+	RT_Hub						UMETA( DisplayName = "Hub" ),
+	RT_Ping						UMETA( DisplayName = "Ping" ),
+	RT_Player					UMETA( DisplayName = "Player" ),
+	RT_RadarTower				UMETA( DisplayName = "RadarTower" ),
+	RT_Resource					UMETA( DisplayName = "Resource" ),
+	RT_SpaceElevator			UMETA( DisplayName = "SpaceElevator" ),
+	RT_StartingPod				UMETA( DisplayName = "StartingPod" ),
+	RT_Train					UMETA( DisplayName = "Train" ),
+	RT_TrainStation				UMETA( DisplayName = "TrainStation" ),
+	RT_Vehicle					UMETA( DisplayName = "Vehicle" ),
+	RT_VehicleDockingStation	UMETA( DisplayName = "VehicleDockingStation" )
 };
 
 UENUM( BlueprintType )
@@ -31,6 +34,16 @@ enum class EFogOfWarRevealType : uint8
 	FOWRT_Static		UMETA( DisplayName = "Static" ),
 	FOWRT_Intermittent	UMETA( DisplayName = "Intermittent" ),
 	FOWRT_Dynamic		UMETA( DisplayName = "Dynamic" )
+};
+
+UENUM( BlueprintType )
+enum class ECompassViewDistance : uint8
+{
+	CVD_Off				UMETA( DisplayName = "Off" ),
+	CVD_Near			UMETA( DisplayName = "Near" ),
+	CVD_Mid				UMETA( DisplayName = "Mid" ),
+	CVD_Far				UMETA( DisplayName = "Far" ),
+	CVD_Always			UMETA( DisplayName = "Always" )
 };
 
 /**
@@ -98,6 +111,12 @@ public:
 	float GetFogOfWarRevealRadius() const;
 
 	void SetIsOnClient( bool onClient );
+
+	UFUNCTION( BlueprintPure, Category = "Representation" )
+	ECompassViewDistance GetCompassViewDistance() const;
+
+	/** Sets the client representations compass view distance directly. It doesn't change the connected actors status so this is only for local updates to avoid waiting for replicated value */
+	void SetLocalCompassViewDistance( ECompassViewDistance compassViewDistance );
 	
 protected:
 
@@ -131,6 +150,9 @@ protected:
 	/** Updates the fog of war reveal radius */
 	void UpdateFogOfWarRevealRadius();
 
+	/** Updates the view distance for this actor on the compass */
+	void UpdateCompassViewDistance();
+
 	/** Repnotifies */
 	UFUNCTION()
 	void OnRep_ShouldShowInCompass();
@@ -139,19 +161,7 @@ protected:
 	void OnRep_ShouldShowOnMap();
 
 	UFUNCTION()
-	void OnRep_RepresentationText();
-
-	UFUNCTION()
-	void OnRep_RepresentationColor();
-
-	UFUNCTION()
-	void OnRep_RepresentationTexture();
-
-	UFUNCTION()
-	void OnRep_FogOfWarRevealType();
-
-	UFUNCTION()
-	void OnRep_FogOfWarRevealRadius();
+	void OnRep_ActorRepresentationUpdated();
 
 private:
 	friend AFGActorRepresentationManager;
@@ -180,25 +190,25 @@ private:
 	bool mIsStatic;
 
 	/** This is the texture to show for this actor representation */
-	UPROPERTY( ReplicatedUsing = OnRep_RepresentationTexture )
+	UPROPERTY( ReplicatedUsing = OnRep_ActorRepresentationUpdated )
 	UTexture2D* mRepresentationTexture;
 
 	/** This is the text to show for this actor representation */
-	UPROPERTY( ReplicatedUsing = OnRep_RepresentationText )
+	UPROPERTY( ReplicatedUsing = OnRep_ActorRepresentationUpdated )
 	FText mRepresentationText;
 
 	/** This is the color used for the representation of this actor */
-	UPROPERTY( ReplicatedUsing = OnRep_RepresentationColor )
+	UPROPERTY( ReplicatedUsing = OnRep_ActorRepresentationUpdated )
 	FLinearColor mRepresentationColor;	
 
 	/** This helps define how this actor representation should be presented */
 	UPROPERTY( Replicated )
 	ERepresentationType mRepresentationType;
 
-	UPROPERTY( ReplicatedUsing = OnRep_FogOfWarRevealType )
+	UPROPERTY( ReplicatedUsing = OnRep_ActorRepresentationUpdated )
 	EFogOfWarRevealType mFogOfWarRevealType;
 
-	UPROPERTY( ReplicatedUsing = OnRep_FogOfWarRevealRadius )
+	UPROPERTY( ReplicatedUsing = OnRep_ActorRepresentationUpdated )
 	float mFogOfWarRevealRadius;
 
 	/** If this representation should be removed when lifetime < 0.0f */
@@ -214,4 +224,8 @@ private:
 	/** If this should be shown on the map or not*/
 	UPROPERTY( ReplicatedUsing = OnRep_ShouldShowOnMap )
 	bool mShouldShowOnMap;
+
+	/** How far away this representation should be shown in the compass */
+	UPROPERTY( ReplicatedUsing = OnRep_ActorRepresentationUpdated )
+	ECompassViewDistance mCompassViewDistance;
 };

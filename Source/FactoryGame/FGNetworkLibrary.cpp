@@ -26,6 +26,7 @@ bool UFGSessionLibrary::IsSessionValid( FBlueprintSessionResult session){ return
 bool UFGSessionLibrary::InOnlineSession( UObject* worldContext, const FUniqueNetIdRepl& playerId){ return bool(); }
 void UFGSessionLibrary::JoinSession( UObject* worldContext, const FBlueprintSessionResult& session){ }
 int32 UFGSessionLibrary::GetMaxNumberOfPlayers( const FBlueprintSessionResult& session){ return int32(); }
+bool UFGSessionLibrary::CheckIsCompatibleVersion( const FFGOnlineSessionSettings& session){ return bool(); }
 void UFGSessionLibrary::UpdateSessionFromSessionSettings( FOnlineSessionSettings& session, const FFGOnlineSessionSettings& sessionSettings){ }
 void UFGSessionLibrary::SessionSettingsFromSession( const FOnlineSessionSettings& session, FFGOnlineSessionSettings& sessionSettings){ }
 FUniqueNetIdRepl UFGInviteLibrary::GetInviteSenderUniqueNetId( const FPendingInvite& invite){ return FUniqueNetIdRepl(); }
@@ -43,3 +44,5 @@ bool UFGNetworkLibrary::IsValid_UniqueNetId( const FUniqueNetIdRepl& a){ return 
 void UFGNetworkLibrary::QueryNATType( UObject* worldContext){ }
 ECachedNATType UFGNetworkLibrary::GetCachedNATType( UObject* worldContext){ return ECachedNATType(); }
 FText UFGNetworkLibrary::NATTypeToText( ECachedNATType NatType){ return FText(); }
+FString UFGNetworkLibrary::GetLocalBuildVersion(){ return FString(); }
+bool UFGNetworkLibrary::CheckIsCompatibleVersion( const FFGOnlineSessionSettings& session){ return bool(); }

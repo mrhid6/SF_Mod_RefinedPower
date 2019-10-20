@@ -17,6 +17,7 @@
 #include "FGGameInstance.generated.h"
 
 
+
 USTRUCT()
 struct FOnJoinSessionData
 {
@@ -91,8 +92,27 @@ struct FFGModPackage
 	}
 };
 
+USTRUCT( BlueprintType )
+struct FFGGameNetworkErrorMsg
+{
+	GENERATED_BODY()
+	FFGGameNetworkErrorMsg( ENetworkFailure::Type _errorType, const FString& _errorMsg ) : errorType( _errorType ), errorMsg( _errorMsg )
+	{}
+	FFGGameNetworkErrorMsg( ) : errorType( -1 ), errorMsg( "No errors" )
+	{}
+	UPROPERTY( BlueprintReadWrite)
+	TEnumAsByte<ENetworkFailure::Type> errorType;
+
+	UPROPERTY( BlueprintReadWrite )
+	FString errorMsg;
+};
+
+
 // Don't pass the error here, as we want the user to specify how it want to handle the error itself (peek or get)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE( FOnNewError );
+
+/** Delegate when a network error has occured, like mismatching version, timeouts and so on */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams( FOnNetworkErrorRecieved, ENetworkFailure::Type, errorType, FString, errorMsg );
 
 // Called if/when the NAT-type is updated
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam( FOnNatTypeUpdated, ECachedNATType, natType );
@@ -184,6 +204,15 @@ public:
 
 	/** Get cached NAT-type */
 	FORCEINLINE ECachedNATType GetCachedNATType() const{ return mCachedNATType; }
+
+
+	/* returns true if there were an error, and fills in the enum and string. If there were no error the type and msg will be undefined, and the function returns false. To get the next message or reset the error state, call PopLatestNetworkError function*/
+	UFUNCTION( BlueprintPure, Category = "ErrorHandling" )
+	bool GetLatestNetworkError( FFGGameNetworkErrorMsg& msg );
+
+	/* Pops the latest network message, removing it from the queue and resetting the error state. If there is more messages left after the pop it will return true, otherwise false. */
+	UFUNCTION( BlueprintCallable, Category = "ErrorHandling" )
+	bool PopLatestNetworkError();
 protected:
 	// Called when a map has loaded properly in Standalone
 	virtual void LoadComplete( const float loadTime, const FString& mapName ) override;

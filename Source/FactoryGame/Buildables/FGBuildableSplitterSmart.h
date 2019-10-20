@@ -50,6 +50,10 @@ public:
 
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty >& OutLifetimeProps ) const override;
 
+	/** Begin Save Interface */
+	virtual void PostLoadGame_Implementation( int32 saveVersion, int32 gameVersion ) override;
+	/** End Save Interface */
+
 	/** Get the number of sort rules this splitter has. */
 	UFUNCTION( BlueprintPure, Category = "Sort" )
 	FORCEINLINE int32 GetNumSortRules() const { return mSortRules.Num(); }
@@ -83,12 +87,14 @@ protected:
 	virtual bool Factory_GrabOutput_Implementation( class UFGFactoryConnectionComponent* connection, FInventoryItem& out_item, float& out_OffsetBeyond, TSubclassOf< UFGItemDescriptor > type ) override;
 	// End Factory_ interface
 
+	virtual void FillDistributionTable() override;
+
 private:
 	UFUNCTION()
 	void OnRep_SortRules();
 
-	/** Returns a correct output depending on the passed item's ItemDescriptor */
-	UFGFactoryConnectionComponent* GetOutputConnectionForItem( const FInventoryItem& item ) const;
+	/** Returns all connections that this item could be placed onto. It excludes wildcard outputs if there is a rule specifically set for this item type */
+	TArray<UFGFactoryConnectionComponent*> GetAllOutputConnectionsForItem( const FInventoryItem& item ) const;
 
 protected:
 	UPROPERTY( BlueprintAssignable )
@@ -102,4 +108,14 @@ private:
 	/** How many rules this splitter can have. */
 	UPROPERTY( EditDefaultsOnly, Category = "Sort", meta = ( UIMin = "1", UIMax = "64" ) )
 	int32 mMaxNumSortRules;
+
+	UPROPERTY( SaveGame )
+	FInventoryItem mLastItem;
+
+	UPROPERTY( SaveGame )
+	TMap< TSubclassOf< UFGItemDescriptor >, uint8> mItemToLastOutputMap;
+
+	UPROPERTY( SaveGame )
+	int32 mLastOutputIndex;
+
 };

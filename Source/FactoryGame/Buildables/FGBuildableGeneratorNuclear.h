@@ -21,12 +21,24 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
+
+	// Begin Factory_ interface
+	virtual void Factory_Tick( float dt ) override;
+	// End Factory_ interface
+
 	// Begin AFGBuildableGeneratorFuel
 	virtual void LoadFuel() override;
 	// End AFGBuildableGeneratorFuel
+	
+	// Begin AFGBuildableGenerator interface
+	virtual bool CanStartPowerProduction_Implementation() const override;
+	// End AFGBuildableGenerator interface
 
 	/** We can only load fuel if waste is not full */
 	virtual bool CanLoadFuel() const override;
+
+	/** Try to produce nuclear waste and put it in the output inventory */
+	void TryProduceWaste();
 
 	/** Returns the inventory for waste in the nuclear generator */
 	UFUNCTION( BlueprintPure, Category = "Nuclear" )
@@ -35,4 +47,9 @@ private:
 	/** Spent fuel rods goes here. */
 	UPROPERTY( SaveGame, Replicated )
 	class UFGInventoryComponent* mOutputInventory;
+
+	/** Waste left to produce from the current fuel rod*/
+	UPROPERTY( SaveGame )
+	int32 mWasteLeftFromCurrentFuel;
+
 };

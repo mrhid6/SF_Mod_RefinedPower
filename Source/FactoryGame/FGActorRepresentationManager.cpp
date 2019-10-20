@@ -14,5 +14,12 @@ bool AFGActorRepresentationManager::CreateAndAddNewRepresentationNoActor( FVecto
 bool AFGActorRepresentationManager::RemoveRepresentationOfActor( AActor* realActor){ return bool(); }
 void AFGActorRepresentationManager::GetAllActorRepresentations( UPARAM( ref ) TArray<  UFGActorRepresentation* >& out_AllRepresentations){ }
 void AFGActorRepresentationManager::DumpActorRepresentations(){ }
+void AFGActorRepresentationManager::SetMapRepresentationTypeFilter(  APawn* owningPlayerPawn, ERepresentationType type, bool visible){ }
+void AFGActorRepresentationManager::SetCompassRepresentationTypeFilter(  APawn* owningPlayerPawn, ERepresentationType type, bool visible){ }
+bool AFGActorRepresentationManager::GetMapRepresentationTypeFilter(  APawn* owningPlayerPawn, ERepresentationType type){ return bool(); }
+bool AFGActorRepresentationManager::GetCompassRepresentationTypeFilter(  APawn* owningPlayerPawn, ERepresentationType type){ return bool(); }
+void AFGActorRepresentationManager::SetCompassViewDistanceForActorRepresentation( UFGActorRepresentation* actorRepresentation, ECompassViewDistance viewDistance){ }
+AActor* AFGActorRepresentationManager::GetRealActorFromActorRepresentation( UFGActorRepresentation* actorRepresentation){ return nullptr; }
+float AFGActorRepresentationManager::GetDistanceValueFromCompassViewDistance( ECompassViewDistance compassViewDistance){ return float(); }
 void AFGActorRepresentationManager::Tick( float dt){ }
 void AFGActorRepresentationManager::OnRep_ReplicatedRepresentations(){ }

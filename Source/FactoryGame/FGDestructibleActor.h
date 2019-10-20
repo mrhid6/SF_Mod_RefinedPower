@@ -22,6 +22,10 @@ class FACTORYGAME_API AFGDestructibleActor : public ADestructibleActor, public I
 	AFGDestructibleActor();
 	
 public:
+	// Begin Actor Interface
+	virtual void BeginPlay() override;
+	// End Actor Interface
+
 	virtual float TakeDamage( float damage, struct FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser ) override;
 
 	// Begin IFGSaveInterface

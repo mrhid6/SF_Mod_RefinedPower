@@ -25,3 +25,7 @@ void AFGBuildableHologram::ConfigureBuildEffect(  AFGBuildable* inBuildable){ }
 void AFGBuildableHologram::SetupClearance(  UBoxComponent* boxComponent){ }
 void AFGBuildableHologram::SetupFactoryConnectionMesh(  UFGFactoryConnectionComponent* connectionComponent){ }
 void AFGBuildableHologram::SetupPowerConnectionMesh(  UFGPowerConnectionComponent* connectionComponent){ }
+FName AFGBuildableHologram::mInputConnectionMeshTag = FName();
+FName AFGBuildableHologram::mOutputConnectionMeshTag = FName();
+FName AFGBuildableHologram::mClearanceComponentName = FName();
+FName AFGBuildableHologram::mPowerConnectionMeshTag = FName();

@@ -8,8 +8,9 @@
 #include "SubclassOf.h"
 #include "UObject/Class.h"
 
-#include "../FGFactoryConnectionComponent.h"
 #include "FGBuildable.h"
+#include "../FGRemoteCallObject.h"
+#include "../FGSignificanceInterface.h"
 #include "../FGRemoteCallObject.h"
 #include "FGBuildableConveyorBase.generated.h"
 
@@ -52,15 +53,13 @@ USTRUCT()
 struct FConveyorBeltItem
 {
 	GENERATED_BODY()
-
-	/** Ctor */
-		FConveyorBeltItem() :
+public:
+	FConveyorBeltItem() :
 		Item(),
 		Offset( 0.0f )
 	{
 	}
 
-	/** Ctor */
 	explicit FConveyorBeltItem( const FInventoryItem& item ) :
 		FConveyorBeltItem()
 	{
@@ -102,8 +101,18 @@ class FConveyorBeltItemsBaseState : public INetDeltaBaseState
 {
 public:
 
+	struct PresistentClientInfo
+	{
+		int32 PackageCreationCounter = 0;
+	};
+
 	FConveyorBeltItemsBaseState()
 	{
+	}
+
+	~FConveyorBeltItemsBaseState()
+	{
+		PresistentClientInfoPtr = nullptr; //[DavalliusA:Wed/03-07-2019] should we rally need this? Got strange crash on deletion otherwise it seems
 	}
 
 	FConveyorBeltItemsBaseState( const FConveyorBeltItemsBaseState& other )
@@ -115,6 +124,7 @@ public:
 		NewestItemID = other.NewestItemID;
 		NextToMoveOutItemID = other.NextToMoveOutItemID;
 		ArrayReplicationKeyLoopCounter = other.ArrayReplicationKeyLoopCounter;
+		PresistentClientInfoPtr = other.PresistentClientInfoPtr;
 	}
 
 	FConveyorBeltItemsBaseState( FConveyorBeltItemsBaseState&& other )
@@ -126,6 +136,7 @@ public:
 		NewestItemID = other.NewestItemID;
 		NextToMoveOutItemID = other.NextToMoveOutItemID;
 		ArrayReplicationKeyLoopCounter = other.ArrayReplicationKeyLoopCounter;
+		PresistentClientInfoPtr = other.PresistentClientInfoPtr;
 	}
 
 	//virtual ~FConveyorBeltItemsBaseState();
@@ -139,6 +150,7 @@ public:
 		NewestItemID = other.NewestItemID;
 		NextToMoveOutItemID = other.NextToMoveOutItemID;
 		ArrayReplicationKeyLoopCounter = other.ArrayReplicationKeyLoopCounter;
+		PresistentClientInfoPtr = other.PresistentClientInfoPtr;
 	}
 
 	const FConveyorBeltItemsBaseState& operator=( FConveyorBeltItemsBaseState&& other )
@@ -151,6 +163,7 @@ public:
 		NewestItemID = other.NewestItemID;
 		NextToMoveOutItemID = other.NextToMoveOutItemID;
 		ArrayReplicationKeyLoopCounter = other.ArrayReplicationKeyLoopCounter;
+		PresistentClientInfoPtr = other.PresistentClientInfoPtr;
 
 	}
 
@@ -221,12 +234,37 @@ public:
 	FG_ConveyorItemRepKeyType NewestItemID = INDEX_NONE;
 	FG_ConveyorItemRepKeyType NextToMoveOutItemID = INDEX_NONE + 1; //oldest item. If the conveyor is empty, this value will be NewestItemID+1
 
-																	/** The replication key from the array this state was created for. */
+	
+	PresistentClientInfo* PresistentClientInfoPtr = nullptr; //created on the first delta and then kept alive through all.
+	uint32 PackageCreationID = 0; //used to compare with the persistent client data to know how many packages that have been created since this one so we can detect issues/when clients are likely to run out of their delt alog and need a reset.
 
+	/** The replication key from the array this state was created for. */
 	FG_ConveyorVersionType ArrayReplicationKey = INDEX_NONE;
 	uint8	ArrayReplicationKeyLoopCounter = 0;
 	struct FConveyorBeltItems* ObjectDebugPtr = nullptr;
 };
+
+UCLASS()
+class FACTORYGAME_API  UPresistentConveyorPackagingData : public UObject
+{
+	GENERATED_BODY()
+public:
+	~UPresistentConveyorPackagingData()
+	{
+		for ( auto itr : ClientPresistentDataPointers )
+		{
+			if( itr.Value )
+			{
+				delete itr.Value;
+				itr.Value = nullptr;
+			}
+		}
+		ClientPresistentDataPointers.Empty();
+	}
+
+	TMap<void*, FConveyorBeltItemsBaseState::PresistentClientInfo*> ClientPresistentDataPointers; //@TODO:[DavalliusA:Wed/03-07-2019] we need pointers, or we can't guarantee the data stays in place when the arraygrows
+};
+
 
 /**
 * Struct to help replicate the conveyor belt items array.
@@ -248,8 +286,7 @@ struct FConveyorBeltItems
 
 	GENERATED_BODY()
 
-	/** Ctor */
-		FConveyorBeltItems();
+	FConveyorBeltItems();
 
 	FORCEINLINE int16 Num() const
 	{
@@ -405,7 +442,7 @@ private:
 private:
 	/** Counter for assigning new replication IDs. */
 	int16 IDCounter; //@TODO:[DavalliusA:Tue/11-06-2019] Seems to not be used. Check and remove.
-
+	UPresistentConveyorPackagingData* PresistentPackDataPtr;
 	TMap< TSubclassOf< class UFGItemDescriptor >, uint8 > TypeToBitIDMap;
 
 	ItemHolderHistory* VersionHistoryStateList = nullptr;
@@ -463,7 +500,7 @@ private:
 		{
 			for( auto & d : Deltas )
 			{
-				if( d.BasedOnKey == baseKey )
+				if( d.BasedOnKey == baseKey && d.ReplicationKey != INDEX_NONE) //if this delta takes us to index none, it is not a real state. It can be the empty states, as the default base key of -2 is a valid real vlaue, we need this
 				{
 					return &d;
 				}
@@ -473,6 +510,7 @@ private:
 
 		void AddDelta( FG_ConveyorVersionType basedOnKey, FG_ConveyorVersionType replicationKey, uint8 numDeleted, uint8 numAdded, int16 numItems )
 		{
+			checkf( replicationKey != INDEX_NONE, TEXT("We should try to add a delta that takes us to INDEX_NONE. Something is strange here! Adding a delta for %d -> %d"), basedOnKey, replicationKey );
 			Deltas[ WriteHead ].BasedOnKey = basedOnKey;
 			Deltas[ WriteHead ].ReplicationKey = replicationKey;
 			Deltas[ WriteHead ].NumToDelete = numDeleted;
@@ -484,18 +522,41 @@ private:
 		}
 		void EnterAndSetupResetState()
 		{
+			Delta tempAsigner;
 			for( auto & d : Deltas )
 			{
-				d.BasedOnKey = INDEX_NONE - 1;
-				d.ReplicationKey = INDEX_NONE;
-				d.NumToAdd = 0;
-				d.NumToDelete = 0;
-				d.NumItems = 0;
+				d = tempAsigner;
+				//assign with a default object instead of manually resetting all variables.
+				//d.BasedOnKey = INDEX_NONE - 1;
+				//d.ReplicationKey = INDEX_NONE;
+				//d.NumToAdd = 0;
+				//d.NumToDelete = 0;
+				//d.NumItems = 0;
 			}
+		}
+		DeltaLogStruct::Delta * GetDeltaClosestTo( FG_ConveyorVersionType baseReplicationKey )
+		{
+			Delta* bestDelta = &Deltas[0]; //[DavalliusA:Wed/07-08-2019] make sure we at least have something to return here
+			int32 bestDeltaDiff = 6000;
+			for( auto & d : Deltas )
+			{
+				if( d.ReplicationKey == INDEX_NONE )
+				{
+					continue;
+				}
+				int32 diff = abs( d.BasedOnKey - baseReplicationKey );
+				if( diff < bestDeltaDiff ) //if this delta takes us to index none, it is not a real state. It can be the empty states, as the default base key of -2 is a valid real vlaue, we need this
+				{
+					bestDeltaDiff = diff;
+					bestDelta = &d;
+				}
+			}
+			return bestDelta;
 		}
 	};
 	DeltaLogStruct DeltaLog;
 
+	
 	/** Like a dirty flag. */
 
 	FG_ConveyorVersionType ArrayReplicationKey = 0;
@@ -538,7 +599,7 @@ struct TStructOpsTypeTraits< FConveyorBeltItems > : public TStructOpsTypeTraitsB
  * Responsible for common logic such as the factory ticking, replication, interactions etc.
  */
 UCLASS(Abstract)
-class FACTORYGAME_API AFGBuildableConveyorBase : public AFGBuildable
+class FACTORYGAME_API AFGBuildableConveyorBase : public AFGBuildable, public IFGSignificanceInterface
 {
 	GENERATED_BODY()
 public:
@@ -559,6 +620,14 @@ public:
 	// Begin AFGBuildableFactory interface
 	virtual uint8 MaxNumGrab( float dt ) const override;
 	// End AFGBuildableFactory interface
+
+	// Begin IFGSignificanceInterface
+	virtual void GainedSignificance_Implementation() override;
+	virtual	void LostSignificance_Implementation() override;
+
+	UFUNCTION( BlueprintPure, Category = "Significance" )
+	FORCEINLINE bool GetIsSignificant() { return mIsSignificant; }
+	// End IFGSignificanceInterface
 
 	FORCEINLINE float GetLength() const { return mLength; }
 	FORCEINLINE float GetSpeed() const { return mSpeed; }
@@ -622,6 +691,9 @@ public:
 	/** Spacing between each conveyor item, from origo to origo. */
 	static constexpr float ITEM_SPACING = 120.0f;
 
+	UPROPERTY( )
+	UPresistentConveyorPackagingData* PresistentConveyorPackagingDataObject = nullptr; //held here, but created by conveyors when replicated, as we don't want to create it unless it's used.
+
 protected:
 
 	/** Speed of this conveyor. */
@@ -645,4 +717,7 @@ protected:
 private:
 	int16 mLastItemsDirtyKey = -2;
 	bool mPendingUpdateItemTransforms;
+
+	/** Indicates if the factory is within significance distance */
+	bool mIsSignificant;
 };

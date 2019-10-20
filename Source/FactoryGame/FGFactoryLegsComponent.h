@@ -14,17 +14,14 @@ USTRUCT()
 struct FFeetOffset
 {
 	GENERATED_BODY()
+public:
+	static uint8 GetFeetIndexFromSocketName( const FName socket );
 
-	FFeetOffset(){}
+	FFeetOffset();
+	FFeetOffset( const FName socket );
 
-	FFeetOffset( const uint8 inFeetIndex ) :
-		FeetIndex( inFeetIndex ),
-		OffsetZ( 0.f ),
-		ShouldShow( true ),
-		IsValidOffset( true )
-	{
-	}
-
+	FName GetSocket() const;
+public:
 	/** The name of the foot's socket. */
 	UPROPERTY( SaveGame )
 	uint8 FeetIndex;
@@ -33,36 +30,9 @@ struct FFeetOffset
 	UPROPERTY( SaveGame )
 	float OffsetZ;
 
-	//@todo Not used anymore.
-	/** The foot should potentially be invisible. */
-	UPROPERTY( SaveGame )
-	uint8 ShouldShow : 1;
-
-	/** Does this foot have a valid offset. */
-	UPROPERTY( )
-	uint8 IsValidOffset : 1;
-
-	FName GetSocketNameFromIndex() const
-	{
-		TArray<FStringFormatArg> args;
-		args.Add( FString::FromInt( FeetIndex ) );
-		const FName socketName( *FString::Format( TEXT( "foot_0{0}" ), args ) );
-		return socketName;
-	}
-
-	static uint8 GetFeetIndexFromSocket( const FName& socketName )
-	{
-		FString socketIndexString = socketName.ToString( );
-		socketIndexString.ReplaceInline( TEXT("foot_"), TEXT(""), ESearchCase::IgnoreCase );
-
-		int32 value;
-		if( FDefaultValueHelper::ParseInt( socketIndexString, value ) )
-		{
-			return uint8( value );
-		}
-
-		return 0;
-	}
+	/** Does this foot have a valid offset, only used during hologram placement. */
+	UPROPERTY( NotReplicated )
+	bool IsValidOffset;
 };
 
 UCLASS( ClassGroup = ( Custom ), meta = ( BlueprintSpawnableComponent ) )
@@ -70,13 +40,10 @@ class UFGFactoryLegsComponent : public USceneComponent, public IFGSaveInterface
 {
 	GENERATED_BODY()
 public:
-	// Begin AActor interface
-	virtual void GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
-
-
 	UFGFactoryLegsComponent();
 
 	//~ Begin UActorComponent interface
+	virtual void GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps ) const override;
 #if WITH_EDITOR
 	virtual void OnRegister() override;
 	virtual void OnUnregister() override;
@@ -102,19 +69,33 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "Legs" )
 	TArray< class UStaticMeshComponent* > GetFootMeshComponents() const { return mFootMeshComponents; }
 
-	/** Trace for the feet offsets and return the results. */
-	TArray< FFeetOffset > TraceFeetOffsets( const FTransform& actorTransform ) const;
+	/**
+	 * Trace for the feet offsets and return the results.
+	 *
+	 * @note Never call this in BeginPlay as all parts of the world are not loaded.
+	 */
+	TArray< FFeetOffset > TraceFeetOffsets( const FTransform& actorTransform, AActor* ignoreActor = nullptr ) const;
 
 	/** Set/get the feet offsets from external data, must be set prior to BeginPlay. */
 	void SetFeetOffsets( const TArray< FFeetOffset >& offsets );
+	void ClearFeetOffsets();
 	TArray< FFeetOffset > GetCachedFeetOffsets() const { return mCachedFeetOffset; }
 
+	/** Reset the legs to zero length. */
+	void SetFeetOffsetsToZero();
+
+	/** Get the maximum length for these legs. */
 	float GetMaxLegLength() const;
 
-	static bool GetTracedFeetOffsetFromGround( const FTransform& actorTransform, UFGFactoryLegsComponent* legsComp, TArray<FFeetOffset>& out_tracedFeetOffsets, float& out_highestFootOffset, float& out_longestLeg );
+	/** Only here for the cheat manager. */
+	void RecreateLegs()
+	{
+		RemoveLegs();
+		CreateLegs();
+	}
 
 private:
-	FFeetOffset TraceFootOffset( FName socket, const FTransform& actorTransform ) const;
+	FFeetOffset TraceFootOffset( FName socket, const FTransform& actorTransform, AActor* ignoreActor = nullptr ) const;
 
 	class UStaticMesh* GetLegMesh() const;
 	class UStaticMesh* GetFootMesh() const;
@@ -123,8 +104,6 @@ private:
 	void RemoveLegs();
 
 	void CreateFoot( const FFeetOffset& offset );
-
-	bool CachedFeetOffsetsAreValid();
 
 protected:
 	/** Socket names on the parent mesh */
@@ -145,11 +124,11 @@ protected:
 
 private:
 	/** The created leg components for this building */
-	UPROPERTY( transient )
+	UPROPERTY( Transient )
 	TArray< UStaticMeshComponent* > mLegMeshComponents;
 
 	/** The created foot components for this building */
-	UPROPERTY( transient )
+	UPROPERTY( Transient )
 	TArray< UStaticMeshComponent* > mFootMeshComponents;
 
 	/** Stored so that we know the offset of the feet */

@@ -75,6 +75,10 @@ public:
 	UFUNCTION( BlueprintPure, Category = "Math" )
 	static float LogX( float base, float value );
 
+	/** Returns a rounded float with a maximum of fractional digits */
+	UFUNCTION( BlueprintPure, Category = "Math" )
+	static float RoundFloatWithPrecision( float value, int32 MaximumFractionalDigits );
+
 	/** */
 	UFUNCTION( BlueprintPure, Category = "Component Flags" )
 	static FName GetComponentFlagSoftLanding( );
@@ -203,7 +207,6 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "Build Category" )
 	static void GetAvailableRecipesInSubCategory( UObject* worldContext, TSubclassOf< UFGBuildSubCategory > subCategory, UPARAM( ref ) TArray< TSubclassOf< class UFGRecipe > >& out_recipes );
 
-
 	/** Returns all sub categories with product of a certain category */
 	UFUNCTION( BlueprintCallable, Category = "Build Category" )
 	static void GetAvailableSubCategoriesForCategory( UObject* worldContext, TSubclassOf< UFGBuildCategory > buildCategory, UPARAM( ref ) TArray< TSubclassOf< class UFGBuildSubCategory > >& out_subCategories );
@@ -211,6 +214,14 @@ public:
 	/** Finds a widget of a certain class in the hierarchy of the passed widget. Does a breadth-first search of the tree.*/
 	UFUNCTION( BlueprintCallable, meta = ( DefaultToSelf = "hierarchyContext", DeterminesOutputType = "widgetClass", DynamicOutputParam = "foundWidgets" ), Category = "Widget" )
 	static void GetAllWidgetsOfClassInHierarchy( UWidget* hierarchyContext, TSubclassOf< UWidget > widgetClass, TArray< UWidget* >& foundWidgets );
+	
+	/** Returns all items in a item category */
+	UFUNCTION( BlueprintCallable, Category = "Item Category" )
+	static TArray< TSubclassOf< class UFGItemDescriptor > > GetAllItemsInCategory( UObject* worldContext, TSubclassOf< UFGItemCategory > itemCategory);
+
+	/** Returns all categories that have available recipes in them */
+	UFUNCTION( BlueprintCallable, Category = "Item Category" )
+	static TArray< TSubclassOf< class UFGItemCategory > > GetCategoriesWithAffordableRecipes( AFGCharacterPlayer* playerPawn, TSubclassOf< UObject > forProducer );
 
 	/**
 	 * Checks if a location is close to a base

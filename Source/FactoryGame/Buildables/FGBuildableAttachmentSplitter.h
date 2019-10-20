@@ -11,41 +11,6 @@
 #include "FGBuildableAttachmentSplitter.generated.h"
 
 /**
- * This is a struct that will assign an item to a certain connection.
- */
-USTRUCT()
-struct FConnectionItemStruct
-{
-	GENERATED_BODY()
-
-	FConnectionItemStruct() :
-		Connection( nullptr ),
-		Item( FInventoryItem() ),
-		OffsetBeyond( 0.0f )
-	{
-	}
-
-	FConnectionItemStruct( UFGFactoryConnectionComponent* inConnection, FInventoryItem inItem, float inOffsetBeyond ) :
-		Connection( inConnection ),
-		Item( inItem ),
-		OffsetBeyond( inOffsetBeyond )
-	{
-	}
-
-	/** The connection to put the item on */
-	UPROPERTY()
-	class UFGFactoryConnectionComponent* Connection;
-
-	/** The item to put on the connection */
-	UPROPERTY()
-	FInventoryItem Item;
-
-	/** How far past the conveyor belt length this item is */
-	UPROPERTY()
-	float OffsetBeyond;
-};
-
-/**
  * 
  */
 UCLASS()
@@ -70,27 +35,25 @@ public:
 
 protected:
 	// Begin Factory_ interface
+	virtual void Factory_Tick( float deltaTime ) override;
 	virtual bool Factory_GrabOutput_Implementation( UFGFactoryConnectionComponent* connection, FInventoryItem& out_item, float& out_OffsetBeyond, TSubclassOf< UFGItemDescriptor > type ) override;
 	// End Factory_ interface
 
-private:
-
-	void FillDistributionTable();
+	virtual void FillDistributionTable();
 
 protected:
-	/** Cached input connections for faster lookup. */
-	TArray< UFGFactoryConnectionComponent* > mInputs;
-
-	/** Cached output connections for faster lookup. */
-	TArray< UFGFactoryConnectionComponent* > mOutputs;
 
 	/** Cycles through the outputs, stores the output we want to put mItem on. Index is for the mOutputs array. */
 	UPROPERTY( SaveGame, Meta = (NoAutoJson) )
 	int32 mCurrentOutputIndex;
 
-private:
-	friend class AFGAttachmentSplitterHologram;
+	UPROPERTY( SaveGame, Meta = ( NoAutoJson ) )
+	int32 mCurrentInventoryIndex;
 
 	UPROPERTY()
 	TArray< FConnectionItemStruct > mDistributionTable;
+
+private:
+	friend class AFGAttachmentSplitterHologram;
+
 };

@@ -28,7 +28,7 @@ class UFGListView : public UPanelWidget
 	// MODDING EDIT
 	GENERATED_BODY()
 	UFGListView(const class FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {}
-
+	
 	/** Delegate for constructing a UWidget for an item to display. */
 	DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam( UWidget*, FOnGenerateRow, int32, item );
 

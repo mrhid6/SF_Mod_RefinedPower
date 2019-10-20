@@ -2,13 +2,14 @@
 
 #include "FGBuildableConveyorBelt.h"
 
-AFGBuildableConveyorBelt::AFGBuildableConveyorBelt(){ }
+AFGBuildableConveyorBelt::AFGBuildableConveyorBelt(){ 
+	mSplineComponent = CreateDefaultSubobject<UFGSplineComponent>(TEXT("SplineComponent"));
+
+    mSplineComponent->SetupAttachment(RootComponent);
+}
 void AFGBuildableConveyorBelt::GetLifetimeReplicatedProps( TArray< FLifetimeProperty >& OutLifetimeProps) const{ }
 void AFGBuildableConveyorBelt::BeginPlay(){ }
-void AFGBuildableConveyorBelt::EndPlay( const EEndPlayReason::Type endPlayReason){ }
 bool AFGBuildableConveyorBelt::IsComponentRelevantForNavigation( UActorComponent* component) const{ return bool(); }
-void AFGBuildableConveyorBelt::GainedSignificance_Implementation(){ }
-	void AFGBuildableConveyorBelt::LostSignificance_Implementation(){ }
 void AFGBuildableConveyorBelt::UpdateUseState_Implementation(  AFGCharacterPlayer* byCharacter, const FVector& atLocation,  UPrimitiveComponent* componentHit, FUseState& out_useState) const{ }
 void AFGBuildableConveyorBelt::OnUse_Implementation(  AFGCharacterPlayer* byCharacter, const FUseState& state){ }
 void AFGBuildableConveyorBelt::OnUseStop_Implementation(  AFGCharacterPlayer* byCharacter, const FUseState& state){ }
@@ -16,6 +17,8 @@ bool AFGBuildableConveyorBelt::IsUseable_Implementation() const{ return bool(); 
 void AFGBuildableConveyorBelt::StartIsLookedAt_Implementation(  AFGCharacterPlayer* byCharacter, const FUseState& state){ }
 void AFGBuildableConveyorBelt::StopIsLookedAt_Implementation(  AFGCharacterPlayer* byCharacter, const FUseState& state){ }
 FText AFGBuildableConveyorBelt::GetLookAtDecription_Implementation(  AFGCharacterPlayer* byCharacter, const FUseState& state) const{ return FText(); }
+void AFGBuildableConveyorBelt::GainedSignificance_Implementation(){ }
+void AFGBuildableConveyorBelt::LostSignificance_Implementation(){ }
 float AFGBuildableConveyorBelt::FindOffsetClosestToLocation( const FVector& location) const{ return float(); }
 void AFGBuildableConveyorBelt::GetLocationAndDirectionAtOffset( float offset, FVector& out_location, FVector& out_direction) const{ }
 void AFGBuildableConveyorBelt::TogglePendingDismantleMaterial( bool enabled){ }

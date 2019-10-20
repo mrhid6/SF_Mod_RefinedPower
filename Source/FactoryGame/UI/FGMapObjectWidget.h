@@ -24,13 +24,16 @@ protected:
 	virtual void NativeTick( const FGeometry& MyGeometry, float InDeltaTime ) override;
 
 	UFUNCTION( BlueprintImplementableEvent, Category = "Map" )
-	void OnObjectFiltered( bool FilteredIn );
+	void OnObjectFiltered( bool visible );
 
 	UFUNCTION( BlueprintImplementableEvent, Category = "Map" )
 	void OnObjectMoved( FVector2D normalizedLocation );
 
 private:
 	void initMapObject();
+
+	UFUNCTION()
+	void OnActorRepresentationFiltered( ERepresentationType representationType, bool visible );
 
 protected:
 	
@@ -39,6 +42,10 @@ protected:
 
 	UPROPERTY( BlueprintReadOnly, Category = "Map", Meta = ( ExposeOnSpawn = "true" ) )
 	class UFGMapWidget* mMapWidget;
+
+	// If this map object is visible by it's representation type on the map
+	UPROPERTY( BlueprintReadOnly, Category = "Map" )
+	bool mFilteredVisibility;
 
 private:
 	bool mIsActorStatic;

@@ -2,3 +2,4 @@
 
 #include "SharedInventoryStatePtr.h"
 
+FSharedInventoryStatePtr FSharedInventoryStatePtr::NullState = FSharedInventoryStatePtr();

@@ -75,6 +75,10 @@ public:
 	/** We want to change the potential instantly on generators ? */
 	virtual void SetPendingPotential( float newPendingPotential ) override;
 
+	/** Returns the currently used fuel class */
+	UFUNCTION( BlueprintPure, Category = "Power" )
+	FORCEINLINE TSubclassOf< class UFGItemDescriptor > GetCurrentFuelClass() const { return mCurrentFuelClass; }
+
 protected:
 	/** Try to collect fuel from an input. */
 	void Factory_CollectFuel();

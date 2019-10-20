@@ -67,11 +67,11 @@ class IFGActorRepresentationInterface
 	UFUNCTION( BlueprintNativeEvent, Category = "Representation" )
 	ERepresentationType GetActorRepresentationType();
 
-	/** Should this actor be shown in the compass */
+	/** Should this actor ever be shown in the compass */
 	UFUNCTION( BlueprintNativeEvent, Category = "Representation" )
 	bool GetActorShouldShowInCompass();
 
-	/** Should this actor be shown on the map*/
+	/** Should this actor ever be shown on the map*/
 	UFUNCTION( BlueprintNativeEvent, Category = "Representation" )
 	bool GetActorShouldShowOnMap();
 
@@ -80,4 +80,10 @@ class IFGActorRepresentationInterface
 
 	UFUNCTION( BlueprintNativeEvent, Category = "Representation" )
 	float GetActorFogOfWarRevealRadius();
+
+	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "Representation" )
+	ECompassViewDistance GetActorCompassViewDistance();
+
+	UFUNCTION( BlueprintCallable, BlueprintNativeEvent, Category = "Representation" )
+	ECompassViewDistance SetActorCompassViewDistance( ECompassViewDistance compassViewDistance );
 };

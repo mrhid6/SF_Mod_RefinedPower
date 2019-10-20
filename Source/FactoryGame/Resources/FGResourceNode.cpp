@@ -13,7 +13,7 @@ void AFGResourceNode::PostLoad(){ Super::PostLoad(); }
 void AFGResourceNode::BeginPlay(){ }
 void AFGResourceNode::EndPlay( const EEndPlayReason::Type endPlayReason){ }
 void AFGResourceNode::GainedSignificance_Implementation(){ }
-	void AFGResourceNode::LostSignificance_Implementation(){ }
+void AFGResourceNode::LostSignificance_Implementation(){ }
 void AFGResourceNode::PreSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void AFGResourceNode::PostSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void AFGResourceNode::PreLoadGame_Implementation( int32 saveVersion, int32 gameVersion){ }

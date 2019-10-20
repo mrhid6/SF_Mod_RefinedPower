@@ -139,8 +139,10 @@ protected:
 	// How many buckets to spread dynamic, spatialized actors across. High number = more buckets = smaller effective replication frequency. This happens before individual actors do their own NetUpdateFrequency check.
 	float mDynamicActorFrequencyBuckets = 4;
 
-	
-	bool mDisableSpatialRebuild = false;
+	//	[Dylan] - I Enabled this to stop the World->bInTick() crash. It doesn't blacklist all actors though. Only FGFoliageRemoval as spawning these during level stream was triggering a rebuild
+	//		Rebuilds were causing a crash in world tick as the level was still being streamed and did not flush.
+	//		Sidenote: This crash has been around for awhile with low counts. If a client joins for the first time while the server is streaming a level it will also trigger a rebuild and crash
+	bool mDisableSpatialRebuild = true;
 
 private:
 	/** Actors that are only supposed to replicate to their owning connection, but that did not have a connection on spawn */

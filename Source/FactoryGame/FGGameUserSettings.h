@@ -112,6 +112,14 @@ public:
 	UFUNCTION( BlueprintPure, Category = "FactoryGame|Settings" )
 	bool IsMotionBlurDirty() const;
 
+	UFUNCTION( BlueprintCallable, Category = "FactoryGame|Settings" )
+	void SetHZBOEnabled( bool enable );
+
+	UFUNCTION( BlueprintPure, Category = "FactoryGame|Settings" )
+	bool IsHZBOEnabled();
+
+	bool IsHZBODirty() const;
+
 	/** Returns the default quality setting value */
 	UFUNCTION( BlueprintPure, Category = "FactoryGame|Settings" )
 	int32 GetDefaultQualitySetting( FString settingName );
@@ -126,6 +134,9 @@ public:
 
 	/** Update network values in config files */
 	void RefreshNetworkQualityValues();
+
+	/** Update if a restart is required for setttings to take full effect */
+	void UpdateIsRestartRequired();
 
 	/** Is the provided setting using a custom quality setting  */
 	UFUNCTION( BlueprintPure, Category = "FactoryGame|Settings" )
@@ -175,6 +186,25 @@ public:
 	/** Clear that we require restart for setting to apply */
 	UFUNCTION( BlueprintCallable, Category="FactoryGame|Settings")
 	void ClearRequireRestart(){ mRestartRequired = false; }
+
+	/** Gets the autosave interval */
+	UFUNCTION( BlueprintPure, Category = "FactoryGame|Settings" )
+	FORCEINLINE int32 GetAutosaveInterval() { return mAutosaveInterval;  }
+
+	/** Updates the autosave interval */
+	UFUNCTION( BlueprintCallable, Category = "FactoryGame|Settings" )
+	void SetAutosaveInterval( int32 newInterval );
+
+	void ApplyAutosaveInterval();
+
+	/** Gets if we should show the take break notification */
+	UFUNCTION( BlueprintPure, Category = "FactoryGame|Settings" )
+	FORCEINLINE bool GetShowBreakNotification() { return mShowBreakNotification; }
+
+	/** Sets if we should show the take break notification */
+	UFUNCTION( BlueprintCallable, Category = "FactoryGame|Settings" )
+	void SetShowBreakNotification( bool enabled );
+
 private:
 	void UpdateFoliageQualityChanges();
 public:
@@ -194,6 +224,10 @@ protected:
 	/** Motion blur quality. 0 = off */
 	UPROPERTY( Config )
 	int32 mMotionBlurQuality;
+
+	/** Is HZBO enabled */
+	UPROPERTY( Config )
+	bool mHZBOEnabled;
 
 	/** List of remapped key Mappings */
 	UPROPERTY( config, EditAnywhere, Category = "Bindings" )
@@ -232,8 +266,17 @@ protected:
 	/** If true, then we require a restart to properly apply the settings */
 	uint8 mRestartRequired:1;
 
+	/** How often in seconds to autosave */
+	UPROPERTY( Config )
+	int32 mAutosaveInterval;
+
+	/** Whether or not we should show the take break notification */
+	UPROPERTY( Config )
+	bool mShowBreakNotification;
+
 private:
 	static const FString MOTION_BLUR_QUALITY;
+	static const FString HZBO_SETTING;
 	static const TMap<FString, int32> NETWORK_QUALITY_CONFIG_MAPPINGS;
 };
 

@@ -36,7 +36,7 @@ void AFGBuildableSubsystem::setColorSlotPrimary( uint8 index, FColor color){ }
 void AFGBuildableSubsystem::setColorSlotSecondary( uint8 index, FColor color){ }
 FColor AFGBuildableSubsystem::getColorSlotPrimary( uint8 index){ return FColor(); }
 FColor AFGBuildableSubsystem::getColorSlotSecondary( uint8 index){ return FColor(); }
-FLinearColor AFGBuildableSubsystem::getColorSlotPrimaryLinear( uint8 index){ return FLinearColor(); }
-FLinearColor AFGBuildableSubsystem::getColorSlotSecondaryLinear( uint8 index){ return FLinearColor(); }
+FLinearColor AFGBuildableSubsystem::GetColorSlotPrimaryLinear( uint8 index){ return FLinearColor(); }
+FLinearColor AFGBuildableSubsystem::GetColorSlotSecondaryLinear( uint8 index){ return FLinearColor(); }
 UFGColoredInstanceManager* AFGBuildableSubsystem::GetColoredInstanceManager(  UFGColoredInstanceMeshProxy* proxy){ return nullptr; }
 bool AFGBuildableSubsystem::IsBasedOn( const UMaterialInterface* instance, const UMaterial* base){ return bool(); }

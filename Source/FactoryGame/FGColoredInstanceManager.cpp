@@ -11,4 +11,4 @@ void UFGColoredInstanceManager::RemoveInstance( InstanceHandle& handle){ }
 void UFGColoredInstanceManager::MoveInstance( const FTransform& transform, InstanceHandle& handle, uint8 newColorIndex){ }
 void UFGColoredInstanceManager::SetupInstanceLists( UStaticMesh* staticMesh, bool makeCingleColor ){ }
 void UFGColoredInstanceManager::UpdateMaterialColors(){ }
-UHierarchicalInstancedStaticMeshComponent* UFGColoredInstanceManager::getHirachricalMesh( uint8 colorIndex){ return nullptr; }
+UHierarchicalInstancedStaticMeshComponent* UFGColoredInstanceManager::GetHierarchicalMesh( uint8 colorIndex){ return nullptr; }

@@ -13,3 +13,4 @@ float UFGBuildingDescriptor::GetPowerConsumption( TSubclassOf< UFGBuildingDescri
 float UFGBuildingDescriptor::GetPowerProduction( TSubclassOf< UFGBuildingDescriptor > inClass){ return float(); }
 FText UFGBuildingDescriptor::GetItemNameInternal() const{ return FText(); }
 FText UFGBuildingDescriptor::GetItemDescriptionInternal() const{ return FText(); }
+FText UFGBuildingDescriptor::mOverrideDisplayNameAndDescription = FText();

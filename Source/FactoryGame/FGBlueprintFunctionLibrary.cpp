@@ -13,6 +13,7 @@ FString UFGBlueprintFunctionLibrary::GetLanguage(){ return FString(); }
 bool UFGBlueprintFunctionLibrary::IsEditorWorld(  UObject* worldContext){ return bool(); }
 bool UFGBlueprintFunctionLibrary::IsGameWorld(  UObject* worldContext){ return bool(); }
 float UFGBlueprintFunctionLibrary::LogX( float base, float value){ return float(); }
+float UFGBlueprintFunctionLibrary::RoundFloatWithPrecision( float value, int32 MaximumFractionalDigits){ return float(); }
 FName UFGBlueprintFunctionLibrary::GetComponentFlagSoftLanding(){ return FName(); }
 bool UFGBlueprintFunctionLibrary::IsInAlwaysLoadedLevel( AActor* actor){ return bool(); }
 UFGSignificanceManager* UFGBlueprintFunctionLibrary::GetSignificanceManager( UWorld* InWorld){ return nullptr; }
@@ -39,6 +40,8 @@ void UFGBlueprintFunctionLibrary::GetAvailableRecipesInCategory( UObject* worldC
 void UFGBlueprintFunctionLibrary::GetAvailableRecipesInSubCategory( UObject* worldContext, TSubclassOf< UFGBuildSubCategory > subCategory, UPARAM( ref ) TArray< TSubclassOf<  UFGRecipe > >& out_recipes){ }
 void UFGBlueprintFunctionLibrary::GetAvailableSubCategoriesForCategory( UObject* worldContext, TSubclassOf< UFGBuildCategory > buildCategory, UPARAM( ref ) TArray< TSubclassOf<  UFGBuildSubCategory > >& out_subCategories){ }
 void UFGBlueprintFunctionLibrary::GetAllWidgetsOfClassInHierarchy( UWidget* hierarchyContext, TSubclassOf< UWidget > widgetClass, TArray< UWidget* >& foundWidgets){ }
+TArray< TSubclassOf< class UFGItemDescriptor > > UFGBlueprintFunctionLibrary::GetAllItemsInCategory( UObject* worldContext, TSubclassOf< UFGItemCategory > itemCategory){ return TArray<TSubclassOf<class UFGItemDescriptor> >(); }
+TArray< TSubclassOf< class UFGItemCategory > > UFGBlueprintFunctionLibrary::GetCategoriesWithAffordableRecipes( AFGCharacterPlayer* playerPawn, TSubclassOf< UObject > forProducer){ return TArray<TSubclassOf<class UFGItemCategory> >(); }
 bool UFGBlueprintFunctionLibrary::IsLocationNearABase( const UObject* worldContext, FVector inLocation, float closeDistance ){ return bool(); }
 void UFGBlueprintFunctionLibrary::CreateSessionAndTravelToMap( APlayerController* player, const FString& mapName, const FString& options, const FString& sessionName, TEnumAsByte<ESessionVisibility> sessionVisibility){ }
 void UFGBlueprintFunctionLibrary::TravelToMainMenu( APlayerController* playerController){ }

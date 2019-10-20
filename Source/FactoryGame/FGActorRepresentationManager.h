@@ -16,6 +16,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam( FOnActorRepresentationRemoved, UFGA
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam( FOnActorRepresentationUpdated, UFGActorRepresentation*, updatedRepresentation );
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams( FOnActorRepresentationUpdatedCompassShow, UFGActorRepresentation*, updatedRepresentation, bool, newShouldShowInCompass );
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams( FOnActorRepresentationUpdatedMapShow, UFGActorRepresentation*, updatedRepresentation, bool, newShouldShowOnMap );
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams( FOnActorRepresentationTypeFilteredOnMap, ERepresentationType, representationType, bool, visible );
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams( FOnActorRepresentationTypeFilteredOnCompass, ERepresentationType, representationType, bool, visible );
 
 /**
  * This class manages all the representations of actors that are used in the compass and on the map.
@@ -62,6 +64,31 @@ public:
 	/** Debug */
 	void DumpActorRepresentations();
 
+	/** Set if representation type should be visible on map */
+	UFUNCTION( BlueprintCallable, Category = "Filtering" )
+	void SetMapRepresentationTypeFilter( class APawn* owningPlayerPawn, ERepresentationType type, bool visible );
+
+	/** Set if representation type should be visible on compass */
+	UFUNCTION( BlueprintCallable, Category = "Filtering" )
+	void SetCompassRepresentationTypeFilter( class APawn* owningPlayerPawn, ERepresentationType type, bool visible );
+
+	/** Returns true if representation type is visible on map */
+	UFUNCTION( BlueprintCallable, Category = "Filtering" )
+	bool GetMapRepresentationTypeFilter( class APawn* owningPlayerPawn, ERepresentationType type );
+
+	/** Returns true if representation type is visible on compass */
+	UFUNCTION( BlueprintCallable, Category = "Filtering" )
+	bool GetCompassRepresentationTypeFilter( class APawn* owningPlayerPawn, ERepresentationType type );
+
+	/** Sets the actor representations view distance on compass */
+	UFUNCTION( BlueprintCallable, Category = "Filtering" )
+	void SetCompassViewDistanceForActorRepresentation( UFGActorRepresentation* actorRepresentation, ECompassViewDistance viewDistance );
+
+	AActor* GetRealActorFromActorRepresentation( UFGActorRepresentation* actorRepresentation );
+
+	UFUNCTION( BlueprintPure, Category = "Filtering" )
+	float GetDistanceValueFromCompassViewDistance( ECompassViewDistance compassViewDistance );
+
 protected:
 	// Begin AActor interface
 	virtual void Tick( float dt ) override;
@@ -91,6 +118,14 @@ public:
 	/** Called whenever a new representation changes it's show value for the maps */
 	UPROPERTY( BlueprintAssignable, Category = "Representation" )
 	FOnActorRepresentationUpdatedMapShow mOnActorRepresentationUpdatedMapShow;
+	
+	/** Called whenever a representation type changes it's filter status on the map */
+	UPROPERTY( BlueprintAssignable, Category = "Representation" )
+	FOnActorRepresentationTypeFilteredOnMap mOnActorRepresentationTypeFilteredOnMap;
+
+	/** Called whenever a representation type changes it's filter status on the compass */
+	UPROPERTY( BlueprintAssignable, Category = "Representation" )
+	FOnActorRepresentationTypeFilteredOnCompass mOnActorRepresentationTypeFilteredOnCompass;
 
 private:
 	/** These are all the representations of actors that should replicate from server to clients */

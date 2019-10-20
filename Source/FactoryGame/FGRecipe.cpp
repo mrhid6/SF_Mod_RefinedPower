@@ -10,3 +10,4 @@ TArray< TSubclassOf< UObject > > UFGRecipe::GetProducedIn( TSubclassOf< UFGRecip
 void UFGRecipe::SortByName( UPARAM(ref) TArray< TSubclassOf< UFGRecipe > >& recipes){ }
 void UFGRecipe::GetProducedIn( TArray< TSubclassOf< UObject > >& out_producedIn) const{ }
 FText UFGRecipe::GetDisplayName() const{ return FText(); }
+bool UFGRecipe::IsRecipeAffordable(  AFGCharacterPlayer* player, TSubclassOf<  UFGRecipe > recipe){ return bool(); }

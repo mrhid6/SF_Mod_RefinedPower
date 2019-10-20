@@ -1,6 +1,8 @@
 // Copyright 2016 Coffee Stain Studios. All Rights Reserved.
 
 #pragma once
+#include "Array.h"
+#include "Curves/CurveFloat.h"
 #include "UnrealString.h"
 #include "UObject/Class.h"
 
@@ -89,12 +91,12 @@ class FACTORYGAME_API UFGLocomotiveMovementComponent : public UFGRailroadVehicle
 {
 	// MODDING EDIT
 	GENERATED_BODY()
-	UFGLocomotiveMovementComponent(const class FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {}
+	UFGLocomotiveMovementComponent(const class FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {}	
 public:
 	// Begin UActorComponent Interface
 	virtual void TickComponent( float dt, enum ELevelTick tickType, FActorComponentTickFunction *thisTickFunction ) override;
 	// End UActorComponent Interface
-
+	
 	virtual void GetLifetimeReplicatedProps(class TArray<class FLifetimeProperty, class FDefaultAllocator> & OutReplicatedProps) const override; // MODDING EDIT
 
 	//~ Begin UFGRailroadVehicleMovementComponent interface

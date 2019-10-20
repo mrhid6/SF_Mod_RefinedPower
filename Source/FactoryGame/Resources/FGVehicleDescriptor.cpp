@@ -11,3 +11,4 @@ void UFGVehicleDescriptor::PostLoad(){ Super::PostLoad(); }
 TSubclassOf< class AFGVehicle > UFGVehicleDescriptor::GetVehicleClass( TSubclassOf< UFGVehicleDescriptor > inClass){ return TSubclassOf<class AFGVehicle>(); }
 FText UFGVehicleDescriptor::GetItemNameInternal() const{ return FText(); }
 FText UFGVehicleDescriptor::GetItemDescriptionInternal() const{ return FText(); }
+FText UFGVehicleDescriptor::mOverrideDisplayNameAndDescription = FText();

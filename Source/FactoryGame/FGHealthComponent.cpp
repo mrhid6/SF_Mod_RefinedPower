@@ -7,7 +7,7 @@ void UFGHealthComponent::PostEditChangeProperty( FPropertyChangedEvent& Property
 #endif 
 void UFGHealthComponent::BeginPlay(){ }
 void UFGHealthComponent::PostLoad(){ Super::PostLoad(); }
-void UFGHealthComponent::GetLifetimeReplicatedProps(class TArray<class FLifetimeProperty, class FDefaultAllocator> & OutReplicatedProps) const{ }
+void UFGHealthComponent::GetLifetimeReplicatedProps( TArray<class FLifetimeProperty,  FDefaultAllocator> & OutReplicatedProps) const{ }
 void UFGHealthComponent::PreSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void UFGHealthComponent::PostSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void UFGHealthComponent::PreLoadGame_Implementation( int32 saveVersion, int32 gameVersion){ }

@@ -34,7 +34,7 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void instantiateInternal();
+	void InstantiateInternal();
 
 	UPROPERTY( EditDefaultsOnly )
 	bool mCanBecolored = true;
@@ -43,15 +43,14 @@ public:
 
 	void SetInstanced( bool setToInstanced );
 
+protected:
+	virtual void CreateRenderState_Concurrent() override;
+
+	virtual void OnHiddenInGameChanged() override;
+
 private:
 	/** The outer factory we should display the state for. */
 	//class AFGBuildableFactory* mOuterFactory; //[DavalliusA:Sat/23-02-2019] consider fetching tihs to be able to read color slot from it... but we only need that in rare cases, so it's probably not worth keeping
 
-
-protected:
-	virtual void CreateRenderState_Concurrent() override;
-
-
-	virtual void OnHiddenInGameChanged() override;
 
 };

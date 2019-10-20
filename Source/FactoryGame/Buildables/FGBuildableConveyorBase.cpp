@@ -21,6 +21,8 @@ void AFGBuildableConveyorBase::Serialize( FArchive& ar){ Super::Serialize(ar ); 
 void AFGBuildableConveyorBase::Tick( float dt){ }
 void AFGBuildableConveyorBase::PostLoadGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 uint8 AFGBuildableConveyorBase::MaxNumGrab( float dt) const{ return uint8(); }
+void AFGBuildableConveyorBase::GainedSignificance_Implementation(){ }
+void AFGBuildableConveyorBase::LostSignificance_Implementation(){ }
 void AFGBuildableConveyorBase::PreReplication( IRepChangedPropertyTracker& ChangedPropertyTracker){ }
 void AFGBuildableConveyorBase::Factory_Tick( float deltaTime){ }
 bool AFGBuildableConveyorBase::Factory_PeekOutput_Implementation( const  UFGFactoryConnectionComponent* connection, TArray< FInventoryItem >& out_items, TSubclassOf< UFGItemDescriptor > type) const{ return bool(); }

@@ -15,6 +15,7 @@ void AFGPlayerState::PostLoadGame_Implementation( int32 saveVersion, int32 gameV
 void AFGPlayerState::GatherDependencies_Implementation( TArray< UObject* >& out_dependentObjects){ }
 bool AFGPlayerState::NeedTransform_Implementation(){ return bool(); }
 bool AFGPlayerState::ShouldSave_Implementation() const{ return bool(); }
+void AFGPlayerState::SetSlotData( FSlotData slotData){ }
 FString AFGPlayerState::GetUserName(){ return FString(); }
 FString AFGPlayerState::GetUserID(){ return FString(); }
 FUniqueNetIdRepl AFGPlayerState::GetUniqeNetId(){ return FUniqueNetIdRepl(); }
@@ -33,4 +34,17 @@ void AFGPlayerState::RemoveRecipe( TSubclassOf< UFGRecipe > recipe){ }
 void AFGPlayerState::Server_RemoveRecipe_Implementation( TSubclassOf< UFGRecipe > recipe){ }
 bool AFGPlayerState::Server_RemoveRecipe_Validate( TSubclassOf< UFGRecipe > recipe){ return bool(); }
 void AFGPlayerState::AddArmSlots( int32 slotsToAdd){ }
+void AFGPlayerState::SetOnlyShowAffordableRecipes( bool enabled){ }
+void AFGPlayerState::Server_SetOnlyShowAffordableRecipes_Implementation( bool enabled){ }
+bool AFGPlayerState::Server_SetOnlyShowAffordableRecipes_Validate( bool enabled){ return bool(); }
+void AFGPlayerState::SetItemCategoryCollapsed( TSubclassOf<  UFGItemCategory > itemCategory, bool collapsed){ }
+void AFGPlayerState::Server_SetItemCategoryCollapsed_Implementation( TSubclassOf<  UFGItemCategory > itemCategory, bool collapsed){ }
+bool AFGPlayerState::Server_SetItemCategoryCollapsed_Validate( TSubclassOf<  UFGItemCategory > itemCategory, bool collapsed){ return bool(); }
+void AFGPlayerState::SetMapFilter( ERepresentationType representationType, bool visible){ }
+void AFGPlayerState::Server_SetMapFilter_Implementation( ERepresentationType representationType, bool visible){ }
+bool AFGPlayerState::Server_SetMapFilter_Validate( ERepresentationType representationType, bool visible){ return bool(); }
+void AFGPlayerState::SetCompassFilter( ERepresentationType representationType, bool visible){ }
+void AFGPlayerState::Server_SetCompassFilter_Implementation( ERepresentationType representationType, bool visible){ }
+bool AFGPlayerState::Server_SetCompassFilter_Validate( ERepresentationType representationType, bool visible){ return bool(); }
+void AFGPlayerState::UpdateOwningPawnActorRepresentation() const{ }
 void AFGPlayerState::OnRep_HotbarShortcuts(){ }

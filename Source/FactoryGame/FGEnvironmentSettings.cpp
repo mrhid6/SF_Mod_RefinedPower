@@ -6,3 +6,5 @@
 void UFGEnvironmentSettings::PostEditChangeProperty(  FPropertyChangedEvent& propertyChangedEvent){ }
 #endif 
 UMaterialParameterCollection* UFGEnvironmentSettings::GetWorldBoundsParameters(){ return nullptr; }
+FName UFGEnvironmentSettings::WorldBoundsMinName = FName();
+FName UFGEnvironmentSettings::WorldBoundsExtentName = FName();

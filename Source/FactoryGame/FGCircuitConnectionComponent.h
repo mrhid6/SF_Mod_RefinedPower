@@ -152,6 +152,7 @@ private:
 	UPROPERTY( VisibleAnywhere, SaveGame, Replicated, Category = "Connection" )
 	TArray< AFGBuildableWire* > mWires;
 
+	//@todo redundant SaveGame here as it's overwritten in PostLoad
 	/** The wired connections to this. */
 	UPROPERTY( VisibleAnywhere, SaveGame, Replicated, Category = "Connection" )
 	uint8 mNbWiresConnected = 0;

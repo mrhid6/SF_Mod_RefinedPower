@@ -170,6 +170,10 @@ public:
 	/** Debug */
 	virtual void DisplayDebug( class UCanvas* canvas, const class FDebugDisplayInfo& debugDisplay, float& YL, float& YPos ) override;
 
+	/** Called when the name of the train this locomotive is part of has changed name */
+	UFUNCTION( BlueprintImplementableEvent, BlueprintCallable, Category = "FactoryGame|Railroad|Locomotive" )
+	void OnNameChanged();
+
 private:
 	UFUNCTION()
 	void OnRep_ReplicatedMovementTransform()

@@ -21,91 +21,147 @@ class FACTORYGAME_API UFGCheatManager : public UCheatManager
 public:
 	virtual void InitCheatManager() override;
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, Category = "Resources" )
 	virtual void NoCost( bool enabled );
 
-	UFUNCTION( exec)
+	UFUNCTION( exec )
+	virtual bool NoCost_Get();
+
+	UFUNCTION( exec, Category = "Resources" )
 	virtual void NoPower( bool enabled );
 
 	UFUNCTION( exec)
+		virtual bool NoPower_Get();
+
+	UFUNCTION( exec, Category = "GUI" )
+	virtual void NoMessages( bool enabled );
+
+	UFUNCTION( exec )
+	virtual bool NoMessages_Get();
+
+	UFUNCTION( exec, Category = "World/Time" )
 	virtual void TurboMode( bool enabled );
 
-	UFUNCTION( exec)
-	virtual void GiveItem( TSubclassOf< class UFGItemDescriptor > resource, int32 amount );
+	UFUNCTION( exec, Category = "World/Time" )
+	virtual bool TurboMode_Get();
+
+	UFUNCTION( exec, Category = "Resources:-2", meta = ( ToolTip="Give the number of full item stacks specified. Will expand inventory if needed. Becareful with too high numbers.") )
+	virtual void GiveItemStacks( TSubclassOf< class UFGItemDescriptor > resource, int32 NumberOfStacks );
+
+	UFUNCTION( exec, Category = "Resources:-1", meta = ( ToolTip="Give the number of items specified." ))
+	virtual void GiveItemsSingle( TSubclassOf< class UFGItemDescriptor > resource, int32 NumberOfItems );
+
+
+	
+
+	UFUNCTION( exec, Category = "Player/Camera" )
+	virtual void PlayerFly( bool flyModeEnabled );
+	UFUNCTION( exec, Category = "Player/Camera" )
+	virtual bool PlayerFly_Get();
+
+	UFUNCTION( exec, Category = "Player/Camera" )
+	virtual void PlayerNoClipModeOnFly( bool gohstMode );
+	UFUNCTION( exec, Category = "Player/Camera" )
+	virtual bool PlayerNoClipModeOnFly_Get();
+	
 
 	UFUNCTION( exec )
 	virtual void ClearGiveItemPopularList();
 	
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Research" )
 	virtual void GiefALLSchematics();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Research" )
 	void GiefAllSchematicsAndPhases();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Research" )
 	virtual void GiefAvailableSchematics();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Research" )
 	virtual void GiefCheatSchematics();
 
 	UFUNCTION( exec)
 	virtual void GiefStorySchematics();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Research" )
 	void GiefStartingResearch();
 	
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Factory|Uncommon" )
 	virtual void RebuildPowerCircuits();
-	
-	UFUNCTION( exec )
+
+	UFUNCTION( exec, category = "Factory|Uncommon" )
 	void EnableBuildableTick( bool enable );
 
+	UFUNCTION( exec, category = "Factory|Uncommon" )
+	bool EnableBuildableTick_Get();
+
 	/** Cheat for disabling the players fov override if we want to get the fov from cameras in world */
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Player/Camera" )
 	void EnablePlayerFOV( bool enable );
+
+	UFUNCTION( exec, category = "Player/Camera" )
+	bool EnablePlayerFOV_Get();
 	
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Player/Camera|test category" )
 	void DestroyPawn();
 
 	UFUNCTION( exec )
 	void RemoveAllFoliage( int32 maxNumInstances = 999999 );
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Player/Camera" )
 	virtual void PardonAllPlayers();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Player/Camera" )
 	virtual void ClearPardon();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "World/Time" )
 	void SetTimeOfDay( int32 hour, int32 minute = 0 );
 
+	UFUNCTION( exec, category = "World/Time" )
+	int32 SetTimeOfDay_hour_Get();
+
+	UFUNCTION( exec, category = "World/Time" )
+	int32 SetTimeOfDay_minute_Get();
+
 	/** Hide everything except the factory */
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Display" )
 	void ShowFactoryOnly( bool environmentHidden );
 
+	UFUNCTION( exec, category = "Display" )
+	bool ShowFactoryOnly_Get();
+
 	/** Hide everything the factory */
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Display" )
 	void HideFactoryOnly( bool factoryHidden );
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Display" )
+	bool HideFactoryOnly_Get();
+	
+	UFUNCTION( exec, category = "Log" )
 	void DumpAllAvailableRecipes();
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Audio" )
+	void EnableAudioDebug(bool isEnabled);
+
+	UFUNCTION( exec, category = "Audio" )
 	void ToggleAudioDebug();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "World/Time" )
 	void SetSlomo( float slomo );
 
 	UFUNCTION( exec )
 	void OpenModMap();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "GUI" )
 	void PumpiMode( bool enable );
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "GUI" )
+	bool PumpiMode_Get();
+	
+	UFUNCTION( exec, category = "Factory" )
 	void SplitAllConveyors();
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Factory" )
 	void MergeAllConveyors();
 
 	UFUNCTION( exec) 
@@ -115,41 +171,44 @@ public:
 	void SetFactoryDetailReplication( bool enable );
 
 	UFUNCTION( exec )
+	bool SetFactoryDetailReplication_Get();
+
+	UFUNCTION( exec, category = "Factory" )
 	void ResetFuses();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Player/Camera" )
 	void ToggleCameraMode();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Log" )
 	void DumpFactoryStatsToLog();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Research" )
 	void GiefSchematicsOfTier( int32 tier );
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Research" )
 	void SetGamePhase( EGamePhase phase );
 
 	UFUNCTION( exec )
 	void TestSharedInventoryPtr();
 
 	/** Forces active spawners to spawn creatures even if the creature isn't set to spawn yet ( because of day/night restrictions etc ) */
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "World/Time" )
 	void ForceSpawnCreatures();
 
-	UFUNCTION( exec )
+	UFUNCTION( exec ,category = "Log" )
 	void DumpNonDormantActors();
 
-	UFUNCTION( exec)
+	UFUNCTION( exec, category = "Audio" )
 	void ToggleAudioLandingDebug();
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Log" )
 	void DumpAttachedToSkelMesh( bool detailed = false );
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Log" )
 	void DumpTicking( bool detailed = false );
 	
 	/** Dump all GPU particles systems that's available */
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Log" )
 	void DumpActiveGPUParticles();
 
 	/** Starts replaying buildeffects */
@@ -157,11 +216,14 @@ public:
 	void ReplayBuildingEffects();
 
 	/** Sets visibility on all buildings */
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Display" )
 	void HideAllBuildings( bool inVisibility );
 
+	UFUNCTION( exec, category = "Display" )
+	bool HideAllBuildings_Get();
+
 	/** Randomize building color slot color */
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Factory" )
 	void RandomizeBuildingsColorSlot( uint8 slotIndex = 0);
 
 	UFUNCTION( exec )
@@ -170,37 +232,40 @@ public:
 	UFUNCTION( exec )
 	void VisitAllMapAreas();
 
-	UFUNCTION( exec ) 
+	UFUNCTION( exec, category = "World/Time" )
 	void SetAITickDistance( float distance );
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Log" )
 	void DumpPlayerStates();
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Display" )
 	void EnableInstancingOnFactory( bool enabled );
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Log" )
 	void DumpActorRepresentations();
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Log" )
+	void DumpSignificanceManagedObjects();
+
+	UFUNCTION( exec, category = "Save/Load" )
 	void PurgeInactiveClientsFromSave( bool fetchInventories );
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Save/Load" )
 	void PurgeAllBeaconsFromSave();
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Log" )
 	void ListItemPickups();
 
-	UFUNCTION( exec ) 
+	UFUNCTION( exec, category = "Research" )
 	void SetTradingPostLevel( int32 inLevel );
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Log" )
 	void ListUnlockedRecipesAndSchematics();
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Save/Load" )
 	void SaveWithNewSessionName( const FString& saveName, const FString& sessionName );
 
-	UFUNCTION( exec ) 
+	UFUNCTION( exec, category = "Log" )
 	void GetVehicleInfo();
 
 	UFUNCTION( exec )
@@ -245,7 +310,10 @@ public:
 	UFUNCTION( exec )
 	void ResetSchematics();
 
-	UFUNCTION( exec )
+	UFUNCTION( exec, category = "Research" )
+	void ResetRecipes();
+
+	UFUNCTION( exec, category = "Log" )
 	void DumpSchematics();
 
 	UFUNCTION( exec )
@@ -271,6 +339,12 @@ public:
 
 	UFUNCTION( exec )
 	void PurgeAllTrainState();
+
+	UFUNCTION( exec )
+	void ResetAllFactoryLegsToZero( bool repopulateEmptyLegs );
+
+	UFUNCTION( exec )
+	void RebuildFactoryLegsOneTileAroundPlayer();
 
 public:
 	/** This is used to make picking the same classes in the cheat board easier */

@@ -99,7 +99,8 @@ public:
 
 	// Begin AActor Interface
 	virtual void PostActorCreated() override;
-	virtual void PostInitializeComponents() override;
+	//MODDING EDIT PostInitialize crashed  when creating a blueprint child
+	//virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay( const EEndPlayReason::Type endPlayReason ) override;
 	virtual void Tick( float deltaTime ) override;
@@ -415,6 +416,22 @@ public:
 	/** Sets an amount of radiation */
 	UFUNCTION( BlueprintCallable, Category = "Radiation" )
 	void SetRadiationImmunity( float newImmunity );
+
+
+	//Cheats
+	virtual void ClientCheatFly_Implementation() override;
+	virtual void CheatJump();
+	virtual void StopCheatJump();
+	virtual void CheatCrouch();
+	virtual void StopCheatCrouch();
+	virtual void CheatToggleGhostFly();
+	virtual void CheatToggleGhostFly( bool ghostModeActive );
+	virtual bool CheatToggleGhostFlyIsActive();
+	virtual bool CheatToggleFlyModeIsActive();
+	virtual void CheatToggleFlyMode();
+	virtual void CheatTeleport();
+	//End cheats
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent( class UInputComponent* InputComponent ) override;
@@ -914,4 +931,5 @@ private:
 	/** Are we in a radioactive zone */
 	UPROPERTY( ReplicatedUsing=OnRep_InRadioActiveZone )
 	bool mInRadioactiveZone;
+
 };

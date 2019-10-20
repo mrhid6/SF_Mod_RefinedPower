@@ -23,5 +23,5 @@ void AFGBuildableTradingPost::OnBuildEffectFinished(){ }
 void AFGBuildableTradingPost::TogglePendingDismantleMaterial( bool enabled){ }
 void AFGBuildableTradingPost::AdjustPlayerSpawnsToGround(){ }
 AFGSchematicManager* AFGBuildableTradingPost::GetSchematicManager(){ return nullptr; }
-void AFGBuildableTradingPost::OnRep_NeedPlayingBuildEffect(){ }
 TArray<AActor*> AFGBuildableTradingPost::GetAllActiveSubBuildings(){ return TArray<AActor*>(); }
+void AFGBuildableTradingPost::OnRep_NeedPlayingBuildEffect(){ }

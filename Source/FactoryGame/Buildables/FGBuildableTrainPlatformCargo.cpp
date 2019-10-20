@@ -36,3 +36,5 @@ void AFGBuildableTrainPlatformCargo::SwapCargoContainerVisibility(){ }
 void AFGBuildableTrainPlatformCargo::HidePlatformCargoContainer(){ }
 void AFGBuildableTrainPlatformCargo::ShowPlatformCargoContainer(){ }
 void AFGBuildableTrainPlatformCargo::OnCargoPowerStateChanged( bool hasPower){ }
+FName AFGBuildableTrainPlatformCargo::mMagicBoxComponentName = FName();
+FName AFGBuildableTrainPlatformCargo::mCargoMeshComponentName = FName();

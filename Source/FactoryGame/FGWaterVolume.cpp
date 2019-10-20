@@ -13,7 +13,7 @@ void AFGWaterVolume::BeginPlay(){ }
 void AFGWaterVolume::EndPlay( const EEndPlayReason::Type endPlayReason){ }
 bool AFGWaterVolume::IsOverlapInVolume( const  USceneComponent& testComponent) const{ return bool(); }
 void AFGWaterVolume::GainedSignificance_Implementation(){ }
-	void AFGWaterVolume::LostSignificance_Implementation(){ }
+void AFGWaterVolume::LostSignificance_Implementation(){ }
 float AFGWaterVolume::GetSignificanceRange(){ return float(); }
 void AFGWaterVolume::SetCameraIsInside( bool cameraInside, FVector cameraLocation,  AFGPlayerController* PC){ }
 const UFGWaterAudio* AFGWaterVolume::GetAudioSettings() const{ return nullptr; }

@@ -8,6 +8,7 @@ void AFGBuildableTrainPlatform::PreSaveGame_Implementation( int32 saveVersion, i
 void AFGBuildableTrainPlatform::PostLoadGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 bool AFGBuildableTrainPlatform::CanDismantle_Implementation() const{ return bool(); }
 void AFGBuildableTrainPlatform::Dismantle_Implementation(){ }
+void AFGBuildableTrainPlatform::GetDismantleRefund_Implementation( TArray< FInventoryStack >& out_refund) const{ }
 bool AFGBuildableTrainPlatform::IsUseable_Implementation() const{ return bool(); }
 AFGBuildableTrainPlatform* AFGBuildableTrainPlatform::GetConnectedPlatformInDirectionOf( uint8 direction){ return nullptr; }
 void AFGBuildableTrainPlatform::AssignChildTrackBuildable(  AFGBuildableRailroadTrack* railroadTrack){ }
@@ -16,6 +17,6 @@ TArray<class UFGTrainPlatformConnection*> AFGBuildableTrainPlatform::GetPlatform
 bool AFGBuildableTrainPlatform::ShouldRegisterOnTrack(){ return bool(); }
 void AFGBuildableTrainPlatform::ReverseConnectionDirections(){ }
 void AFGBuildableTrainPlatform::NotifyTrainDocked(  AFGRailroadVehicle* railroadVehicle,  AFGBuildableRailroadStation* initiaedByStation){ }
-	void AFGBuildableTrainPlatform::UpdateDockingSequence(){ }
+void AFGBuildableTrainPlatform::UpdateDockingSequence(){ }
 void AFGBuildableTrainPlatform::FinishDockingSequence(){ }
 void AFGBuildableTrainPlatform::OnRep_UpdateDockingStatus(){ }

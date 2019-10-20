@@ -17,3 +17,5 @@ void AFGFreightWagon::OnItemRemovedFromFreight( TSubclassOf<  UFGItemDescriptor 
 void AFGFreightWagon::InitializeInventoryComponent(){ }
 void AFGFreightWagon::BeginLaunchOverlappedCharacter(  UPrimitiveComponent* OverlappedComp,  AFGCharacterPlayer* otherCharacter){ }
 void AFGFreightWagon::EndLaunchOverlappedCharacters(){ }
+FName AFGFreightWagon::VehicleMovementComponentName = FName();
+FName AFGFreightWagon::CargoMeshComponentName = FName();

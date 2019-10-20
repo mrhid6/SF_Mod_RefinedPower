@@ -179,6 +179,11 @@ public:
 	/** Get the max number of players in a session */
 	UFUNCTION( BlueprintPure, Category="Online|Session" )
 	static int32 GetMaxNumberOfPlayers( const FBlueprintSessionResult& session );
+
+
+	UFUNCTION( BlueprintPure, Category = "Online" )
+	static bool CheckIsCompatibleVersion( const FFGOnlineSessionSettings& session );
+
 public:
 	// Native library functions
 	static void UpdateSessionFromSessionSettings( FOnlineSessionSettings& session, const FFGOnlineSessionSettings& sessionSettings );
@@ -261,4 +266,11 @@ public:
 
 	UFUNCTION( BlueprintPure, Category="Online", meta=(DisplayName = "ToText (ECachedNATType)", CompactNodeTitle = "ToText", Keywords = "NAT ToText") )
 	static FText NATTypeToText( ECachedNATType NatType );
+
+
+	UFUNCTION( BlueprintPure, Category="Online" )
+	static FString GetLocalBuildVersion();
+
+	UFUNCTION( BlueprintPure, Category = "Online" )
+	static bool CheckIsCompatibleVersion( const FFGOnlineSessionSettings& session);
 };

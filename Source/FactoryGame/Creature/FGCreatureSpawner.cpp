@@ -2,9 +2,11 @@
 
 #include "FGCreatureSpawner.h"
 
+#if WITH_EDITOR
+void AFGCreatureSpawner::PostEditMove( bool bFinished){ }
+#endif 
 AFGCreatureSpawner::AFGCreatureSpawner(){ }
 void AFGCreatureSpawner::BeginPlay(){ }
-void AFGCreatureSpawner::PostEditMove( bool bFinished){ }
 void AFGCreatureSpawner::PreSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void AFGCreatureSpawner::PostSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void AFGCreatureSpawner::PreLoadGame_Implementation( int32 saveVersion, int32 gameVersion){ }

@@ -9,3 +9,5 @@ int32 AFGConveyorAttachmentHologram::GetRotationStep() const{ return int32(); }
 void AFGConveyorAttachmentHologram::ConfigureComponents(  AFGBuildable* inBuildable) const{ }
 void AFGConveyorAttachmentHologram::CheckValidPlacement(){ }
 FVector AFGConveyorAttachmentHologram::GetGuideLinesBaseLocation(){ return FVector(); }
+FName AFGConveyorAttachmentHologram::mInputConnection1 = FName();
+FName AFGConveyorAttachmentHologram::mOutputConnection1 = FName();

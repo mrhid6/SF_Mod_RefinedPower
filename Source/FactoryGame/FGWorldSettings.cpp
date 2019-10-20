@@ -24,5 +24,5 @@ void AFGWorldSettings::PostLoadGame_Implementation( int32 saveVersion, int32 gam
 void AFGWorldSettings::GatherDependencies_Implementation( TArray< UObject* >& out_dependentObjects){ }
 bool AFGWorldSettings::NeedTransform_Implementation(){ return bool(); }
 bool AFGWorldSettings::ShouldSave_Implementation() const{ return bool(); }
-void AFGWorldSettings::OnActorSpawned( AActor* actor){ }
 void AFGWorldSettings::UpdateWorldBounds(){ }
+void AFGWorldSettings::OnActorSpawned( AActor* actor){ }

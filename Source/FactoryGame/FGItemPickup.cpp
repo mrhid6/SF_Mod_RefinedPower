@@ -14,7 +14,7 @@ void AFGItemPickup::GatherDependencies_Implementation( TArray< UObject* >& out_d
 bool AFGItemPickup::NeedTransform_Implementation(){ return bool(); }
 bool AFGItemPickup::ShouldSave_Implementation() const{ return bool(); }
 void AFGItemPickup::GainedSignificance_Implementation(){ }
-	void AFGItemPickup::LostSignificance_Implementation(){ }
+void AFGItemPickup::LostSignificance_Implementation(){ }
 void AFGItemPickup::UpdateUseState_Implementation(  AFGCharacterPlayer* byCharacter, const FVector& atLocation,  UPrimitiveComponent* componentHit, FUseState& out_useState) const{ }
 void AFGItemPickup::OnUse_Implementation(  AFGCharacterPlayer* byCharacter, const FUseState& state){ }
 void AFGItemPickup::OnUseStop_Implementation(  AFGCharacterPlayer* byCharacter, const FUseState& state){ }

@@ -15,6 +15,8 @@ bool UFGActorRepresentation::GetShouldShowOnMap() const{ return bool(); }
 EFogOfWarRevealType UFGActorRepresentation::GetFogOfWarRevealType() const{ return EFogOfWarRevealType(); }
 float UFGActorRepresentation::GetFogOfWarRevealRadius() const{ return float(); }
 void UFGActorRepresentation::SetIsOnClient( bool onClient){ }
+ECompassViewDistance UFGActorRepresentation::GetCompassViewDistance() const{ return ECompassViewDistance(); }
+void UFGActorRepresentation::SetLocalCompassViewDistance( ECompassViewDistance compassViewDistance){ }
 AFGActorRepresentationManager* UFGActorRepresentation::GetActorRepresentationManager(){ return nullptr; }
 void UFGActorRepresentation::UpdateLocation(){ }
 void UFGActorRepresentation::UpdateRotation(){ }
@@ -25,10 +27,7 @@ void UFGActorRepresentation::UpdateShouldShowInCompass(){ }
 void UFGActorRepresentation::UpdateShouldShowOnMap(){ }
 void UFGActorRepresentation::UpdateFogOfWarRevealType(){ }
 void UFGActorRepresentation::UpdateFogOfWarRevealRadius(){ }
+void UFGActorRepresentation::UpdateCompassViewDistance(){ }
 void UFGActorRepresentation::OnRep_ShouldShowInCompass(){ }
 void UFGActorRepresentation::OnRep_ShouldShowOnMap(){ }
-void UFGActorRepresentation::OnRep_RepresentationText(){ }
-void UFGActorRepresentation::OnRep_RepresentationColor(){ }
-void UFGActorRepresentation::OnRep_RepresentationTexture(){ }
-void UFGActorRepresentation::OnRep_FogOfWarRevealType(){ }
-void UFGActorRepresentation::OnRep_FogOfWarRevealRadius(){ }
+void UFGActorRepresentation::OnRep_ActorRepresentationUpdated(){ }

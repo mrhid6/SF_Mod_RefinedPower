@@ -151,6 +151,9 @@ public:
 	UFUNCTION()
 	void OnRep_GamePhase();
 
+	/** Resets the game phases to the defaults. Used for resetting progression for testing. */
+	void ResetGamePhase();
+
 protected:
 	/** Current GamePhase */
 	UPROPERTY( EditDefaultsOnly, SaveGame, ReplicatedUsing = OnRep_GamePhase, Category = "Progression" )

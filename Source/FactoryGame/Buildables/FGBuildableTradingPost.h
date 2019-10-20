@@ -82,6 +82,13 @@ protected:
 
 	/** Returns the cached schematic manager */
 	class AFGSchematicManager* GetSchematicManager();
+
+private:
+	TArray<AActor*> GetAllActiveSubBuildings();
+
+	UFUNCTION()
+	void OnRep_NeedPlayingBuildEffect();
+
 public:
 	/** Class of generators to create with the trading post */
 	UPROPERTY( EditDefaultsOnly, Category = "Trading Post" )
@@ -188,14 +195,7 @@ protected:
 	UPROPERTY( EditAnywhere )
 	USceneComponent* mWorkBenchLocation;
 
-	UFUNCTION()
-	void OnRep_NeedPlayingBuildEffect();
-
 	/** Bool to sync playing of build and upgrade effects */
 	UPROPERTY( ReplicatedUsing = OnRep_NeedPlayingBuildEffect )
-	bool mNeedPlayingBuildEffectNotification = 0;
-
-
-private:
-	TArray<AActor*> GetAllActiveSubBuildings();
+	bool mNeedPlayingBuildEffectNotification;
 };

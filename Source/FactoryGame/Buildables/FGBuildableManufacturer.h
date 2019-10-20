@@ -66,7 +66,7 @@ public:
 	 */	
 	virtual float GetProductionProgress() const override;
 
-	/** Checks whether or not this manufacturer contains any inputs. If false, this shouldn't contain an input component. */
+	/** Checks whether or not this manufacturer contains any inputs. If false, this shouldn't contain an input component. Will be null on client. */
 	FORCEINLINE bool HasAnyInputConnetions() const { return mInputConnections.Num() > 0; }
 
 	/**

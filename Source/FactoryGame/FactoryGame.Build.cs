@@ -8,11 +8,11 @@ public class FactoryGame : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PublicDependencyModuleNames.AddRange(new string[] {
+       PublicDependencyModuleNames.AddRange(new string[] {
             "Core", "CoreUObject",
             "Engine",
             "InputCore",
-            "OnlineSubsystem", "OnlineSubsystemUtils", "OnlineSubsystemNULL", "OnlineBlueprintSupport",
+            "OnlineSubsystem", "OnlineSubsystemUtils", "OnlineSubsystemNULL",
             "SignificanceManager",
             "PhysX", "APEX", "PhysXVehicles", "ApexDestruction",
             "AkAudio",
@@ -22,8 +22,9 @@ public class FactoryGame : ModuleRules
             "NavigationSystem",
             "AssetRegistry",
             "GameplayTasks",
-            "AnimGraph", "AnimGraphRuntime",
-            "Slate", "SlateCore"});
+			"AnimGraphRuntime",
+            "Slate", "SlateCore"
+			});
 
 
         PrivateDependencyModuleNames.AddRange(new string[] { });

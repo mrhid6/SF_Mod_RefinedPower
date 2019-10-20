@@ -27,6 +27,8 @@ public:
 
 protected:
 	// Begin Factory_ interface
+	virtual void Factory_Tick( float deltaTime ) override;
+	virtual void Factory_CollectInput_Implementation() override;
 	virtual bool Factory_GrabOutput_Implementation( class UFGFactoryConnectionComponent* connection, FInventoryItem& out_item, float& out_OffsetBeyond, TSubclassOf< UFGItemDescriptor > type ) override;
 	// End Factory_ interface
 private:
@@ -34,10 +36,6 @@ private:
 	UPROPERTY( SaveGame, Meta = (NoAutoJson) )
 	int32 mCurrentInputIndex;
 
-	/** Cached input connections for faster lookup. */
-	TArray< class UFGFactoryConnectionComponent* > mInputs;
-
-	/** Cached output connections for faster lookup. */
-	TArray< class UFGFactoryConnectionComponent* > mOutputs;
-
+	UPROPERTY( SaveGame, Meta = (NoAutoJson) )
+	int32 mCurrentInventoryIndex;
 };

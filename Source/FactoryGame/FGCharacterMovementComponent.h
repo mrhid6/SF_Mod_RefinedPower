@@ -36,6 +36,7 @@ public:
 	virtual void SetDefaultMovementMode() override;
 	// End UCharacterMovementComponent
 
+
 	UFUNCTION( Reliable, Server, WithValidation )
 	void ServerSetHookLocation( const FVector& hookLocation );
 
@@ -85,6 +86,10 @@ protected:
 	// End UCharacterMovementComponent
 
 	void SetOnLadder( class UFGLadderComponent* ladder );
+
+
+
+	virtual void PhysFlying( float deltaTime, int32 Iterations ) override;
 
 private:
 	/** Apply ladder climb physics */
@@ -176,6 +181,16 @@ private:
 	/** The ladder we're climbing; null if not climbing. */
 	UPROPERTY()
 	UFGLadderComponent* mOnLadder;
+
+
+	//Cheat
+	public:
+	bool mCheatIsPressingJump: 1;
+	bool mCheatIsPressingCrouch : 1;
+	bool mCheatGhost : 1;
+	float CheatFlySpeedVertical;
+	void ZeroOutFallVelocity();
+	//end Cheat
 };
 
 class FSavedMove_FGMovement : public FSavedMove_Character

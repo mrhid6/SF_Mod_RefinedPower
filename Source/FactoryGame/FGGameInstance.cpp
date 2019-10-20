@@ -18,6 +18,8 @@ void UFGGameInstance::GetFGUGC( UClass* WeaponClass, UClass* EnemyClass, UClass*
 void UFGGameInstance::Shutdown(){ }
 void UFGGameInstance::SetSkipOnboarding( bool doSkip){ }
 void UFGGameInstance::QueryNATType(){ }
+bool UFGGameInstance::GetLatestNetworkError( FFGGameNetworkErrorMsg& msg){ return bool(); }
+bool UFGGameInstance::PopLatestNetworkError(){ return bool(); }
 void UFGGameInstance::LoadComplete( const float loadTime, const FString& mapName){ }
 void UFGGameInstance::OnDestroySessionComplete_JoinInvite( FName gameSessionName, bool wasSuccessful){ }
 void UFGGameInstance::OnPreLoadMap( const FString& levelName){ }

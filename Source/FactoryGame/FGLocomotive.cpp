@@ -31,3 +31,4 @@ void AFGLocomotive::ClearSelfDrivingError(){ }
 void AFGLocomotive::SetPowerConsumption( float pct){ }
 void AFGLocomotive::SetPowerRegeneration( float pct){ }
 void AFGLocomotive::DisplayDebug(  UCanvas* canvas, const  FDebugDisplayInfo& debugDisplay, float& YL, float& YPos){ }
+FName AFGLocomotive::VehicleMovementComponentName = FName();

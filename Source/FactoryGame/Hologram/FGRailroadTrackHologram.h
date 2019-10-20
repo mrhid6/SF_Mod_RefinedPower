@@ -95,7 +95,7 @@ private:
 
 	/** All the generated spline meshes. */
 	UPROPERTY()
-	TArray< USplineMeshComponent* > mSplineMeshes;
+	TArray< class USplineMeshComponent* > mSplineMeshes;
 
 	/** This is an additional floor data for the spline data (local space). */
 	TArray< FVector > mFloorData;

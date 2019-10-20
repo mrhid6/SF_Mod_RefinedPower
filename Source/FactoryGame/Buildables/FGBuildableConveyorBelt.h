@@ -9,28 +9,14 @@
 
 #include "../FGUseableInterface.h"
 #include "FGBuildableConveyorBase.h"
+#include "Components/SplineComponent.h"
+#include "../FGSplineComponent.h"
 #include "../FGSignificanceInterface.h"
 #include "Components/SplineComponent.h"
 #include "../FSplinePointData.h"
 #include "../FGSplineComponent.h"
 #include "../FGRemoteCallObject.h"
 #include "FGBuildableConveyorBelt.generated.h"
-
-//[DavalliusA:Tue/18-06-2019] moved to base... keeping it here for now till we know it works.
-//UCLASS()
-//class UFGConveyorRemoteCallObject : public UFGRemoteCallObject
-//{
-//	GENERATED_BODY()
-//public:
-//	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty >& OutLifetimeProps ) const override;
-//
-//	/** Compact representation of mSplineComponent, used for replication and save game */
-//	UPROPERTY( Replicated, Meta = ( NoAutoJson ) )
-//	bool mForceNetField_UFGConveyorRemoteCallObject = false;
-//
-//	UFUNCTION( Reliable, Server, WithValidation, Category = "Use" )
-//	void Server_OnUse( class AFGBuildableConveyorBelt* target, class AFGCharacterPlayer* byCharacter, int32 itemIndex, int8 repVersion );
-//};
 
 /**
  * Valid state for picking up conveyor belt items.
@@ -77,7 +63,7 @@ public:
  * Assumption: Conveyors are never rotated, rotation is always 0,0,0.
  */
 UCLASS(Abstract)
-class FACTORYGAME_API AFGBuildableConveyorBelt : public AFGBuildableConveyorBase, public IFGSignificanceInterface
+class FACTORYGAME_API AFGBuildableConveyorBelt : public AFGBuildableConveyorBase
 {
 	GENERATED_BODY()
 public:
@@ -86,14 +72,8 @@ public:
 	// Begin AActor interface
 	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty >& OutLifetimeProps ) const override;
 	virtual void BeginPlay() override;
-	virtual void EndPlay( const EEndPlayReason::Type endPlayReason ) override;
 	virtual bool IsComponentRelevantForNavigation( UActorComponent* component ) const override;
 	// End AActor interface
-
-	// Begin IFGSignificanceInterface
-	virtual void GainedSignificance_Implementation() override;
-	virtual	void LostSignificance_Implementation() override;
-	// End IFGSignificanceInterface
 
 	// Begin IFGUseableInterface
 	virtual void UpdateUseState_Implementation( class AFGCharacterPlayer* byCharacter, const FVector& atLocation, class UPrimitiveComponent* componentHit, FUseState& out_useState ) const override;
@@ -104,6 +84,12 @@ public:
 	virtual void StopIsLookedAt_Implementation( class AFGCharacterPlayer* byCharacter, const FUseState& state ) override;
 	virtual FText GetLookAtDecription_Implementation( class AFGCharacterPlayer* byCharacter, const FUseState& state ) const override;
 	// End IFGUseableInterface
+
+	// Begin IFGSignificanceInterface
+	virtual void GainedSignificance_Implementation() override;
+	virtual	void LostSignificance_Implementation() override;
+	// End IFGSignificanceInterface
+
 
 	// Begin AFGBuildableConveyorBase interface
 	virtual float FindOffsetClosestToLocation( const FVector& location ) const override;
@@ -155,10 +141,6 @@ public:
 	UFUNCTION( BlueprintPure, Category = "Build" )
 	FORCEINLINE class UFGSplineComponent* GetSplineComponent() { return mSplineComponent; }
 
-
-	UFUNCTION( BlueprintPure, Category = "Significance" )
-	FORCEINLINE bool GetIsSignificant() { return mIsSignificant; }
-
 	void OnUseServerRepInput( class AFGCharacterPlayer* byCharacter, int32 itemIndex, int8 repVersion );
 protected:
 	// Begin AFGBuildableFactory interface
@@ -196,7 +178,4 @@ private:
 	/** The ak event to post for the sound spline */
 	UPROPERTY( EditDefaultsOnly, Category = "AkComponent" )
 	class UAkAudioEvent* mSplineAudioEvent;
-
-	/** Indicates if the factory is within significance distance */
-	bool mIsSignificant;
 };

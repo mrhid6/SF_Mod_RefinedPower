@@ -8,6 +8,10 @@ void UFGCompassObjectWidget::UpdatePositionInCompass(float halfWidth, FVector2D 
 void UFGCompassObjectWidget::SetActorRepresentation(  UFGActorRepresentation* actorRepresentation){ }
 void UFGCompassObjectWidget::OnCompassObjectAddedToPanel_Implementation( UCanvasPanelSlot* parentSlot){ }
 void UFGCompassObjectWidget::OnCompassObjectUpdated_Implementation(){ }
+bool UFGCompassObjectWidget::GetCompassObjectVisbility() const{ return bool(); }
+void UFGCompassObjectWidget::UpdateCompassObjectVisbility(){ }
+void UFGCompassObjectWidget::SetCompassObjectVisbility( bool visibile){ }
+void UFGCompassObjectWidget::UpdateCompassViewDistance(){ }
 float UFGCompassObjectWidget::GetRepresentationDistanceFromPlayer(){ return float(); }
 FVector UFGCompassObjectWidget::GetDirectionFromLocation( FVector location){ return FVector(); }
 float UFGCompassObjectWidget::GetAngleFromDirection( FVector direction){ return float(); }

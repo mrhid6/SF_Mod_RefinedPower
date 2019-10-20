@@ -4,7 +4,7 @@
 
 void AFGWheeledVehicle::GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps) const{ }
 AFGWheeledVehicle::AFGWheeledVehicle(){ }
-void AFGWheeledVehicle::PostInitializeComponents(){ }
+//void AFGWheeledVehicle::PostInitializeComponents(){ }
 void AFGWheeledVehicle::BeginPlay(){ }
 void AFGWheeledVehicle::Destroyed(){ }
 void AFGWheeledVehicle::Tick( float dt){ }
@@ -67,3 +67,4 @@ void AFGWheeledVehicle::ApplyRollStabilisation( float deltaTime){ }
 void AFGWheeledVehicle::ApplyAssistedVelocities( float deltaTime){ }
 void AFGWheeledVehicle::OnRep_IsSimulated(){ }
 void AFGWheeledVehicle::OnRep_TransferStatusChanged(){ }
+FName AFGWheeledVehicle::VehicleMovementComponentName = FName();

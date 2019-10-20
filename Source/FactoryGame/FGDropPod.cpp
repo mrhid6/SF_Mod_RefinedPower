@@ -8,7 +8,7 @@ void AFGDropPod::PostLoad(){ Super::PostLoad(); }
 void AFGDropPod::BeginPlay(){ }
 void AFGDropPod::EndPlay( const EEndPlayReason::Type endPlayReason){ }
 void AFGDropPod::GainedSignificance_Implementation(){ }
-	void AFGDropPod::LostSignificance_Implementation(){ }
+void AFGDropPod::LostSignificance_Implementation(){ }
 void AFGDropPod::PreSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void AFGDropPod::PostSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void AFGDropPod::PreLoadGame_Implementation( int32 saveVersion, int32 gameVersion){ }

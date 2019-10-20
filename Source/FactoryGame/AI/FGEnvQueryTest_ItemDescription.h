@@ -17,7 +17,7 @@ class FACTORYGAME_API UFGEnvQueryTest_ItemDescription : public UEnvQueryTest
 	// MODDING EDIT
 	GENERATED_BODY()
 	UFGEnvQueryTest_ItemDescription(const class FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {}
-
+	
 protected:
 	/** This is where we actually check for the ItemDescriptor class */
 	virtual void RunTest( FEnvQueryInstance& QueryInstance ) const override;

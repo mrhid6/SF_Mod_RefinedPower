@@ -10,10 +10,11 @@ void AFGBuildable::CheckForErrors(){ }
 void AFGBuildable::GetLifetimeReplicatedProps( TArray<FLifetimeProperty>& OutLifetimeProps) const{ }
 void AFGBuildable::PreReplication( IRepChangedPropertyTracker& ChangedPropertyTracker){ }
 AFGBuildable::AFGBuildable(){ 
-	RootComponent = CreateDefaultSubobject<USceneComponent>("RootComponent");
+  RootComponent = CreateDefaultSubobject<USceneComponent>("RootComponent");
 
-	mHighlightLocation = CreateDefaultSubobject<USceneComponent>(TEXT("HighlightLocation"));
-	mHighlightLocation->SetupAttachment(RootComponent);
+
+    mHighlightLocation = CreateDefaultSubobject<USceneComponent>(TEXT("HighlightLocation"));
+    mHighlightLocation->SetupAttachment(RootComponent);
 }
 void AFGBuildable::Serialize( FArchive& ar){ Super::Serialize(ar ); }
 void AFGBuildable::OnConstruction( const FTransform& transform){ }
@@ -97,3 +98,5 @@ void AFGBuildable::OnRep_SecondaryColor(){ }
 void AFGBuildable::OnRep_DidFirstTimeUse(){ }
 uint8 AFGBuildable::GetNumPowerConnections() const{ return uint8(); }
 uint8 AFGBuildable::GetNumFactoryConnections() const{ return uint8(); }
+FOnReplicationDetailActorStateChange AFGBuildable::OnBuildableReplicationDetailActorStateChange = FOnReplicationDetailActorStateChange();
+FOnRegisteredPlayerChanged AFGBuildable::OnRegisterPlayerChange = FOnRegisteredPlayerChanged();

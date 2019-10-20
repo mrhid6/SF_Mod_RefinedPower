@@ -57,11 +57,25 @@ public:
 
 	FORCEINLINE bool GetCheckForBlockingInCompass() const { return mCheckForBlockingInCompass; }
 
-	float GetRepresentationDistanceFromPlayer();
+	/** Get the last cached distance between the actor this object is representing and the player*/
+	FORCEINLINE float GetLastCachedDistanceFromPlayer() const { return LastCachedDistanceFromPlayer; }
+
 	void SetIsBlocking( bool value ) { mIsBlocking = value; }
 	
 	UFUNCTION( BlueprintPure, Category = "Compass" )
 	FORCEINLINE ERepresentationType GetRepresentationType() const { return mRepresentationType;  }
+
+	bool GetCompassObjectVisbility() const;
+
+	void UpdateCompassObjectVisbility();
+
+	UFUNCTION()
+	void SetCompassObjectVisbility( bool visibile );
+
+	void UpdateCompassViewDistance();
+
+private:
+	float GetRepresentationDistanceFromPlayer();
 
 public:
 	UPROPERTY( BlueprintReadWrite, Category = "Compass" )
@@ -110,4 +124,13 @@ private:
 	FVector2D mlastUpdatedPosition;
 
 	ERepresentationType mRepresentationType;
+
+	// If this object should be able to be visible
+	bool mCompassObjectFilteredVisibility;
+
+	/** The distance where this object should no longer be visible on the compass */
+	float mViewDistance;
+
+	/** The last cached distance between the actor this object is representing and the player*/
+	float LastCachedDistanceFromPlayer;
 };

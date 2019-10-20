@@ -24,3 +24,4 @@ bool AFGBuildableDockingStation::Factory_LoadFuel( UFGInventoryComponent* docked
 void AFGBuildableDockingStation::Factory_LoadDockedInventory( UFGInventoryComponent* dockedInventory){ }
 void AFGBuildableDockingStation::Factory_UnloadDockedInventory( UFGInventoryComponent* dockedInventory){ }
 void AFGBuildableDockingStation::LoadUnloadVehicleComplete(){ }
+FName AFGBuildableDockingStation::sFuelTag = FName();

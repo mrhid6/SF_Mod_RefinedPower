@@ -170,9 +170,9 @@ public:
 	FColor getColorSlotSecondary( uint8 index );
 
 	UFUNCTION( BlueprintCallable, Category = "FactoryGame|Factory|Customization" )
-	FLinearColor getColorSlotPrimaryLinear( uint8 index );
+	FLinearColor GetColorSlotPrimaryLinear( uint8 index );
 	UFUNCTION( BlueprintCallable, Category = "FactoryGame|Factory|Customization" )
-	FLinearColor getColorSlotSecondaryLinear( uint8 index );
+	FLinearColor GetColorSlotSecondaryLinear( uint8 index );
 
 
 	UMaterial* GetFactoryDefaultMaterial()

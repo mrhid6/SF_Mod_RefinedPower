@@ -84,9 +84,13 @@ protected:
 	UFUNCTION()
 	void OnActorRepresentationUpdated( class UFGActorRepresentation* actorRepresentation );
 
+	UFUNCTION()
+	void OnActorRepresentationFiltered( ERepresentationType type, bool visible );
+
 	FORCEINLINE float GetCompassPanelHalfWidth() { return mCompassPanel ? mCompassPanel->GetDesiredSize().X / 2.f : 0.f; };
 
 private:
+	bool IsPawnLocalPlayerControlled( APawn* pawn );
 	void CalculateCenteredResourceObjects();
 	void CalculateCenteredObject();
 

@@ -135,6 +135,10 @@ public:
 	UFUNCTION( BlueprintPure, Category = "FactoryGame|Descriptor|Item" )
 	static bool CanBeDiscarded( TSubclassOf< UFGItemDescriptor > inClass );
 
+	/** Returns the item category */
+	UFUNCTION( BlueprintPure, Category = "FactoryGame|Descriptor|Item" )
+	static TSubclassOf< UFGItemCategory > GetItemCategory( TSubclassOf< UFGItemDescriptor > inClass );
+
 #if WITH_EDITOR
 	/** Delete all icons in the game that's referenced by a FGItemDescriptor */
 	static void DeleteAllIcons();
@@ -193,7 +197,7 @@ public:
 	 * This is specified in the native constructor and is meant to be per class.
 	 * E.g. vehicle descriptors get name and description from the vehicle class so the defaults are useless.
 	 */
-	UPROPERTY( EditDefaultsOnly, Category = "Item" )
+	UPROPERTY( EditDefaultsOnly, Transient ) // MODDING EDIT
 	bool mUseDisplayNameAndDescription;
 
 	/** Readable name of the item */
@@ -249,6 +253,10 @@ protected:
 	/** The view in the build menu for this item */
 	UPROPERTY( EditDefaultsOnly, Category = "Preview", meta = ( ShowOnlyInnerProperties, NoAutoJSON = true) )
 	FItemView mPreviewView;
+
+	/** The category for this item */
+	UPROPERTY( EditDefaultsOnly, Category = "Item" )
+	TSubclassOf< class UFGItemCategory > mItemCategory;
 
 #if WITH_EDITORONLY_DATA
 	/** Internal variable used when calculating the bounds of a descriptor */

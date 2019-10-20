@@ -15,6 +15,7 @@ bool UFGSaveSession::SerializeHeader( FArchive& Ar, FSaveHeader& saveHeader){ re
 FString UFGSaveSession::SaveNameToFileName( const FString& saveName){ return FString(); }
 void UFGSaveSession::SharedInventoryPtrLoaded(  FSharedInventoryStatePtr& ptr){ }
 void UFGSaveSession::Autosave(){ }
+void UFGSaveSession::SetAutosaveInterval( int32 newInterval){ }
 void UFGSaveSession::DeleteSave( FString sessionName, int32 autosaveNum){ }
 UWorld* UFGSaveSession::GetWorld() const{ return nullptr; }
 FString UFGSaveSession::GenerateAutosaveName( int32& out_autosaveNum, FString sessionName){ return FString(); }

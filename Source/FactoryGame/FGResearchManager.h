@@ -38,6 +38,18 @@ struct FResearchCost
 		Cost = research->GetIngredients();
 	}
 
+	bool HasValidRecipe() const
+	{
+		if( ResearchRecipe && ResearchRecipe->IsValidLowLevel() )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	UPROPERTY( EditDefaultsOnly, SaveGame )
 	TSubclassOf<class UFGResearchRecipe> ResearchRecipe;
 
@@ -177,6 +189,18 @@ struct FCompletedResearch
 		if(PendingRewards.IsValidIndex(index))
 		{
 			SelectedRewardIndex = index;
+		}
+	}
+
+	bool HasValidRecipe() const
+	{
+		if( ResearchRecipe && ResearchRecipe->IsValidLowLevel() )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 

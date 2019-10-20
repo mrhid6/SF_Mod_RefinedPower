@@ -11,8 +11,8 @@ void AFGBuildableFactory::EndPlay( const EEndPlayReason::Type EndPlayReason){ }
 void AFGBuildableFactory::Tick( float dt){ }
 void AFGBuildableFactory::PreSaveGame_Implementation( int32 saveVersion, int32 gameVersion){ }
 void AFGBuildableFactory::GainedSignificance_Implementation(){ }
-	void AFGBuildableFactory::LostSignificance_Implementation(){ }
-	float AFGBuildableFactory::GetSignificanceBias(){ return float(); }
+void AFGBuildableFactory::LostSignificance_Implementation(){ }
+float AFGBuildableFactory::GetSignificanceBias(){ return float(); }
 void AFGBuildableFactory::Factory_Tick( float dt){ }
 void AFGBuildableFactory::GetDismantleRefund_Implementation( TArray< FInventoryStack >& out_refund) const{ }
 void AFGBuildableFactory::OnBuildableReplicationDetailStateChange( bool newStateIsActive){ }
@@ -50,3 +50,4 @@ void AFGBuildableFactory::OnRep_ReplicationDetailActor(){ }
 AFGReplicationDetailActor* AFGBuildableFactory::GetOrCreateReplicationDetailActor(){ return nullptr; }
 void AFGBuildableFactory::OnRep_IsProducing(){ }
 void AFGBuildableFactory::OnPotentialInventoryItemRemoved( TSubclassOf<  UFGItemDescriptor > itemClass, int32 numRemoved){ }
+EProductionStatusChange AFGBuildableFactory::OnProductionStatusChange = EProductionStatusChange();

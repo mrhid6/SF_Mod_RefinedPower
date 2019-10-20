@@ -21,3 +21,4 @@ void AFGGamePhaseManager::GetBaseCostForGamePhase( EGamePhase gamePhase, UPARAM(
 void AFGGamePhaseManager::GetCostForGamePhase( EGamePhase gamePhase, UPARAM( ref )TArray< FItemAmount >& out_cost){ }
 int32 AFGGamePhaseManager::PayOffOnGamePhase( FItemAmount payOff, EGamePhase gamePhase){ return int32(); }
 void AFGGamePhaseManager::OnRep_GamePhase(){ }
+void AFGGamePhaseManager::ResetGamePhase(){ }
