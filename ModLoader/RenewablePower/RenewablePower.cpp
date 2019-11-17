@@ -29,7 +29,7 @@ using namespace SML::Mod;
 using namespace SML::Objects;
 
 // Version of SML that this mod was compiled for.
-#define SML_VERSION "1.0.0"
+#define SML_VERSION "1.0.2"
 
 // define the mod name for easy changing and simple use
 #define MOD_NAME "RenewablePower"
@@ -47,6 +47,8 @@ using namespace SML::Objects;
 
 //log an error message to the console
 #define ERR(msg) SML::Utility::errorMod(MOD_NAME, msg)
+
+bool SML::debugOutput = false;
 
 // Config
 json config = SML::Utility::JsonConfig::load(MOD_NAME, {
@@ -75,7 +77,7 @@ Mod::Info modInfo {
 	MOD_NAME,
 
 	// Version
-	"1.1.3",
+	"1.1.6",
 
 	// Description
 	"Renewable Power Solutions",
@@ -117,12 +119,10 @@ class RenewablePower : public Mod {
 		FActorSpawnParameters spawnParams;
 		SML::Objects::UObject* modActor = (SML::Objects::UObject*)::call<&SML::Objects::UWorld::SpawnActor>((SML::Objects::UWorld*) * SDK::UWorld::GWorld, (SDK::UClass*)clazz, &position, &rotation, &spawnParams);
 
-		SML::Objects::FOutputDevice IDontEvenKnowWhatThisIs; // lel
-
 		if (config["ArcReactor"]["ParticlesEnabled"] == true) {
-			::call<&SML::Objects::UObject::CallFunctionByNameWithArguments>(modActor, L"EnableParticles", &IDontEvenKnowWhatThisIs, (SDK::UObject*)NULL, true);
+			modActor->findFunction(L"EnableParticles")->invoke(modActor, nullptr);
 		}else {
-			::call<&SML::Objects::UObject::CallFunctionByNameWithArguments>(modActor, L"DisableParticles", &IDontEvenKnowWhatThisIs, (SDK::UObject*)NULL, true);
+			modActor->findFunction(L"DisableParticles")->invoke(modActor, nullptr);
 		}
 
 		::call<&SML::Objects::AActor::Destroy>((SML::Objects::AActor*)modActor, false, true);
@@ -143,6 +143,7 @@ public:
 
 		SDK::InitSDK(); //Initialize the SDK in ExampleMod so the functions work properly
 
+		Functions::setDependsOnPak("SID_p");
 		Functions::setDependsOnPak("RenewablePower_p");
 
 		// More on namespaces:

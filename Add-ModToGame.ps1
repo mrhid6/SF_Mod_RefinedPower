@@ -5,21 +5,34 @@ $GameDir = "E:\Program Files\Epic Games\SatisfactoryEarlyAccess"
 $UnrealEngine = "E:\Program Files\Epic Games\UE_4.21\Engine"
 
 $CookUnreal = $true;
-$RunGame = $false;
+$RunGame = $true;
 
 $PakOnly = $false;
 
 
-$Version="1.1.3"
+$Version="1.1.6"
 
 $DataJson = @"
 {
   "mod_id": "$($ModId)",
   "name": "$($ModName)",
   "version": "$($Version)",
-  "sml_version": "v1.0.0",
+  "sml_version": "v1.0.2",
   "description": "Renewable Power for Satisfactory",
-  "authors": ["Mrhid6"]
+  "authors": ["Mrhid6"],
+  "objects": [
+     {
+        "type": "sml_mod",
+        "path": "$($ModName).dll"
+     },
+     {
+        "type": "pak",
+        "path": "$($ModName)_p.pak"
+     }
+  ],
+  "dependencies": {
+    "CkUs5KM9ShwVfr": "^1.0.0"
+  }
 }
 "@
 
@@ -92,8 +105,7 @@ if($PakOnly -eq $false){
     $CompressPaths = @("$($PreZipDir)\$($ModName)_p.pak", "$($PreZipDir)\$($ModName)_p.sig","$($PreZipDir)\data.json")
 }
 
-
-Compress-Archive -Path $CompressPaths -DestinationPath "$($ZipDir)\$($ModName)_$($Version).zip" -force
+& "$($ProjectDir)\7z.exe" @("a", "-r", "$($ZipDir)\$($ModName)_$($Version).zip", "$($ProjectDir)\PreZipDir\*", "x=9") | out-null
 
 [System.Media.SystemSounds]::Beep.Play()
 
