@@ -89,6 +89,12 @@ ModLoader/x64
 ModLoader/*/x64
 
 
+Source/*
+Config/*
+Plugins/*
+
+
+
 # Mod Zip Files
 ZipDir
 PreZipDir
