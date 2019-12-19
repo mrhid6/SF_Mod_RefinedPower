@@ -8,9 +8,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenewablePower", "Renewable
 		{160CF85A-4F6C-4DDA-83BF-2A7A00EE55BC} = {160CF85A-4F6C-4DDA-83BF-2A7A00EE55BC}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Detours", "SML\Detours\Detours.vcxproj", "{160CF85A-4F6C-4DDA-83BF-2A7A00EE55BC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Detours", "SML\Detours.vcxproj", "{160CF85A-4F6C-4DDA-83BF-2A7A00EE55BC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SatisfactoryModLoader", "SML\SatisfactoryModLoader\SatisfactoryModLoader.vcxproj", "{40237398-4B3F-4F7A-9A60-78683EA1693A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SatisfactoryModLoader", "SML\SatisfactoryModLoader.vcxproj", "{40237398-4B3F-4F7A-9A60-78683EA1693A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

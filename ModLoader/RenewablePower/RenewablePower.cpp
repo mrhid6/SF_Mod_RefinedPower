@@ -77,7 +77,7 @@ Mod::Info modInfo {
 	MOD_NAME,
 
 	// Version
-	"1.1.6",
+	"1.2.0",
 
 	// Description
 	"Renewable Power Solutions",
@@ -117,13 +117,23 @@ class RenewablePower : public Mod {
 		SDK::FVector position = SML::Mod::Functions::makeVector(0, 0, 0);
 		SDK::FRotator rotation = SML::Mod::Functions::makeRotator(0, 0, 0);
 		FActorSpawnParameters spawnParams;
-		SML::Objects::UObject* modActor = (SML::Objects::UObject*)::call<&SML::Objects::UWorld::SpawnActor>((SML::Objects::UWorld*) * SDK::UWorld::GWorld, (SDK::UClass*)clazz, &position, &rotation, &spawnParams);
+		SML::Objects::FOutputDevice IDontEvenKnowWhatThisIs; // lel
 
+		SML::Objects::UObject* modActor = (SML::Objects::UObject*)::call<&SML::Objects::UWorld::SpawnActor>((SML::Objects::UWorld*) * SDK::UWorld::GWorld, (SDK::UClass*)clazz, &position, &rotation, &spawnParams);
 		if (config["ArcReactor"]["ParticlesEnabled"] == true) {
-			modActor->findFunction(L"EnableParticles")->invoke(modActor, nullptr);
-		}else {
-			modActor->findFunction(L"DisableParticles")->invoke(modActor, nullptr);
+			::call<&SML::Objects::UObject::CallFunctionByNameWithArguments>(modActor, L"EnableParticles", &IDontEvenKnowWhatThisIs, (SDK::UObject*)NULL, true);
 		}
+		else {
+			::call<&SML::Objects::UObject::CallFunctionByNameWithArguments>(modActor, L"DisableParticles", &IDontEvenKnowWhatThisIs, (SDK::UObject*)NULL, true);
+		}
+
+
+		// New Stuff for SML 2.0
+		//if (config["ArcReactor"]["ParticlesEnabled"] == true) {
+		//	modActor->findFunction(L"EnableParticles")->invoke(modActor, nullptr);
+		//}else {
+		//	modActor->findFunction(L"DisableParticles")->invoke(modActor, nullptr);
+		//}
 
 		::call<&SML::Objects::AActor::Destroy>((SML::Objects::AActor*)modActor, false, true);
 

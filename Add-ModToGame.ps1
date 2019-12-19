@@ -4,13 +4,13 @@ $ModId = "DGiLzB3ZErWu2V"
 $GameDir = "E:\Program Files\Epic Games\SatisfactoryEarlyAccess"
 $UnrealEngine = "E:\Program Files\Epic Games\UE_4.21\Engine"
 
-$CookUnreal = $true;
-$RunGame = $true;
+$CookUnreal = $false;
+$RunGame = $false;
 
 $PakOnly = $false;
 
 
-$Version="1.1.6"
+$Version="1.2.0"
 
 $DataJson = @"
 {
