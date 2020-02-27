@@ -88,8 +88,6 @@ Plugins/Wwise/*
 ModLoader/x64
 ModLoader/*/x64
 
-
-Source/*
 Config/*
 Plugins/*
 
