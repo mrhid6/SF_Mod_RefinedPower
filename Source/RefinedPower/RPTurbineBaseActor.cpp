@@ -81,10 +81,13 @@ void ARPTurbineBaseActor::calcInitalNearbyTurbines() {
 	if (foundTurbines) {
 
 		for (const AActor* turbine: OutActors) {
+			const ARPTurbineBaseActor* RPTurbine = Cast<ARPTurbineBaseActor> (turbine);
 
+			if (RPTurbine->mTurbineType == ETurbineType::RP_Wind) {
+				mTurbinesInArea += 1;
+			}
 		}
 
-		mTurbinesInArea = OutActors.Num();
 		SML::Logging::info("[RefinedPower] - Turbine Count: ", mTurbinesInArea);
 	}
 	else {
