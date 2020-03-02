@@ -23,6 +23,7 @@ public:
 	ARPTurbineBaseActor();
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	void calculateTurbinePowerProduction();
@@ -35,6 +36,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	void startTurbinePowerProduction();
+
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	TArray< ARPTurbineBaseActor*> getNearbyTurbineCount();
+
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	void updateNearbyTurbineCount();
+
+	
 
 protected:
 	/** Amount of power this Turbine produces in MW. */
@@ -56,6 +65,6 @@ protected:
 	float mTurbinesInArea;
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
-	void calcInitalNearbyTurbines();
+	void calcNearbyTurbines();
 
 };

@@ -16,9 +16,17 @@ ARPTurbineBaseActor::ARPTurbineBaseActor() {
 }
 
 void ARPTurbineBaseActor::BeginPlay() {
-	calcInitalNearbyTurbines();
+	calcNearbyTurbines();
 	calculateTurbinePowerProduction();
 	startTurbinePowerProduction();
+	Super::BeginPlay();
+}
+
+void ARPTurbineBaseActor::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	if (EndPlayReason == EEndPlayReason::Destroyed) {
+		calcNearbyTurbines();
+	}
+	Super::EndPlay(EndPlayReason);
 }
 
 void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
@@ -34,7 +42,8 @@ void ARPTurbineBaseActor::startTurbinePowerProduction() {
 	UFGPowerInfoComponent* FGPowerInfo = FGPowerConnection->GetPowerInfo();
 
 	if (FGPowerInfo != nullptr) {
-		FGPowerInfo->SetBaseProduction(mTurbinePowerProduction);
+		const float powerOutput = mTurbinePowerProduction / (mTurbinesInArea + 1);
+		FGPowerInfo->SetBaseProduction(powerOutput);
 	}
 }
 
@@ -68,30 +77,44 @@ float ARPTurbineBaseActor::getTurbineHeightPowerProduction() {
 	return tempPower;
 }
 
-void ARPTurbineBaseActor::calcInitalNearbyTurbines() {
+TArray< ARPTurbineBaseActor*> ARPTurbineBaseActor::getNearbyTurbineCount() {
 	const FVector ActorLocation = GetActorLocation();
 
 	const TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes = TArray< TEnumAsByte< EObjectTypeQuery > >{ EObjectTypeQuery::ObjectTypeQuery1, EObjectTypeQuery::ObjectTypeQuery2 };
 	TArray< AActor*> ActorsToIgnore = TArray< AActor*>{ this };
 	TArray< AActor*> OutActors;
 
+	TArray< ARPTurbineBaseActor*> TurbineArray;
+
 
 	bool foundTurbines = UKismetSystemLibrary::SphereOverlapActors(this, ActorLocation, float(5200), ObjectTypes, ARPTurbineBaseActor::GetClass(), ActorsToIgnore, OutActors);
+	
 
 	if (foundTurbines) {
 
-		for (const AActor* turbine: OutActors) {
-			const ARPTurbineBaseActor* RPTurbine = Cast<ARPTurbineBaseActor> (turbine);
+		for (const AActor* turbine : OutActors) {
+			ARPTurbineBaseActor* RPTurbine = (ARPTurbineBaseActor*)turbine;
 
 			if (RPTurbine->mTurbineType == ETurbineType::RP_Wind) {
-				mTurbinesInArea += 1;
+				TurbineArray.Add(RPTurbine);
 			}
 		}
+	}
 
-		SML::Logging::info("[RefinedPower] - Turbine Count: ", mTurbinesInArea);
+	return TurbineArray;
+}
+
+void ARPTurbineBaseActor::calcNearbyTurbines() {
+	updateNearbyTurbineCount();
+	TArray< ARPTurbineBaseActor*> TurbineArray = getNearbyTurbineCount();
+
+	for (ARPTurbineBaseActor* turbine : TurbineArray) {
+		turbine->updateNearbyTurbineCount();
 	}
-	else {
-		SML::Logging::info("[RefinedPower] - Turbine Count: ", "None Found!");
-		mTurbinesInArea = 0;
-	}
+}
+
+void ARPTurbineBaseActor::updateNearbyTurbineCount() {
+	mTurbinesInArea = 0;
+	TArray< ARPTurbineBaseActor*> TurbineArray = getNearbyTurbineCount();
+	mTurbinesInArea = TurbineArray.Num();
 }
