@@ -7,25 +7,17 @@
 #include "FGFactoryConnectionComponent.h"
 
 ARPReactorBaseActor::ARPReactorBaseActor() {
+	UFGPowerInfoComponent* FGPowerInfo = CreateDefaultSubobject<UFGPowerInfoComponent>(TEXT("FGPowerInfo1"));
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection1"));
 	FGPowerConnection->SetupAttachment(RootComponent);
-	//FGFactoryConnection1 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("FGFactoryConnection1"));
-	//FGFactoryConnection2 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("FGFactoryConnection2"));
+	FGPowerConnection->SetPowerInfo(FGPowerInfo);
 }
 
-/*
-void ARPReactorBaseActor::BeginPlay() {
-	
-}
-
-void ARPReactorBaseActor::calculateReactorPowerProduction() {
-	//FIXME - implement base function for reactor calculation
-	
-}
-*/
 void ARPReactorBaseActor::startReactorPowerProduction() {
 	UFGPowerInfoComponent* FGPowerInfo = FGPowerConnection->GetPowerInfo();
-	FGPowerInfo->SetBaseProduction(mReactorPowerProduction);
+	if (FGPowerInfo != nullptr) {
+		FGPowerInfo->SetBaseProduction(mReactorPowerProduction);
+	}
 }
 
 float ARPReactorBaseActor::getReactorPowerProduction() {
@@ -51,10 +43,9 @@ void ARPReactorBaseActor::collectInputResource(UFGFactoryConnectionComponent* in
 	}
 }
 
-/*
+/*children
 //tick function - primary logic
 void AFGBuildableFactory::Factory_Tick(float dT) {
 	//check item inventory, call power function if item invetory has changed outside the bounds
-	//FIXME
 }
 */
