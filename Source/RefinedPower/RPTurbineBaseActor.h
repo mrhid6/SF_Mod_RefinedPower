@@ -62,7 +62,7 @@ protected:
 	class UFGPowerConnectionComponent* FGPowerConnection;
 
 	UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
-	float mTurbinesInArea;
+	uint32 mTurbinesInArea;
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	void calcNearbyTurbines();

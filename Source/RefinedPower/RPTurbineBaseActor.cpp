@@ -16,17 +16,17 @@ ARPTurbineBaseActor::ARPTurbineBaseActor() {
 }
 
 void ARPTurbineBaseActor::BeginPlay() {
-	calcNearbyTurbines();
 	calculateTurbinePowerProduction();
-	startTurbinePowerProduction();
-	Super::BeginPlay();
+	calcNearbyTurbines();
 }
 
 void ARPTurbineBaseActor::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+	SML::Logging::info("[RefinedPower] - EndPlay: 1");
 	if (EndPlayReason == EEndPlayReason::Destroyed) {
+		SML::Logging::info("[RefinedPower] - EndPlay: 2");
 		calcNearbyTurbines();
 	}
-	Super::EndPlay(EndPlayReason);
 }
 
 void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
@@ -42,8 +42,10 @@ void ARPTurbineBaseActor::startTurbinePowerProduction() {
 	UFGPowerInfoComponent* FGPowerInfo = FGPowerConnection->GetPowerInfo();
 
 	if (FGPowerInfo != nullptr) {
-		const float powerOutput = mTurbinePowerProduction / (mTurbinesInArea + 1);
+		const float powerOutput = mTurbinePowerProduction / float(mTurbinesInArea + 1);
+		//SML::Logging::info("[RefinedPower] - Power Out: ", powerOutput);
 		FGPowerInfo->SetBaseProduction(powerOutput);
+		//SML::Logging::info("[RefinedPower] - PowerInfo Out: ", FGPowerInfo->GetBaseProduction());
 	}
 }
 
@@ -117,4 +119,6 @@ void ARPTurbineBaseActor::updateNearbyTurbineCount() {
 	mTurbinesInArea = 0;
 	TArray< ARPTurbineBaseActor*> TurbineArray = getNearbyTurbineCount();
 	mTurbinesInArea = TurbineArray.Num();
+
+	startTurbinePowerProduction();
 }
