@@ -18,6 +18,8 @@ ARPTurbineBaseActor::ARPTurbineBaseActor() {
 void ARPTurbineBaseActor::BeginPlay() {
 	calculateTurbinePowerProduction();
 	calcNearbyTurbines();
+
+	Super::BeginPlay();
 }
 
 void ARPTurbineBaseActor::EndPlay(const EEndPlayReason::Type endPlayReason) {
@@ -44,9 +46,9 @@ void ARPTurbineBaseActor::startTurbinePowerProduction() {
 
 	if (FGPowerInfo != nullptr) {
 		const float powerOutput = mTurbinePowerProduction / float(mTurbinesInArea + 1);
-		//SML::Logging::info("[RefinedPower] - Power Out: ", powerOutput);
+		SML::Logging::info("[RefinedPower] - Power Out: ", powerOutput);
 		FGPowerInfo->SetBaseProduction(powerOutput);
-		//SML::Logging::info("[RefinedPower] - PowerInfo Out: ", FGPowerInfo->GetBaseProduction());
+		SML::Logging::info("[RefinedPower] - PowerInfo Out: ", FGPowerInfo->GetBaseProduction());
 	}
 }
 
