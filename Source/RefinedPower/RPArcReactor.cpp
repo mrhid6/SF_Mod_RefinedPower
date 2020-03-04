@@ -42,6 +42,12 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 
 	DOREPLIFETIME(ARPArcReactor, SpinupRotation);
 	DOREPLIFETIME(ARPArcReactor, SpinupOpacity);
+	DOREPLIFETIME(ARPArcReactor, ReactorState);
+	DOREPLIFETIME(ARPArcReactor, ReactorSpinAmount);
+	DOREPLIFETIME(ARPArcReactor, ReactorPrevState);
+	DOREPLIFETIME(ARPArcReactor, InputConveyor1Amount);
+	DOREPLIFETIME(ARPArcReactor, InputConveyor2Amount);
+	DOREPLIFETIME(ARPArcReactor, InputPipe1Amount);
 }
 
 void ARPArcReactor::BeginPlay() {
