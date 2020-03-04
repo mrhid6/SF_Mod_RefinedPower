@@ -2,6 +2,7 @@
 #include "FGFactoryConnectionComponent.h"
 #include "FGGameState.h"
 #include "FGTimeSubsystem.h"
+#include "UnrealNetwork.h"
 
 ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	//pwr initialized with parent's constructor
@@ -33,6 +34,14 @@ ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	MinStopAmount = 1000;
 	bReplicates = true;
 	/*############################################################*/
+}
+
+void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARPArcReactor, SpinupRotation);
+	DOREPLIFETIME(ARPArcReactor, SpinupOpacity);
 }
 
 void ARPArcReactor::BeginPlay() {

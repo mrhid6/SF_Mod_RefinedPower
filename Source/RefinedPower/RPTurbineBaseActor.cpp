@@ -20,13 +20,14 @@ void ARPTurbineBaseActor::BeginPlay() {
 	calcNearbyTurbines();
 }
 
-void ARPTurbineBaseActor::EndPlay(const EEndPlayReason::Type EndPlayReason) {
-	Super::EndPlay(EndPlayReason);
+void ARPTurbineBaseActor::EndPlay(const EEndPlayReason::Type endPlayReason) {
+
 	SML::Logging::info("[RefinedPower] - EndPlay: 1");
-	if (EndPlayReason == EEndPlayReason::Destroyed) {
+	if (endPlayReason == EEndPlayReason::Destroyed) {
 		SML::Logging::info("[RefinedPower] - EndPlay: 2");
 		calcNearbyTurbines();
 	}
+	Super::EndPlay(endPlayReason);
 }
 
 void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
