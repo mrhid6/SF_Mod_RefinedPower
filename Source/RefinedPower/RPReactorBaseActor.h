@@ -24,18 +24,18 @@ class REFINEDPOWER_API ARPReactorBaseActor : public AFGBuildableGenerator
 			void calculateReactorPowerProduction();
 		*/
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
-			float getReactorPowerProduction();
+			float getBaseReactorPowerProduction();
 
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
 			void startReactorPowerProduction();
 
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
-			void collectInputResource(UFGFactoryConnectionComponent* inputConnection, TSubclassOf<UFGItemDescriptor> type, const int maxStorage, int& inputAmount);
+			void setBaseReactorPowerProduction(float p);
+
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
+			int collectInputResource(UFGFactoryConnectionComponent* inputConnection, TSubclassOf<UFGItemDescriptor> type, const int maxStorage, int& inputAmount);
 
 	protected:
-		/** Amount of power this reactor produces in MW. */
-		UPROPERTY(VisibleDefaultsOnly, Category = "RefinedPower")
-			float mReactorPowerProduction;
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 			class UFGPowerConnectionComponent* FGPowerConnection;

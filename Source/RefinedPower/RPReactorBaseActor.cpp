@@ -16,19 +16,23 @@ ARPReactorBaseActor::ARPReactorBaseActor() {
 void ARPReactorBaseActor::startReactorPowerProduction() {
 	UFGPowerInfoComponent* FGPowerInfo = FGPowerConnection->GetPowerInfo();
 	if (FGPowerInfo != nullptr) {
-		FGPowerInfo->SetBaseProduction(mReactorPowerProduction);
+		FGPowerInfo->SetBaseProduction(mPowerProduction);
 	}
 }
 
-float ARPReactorBaseActor::getReactorPowerProduction() {
+void ARPReactorBaseActor::setBaseReactorPowerProduction(float p) {
+	mPowerProduction = p;
+}
+
+float ARPReactorBaseActor::getBaseReactorPowerProduction() {
 	return mPowerProduction;
 }
 
 //General function for grabbing resource from an input connection
-void ARPReactorBaseActor::collectInputResource(UFGFactoryConnectionComponent* inputConnection, TSubclassOf<UFGItemDescriptor> type, const int maxStorage, int& inputAmount) {
+int ARPReactorBaseActor::collectInputResource(UFGFactoryConnectionComponent* inputConnection, TSubclassOf<UFGItemDescriptor> type, const int maxStorage, int& inputAmount) {
 	//check that amount is not too large
 	if (inputAmount > maxStorage) {
-		return;
+		return inputAmount;
 	}
 	//dont need these for this implementation - left empty
 	FInventoryItem out_item = FInventoryItem();
@@ -37,15 +41,9 @@ void ARPReactorBaseActor::collectInputResource(UFGFactoryConnectionComponent* in
 	//grabbing the item from the input and placing in internal storage
 	if (inputConnection->Factory_GrabOutput(out_item,out_OffsetBeyond,type)) {
 		inputAmount = FMath::Clamp(inputAmount++, 0, maxStorage);
+		return inputAmount;
 	}
 	else {
-		return;
+		return inputAmount;
 	}
 }
-
-/*children
-//tick function - primary logic
-void AFGBuildableFactory::Factory_Tick(float dT) {
-	//check item inventory, call power function if item invetory has changed outside the bounds
-}
-*/
