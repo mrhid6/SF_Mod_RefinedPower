@@ -3,13 +3,20 @@
 #include "FGGameState.h"
 #include "FGTimeSubsystem.h"
 #include "UnrealNetwork.h"
+#include "FGPowerInfoComponent.h"
 
 ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	//pwr initialized with parent's constructor
 
 	//spotlight
-	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Spotlight1"));
+	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Spotlight"));
 	SpotLight->SetupAttachment(RootComponent);
+	//particles
+	ParticleData = CreateDefaultSubobject<UChildActorComponent>(TEXT("ParticleData"));
+	PlasmaParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("PlasmaParticles"));
+	ParticleData->SetupAttachment(RootComponent);
+	PlasmaParticles->SetupAttachment(RootComponent);
+
 	/*############### Settup machine item inputs ###############*/
 	InputConveyor1 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputConveyor1"));
 	InputConveyor2 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputConveyor2"));
@@ -54,6 +61,7 @@ void ARPArcReactor::BeginPlay() {
 	//left empty
 }
 
+/*########## Main Functions ##########*/
 void ARPArcReactor::ToggleLight() {
 	//toggles light on and off depending on time of day
 	AFGGameState* state = (AFGGameState*)UGameplayStatics::GetGameState;
@@ -85,13 +93,85 @@ void ARPArcReactor::CalcResourceState() {
 	}
 }
 
-void ARPArcReactor::CalcReactorState() {
-	//TODO
+void ARPArcReactor::CalcReactorState(EReactorState RS) {
+	switch (ReactorState) {
+		case EReactorState::RP_State_SpinUp:
+			IncreaseSpinAmount();
+			break;
+		case EReactorState::RP_State_Producing:
+			//RenderStateSpunUp();
+			ProduceMW();
+			break;
+		case EReactorState::RP_State_SpinDown:
+			DecreaseSpinAmount();
+			break;
+		case EReactorState::RP_State_SpunDown:
+			//RenderStateSpunDown();
+			break;
+	}
+	RenderReactorState();
+	//CalcAudio();
 }
 
 void ARPArcReactor::ReduceResourceAmounts() {
 	//TODO
 }
+/*####################*/
+
+/*########## Utility Functions ##########*/
+void ARPArcReactor::IncreaseSpinAmount() {
+	FMath::Clamp(ReactorSpinAmount++, 0, 100);
+	CalcSpinningState();
+}
+
+void ARPArcReactor::DecreaseSpinAmount() {
+	FMath::Clamp(ReactorSpinAmount--, 0, 100);
+	CalcSpinningState();
+}
+
+void ARPArcReactor::CalcSpinningState() {
+	if (ReactorSpinAmount <= 0) {
+		SetReactorState(EReactorState::RP_State_SpunDown);
+	}
+	else if (ReactorSpinAmount >= 100) {
+		SetReactorState(EReactorState::RP_State_Producing);
+	}
+	else {
+		//FIXME - Need particle data child
+	}
+}
+
+void ARPArcReactor::RenderStateSpunDown() {
+	SpinupRotation = FVector(0);
+	SpinupOpacity = 0.0f;
+}
+
+void ARPArcReactor::ProduceMW() {
+	this->FGPowerConnection->GetPowerInfo()->SetBaseProduction(getBaseReactorPowerProduction());
+}
+
+void ARPArcReactor::RenderReactorState() {
+	PlasmaParticles->SetVectorParameter(FName("OrbitRate"), SpinupRotation);
+	PlasmaParticles->SetFloatParameter(FName("PlasmaOpacity"), SpinupOpacity);
+	SetReactorPlasmaColor();
+}
+
+void ARPArcReactor::SetReactorPlasmaColor() {
+	if (ReactorSpinAmount <= 50) {
+		PlasmaParticles->SetVectorParameter(FName("PlasmaColor"), FVector(1, 0, 0));
+	}
+	else if (ReactorSpinAmount <= 75) {
+		PlasmaParticles->SetVectorParameter(FName("PlasmaColor"), FVector(1, 0.473217, 0));
+	}
+	else {
+		PlasmaParticles->SetVectorParameter(FName("PlasmaColor"), FVector(.22684, 1, 0));
+	}
+}
+
+void ARPArcReactor::CalcAudio() {
+	//TODO
+}
+/*#######################################*/
 
 //tick function - primary logic
 void ARPArcReactor::Factory_Tick(float dT) {
@@ -110,8 +190,8 @@ void ARPArcReactor::Factory_Tick(float dT) {
 	/*##########################*/
 
 	/*CalcResourceState*/
-
-	/*Delay 0.3s*/
+	CalcResourceState();
+	/*Delay 0.3s - Is this needed??*/
 
 	/*CalcReactorState*/
 

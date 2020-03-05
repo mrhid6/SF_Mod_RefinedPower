@@ -18,11 +18,6 @@ class REFINEDPOWER_API ARPReactorBaseActor : public AFGBuildableGenerator
 
 		ARPReactorBaseActor();
 
-		//virtual void BeginPlay() override;
-		/*
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
-			void calculateReactorPowerProduction();
-		*/
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
 			float getBaseReactorPowerProduction();
 

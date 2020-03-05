@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Core.h"
 #include "RPReactorBaseActor.h"
 #include "RPArcReactor.generated.h"
 
@@ -25,16 +26,37 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 	virtual void Factory_Tick(float dT) override;
 
 	public:
+		/*########## Main operational functions ##########*/
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void ToggleLight();
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void CalcResourceState();
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
-			void CalcReactorState();
+			void CalcReactorState(EReactorState RS);
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void ReduceResourceAmounts();
+		/*################################################*/
+
+		/*########## Utility functions ##########*/
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void SetReactorState(EReactorState state);
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+			void IncreaseSpinAmount();
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+			void DecreaseSpinAmount();
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+			void CalcSpinningState();
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+			void RenderStateSpunDown();
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+			void ProduceMW();
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+			void RenderReactorState();
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+			void SetReactorPlasmaColor();
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+			void CalcAudio();
+		/*#######################################*/
 
 	protected:
 		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower|ArcReactor")
@@ -53,7 +75,7 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 			int InputConveyor2Amount;
 		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower")
 			int InputPipe1Amount;
-		UPROPERTY(EditAnywhere, Category = "RefinedPower")
+		UPROPERTY(EditAnywhere, Category = "RefinedPower|ArcReactor")
 			int MaxResourceAmount;
 		UPROPERTY(EditAnywhere, Category = "RefinedPower|ArcReactor")
 			int MinStartAmount;
@@ -73,4 +95,8 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 			UFGFactoryConnectionComponent* InputPipe1;
 		UPROPERTY(EditAnywhere, Category = "RefinedPower")
 			USpotLightComponent* SpotLight;
+		UPROPERTY(EditAnywhere, Category = "RefinedPower")
+			UChildActorComponent* ParticleData;
+		UPROPERTY(EditAnywhere, Category = "RefinedPower")
+			UParticleSystemComponent* PlasmaParticles;
 };
