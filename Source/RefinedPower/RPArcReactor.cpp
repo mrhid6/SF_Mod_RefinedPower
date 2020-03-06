@@ -40,6 +40,8 @@ ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	MaxResourceAmount = 2000;
 	MinStartAmount = 1500;
 	MinStopAmount = 1000;
+	PowerProducedThisCycle = 0.0f;
+	PowerValuePerCycle = 30000.0f;
 	particlesEnabled = false;
 	bReplicates = true;
 	/*############################################################*/
@@ -120,10 +122,15 @@ void ARPArcReactor::ReduceResourceAmounts() {
 		return;
 	}
 	else {
-		FMath::Clamp(InputConveyor2Amount - 10, 0, MaxResourceAmount);
-		FMath::Clamp(InputConveyor1Amount - 10, 0, MaxResourceAmount);
-		FMath::Clamp(InputPipe1Amount - 10, 0, MaxResourceAmount);
+		FMath::Clamp(InputConveyor2Amount - 1, 0, MaxResourceAmount);
+		FMath::Clamp(InputConveyor1Amount - 1, 0, MaxResourceAmount);
+		FMath::Clamp(InputPipe1Amount - 1, 0, MaxResourceAmount);
 	}
+}
+
+void ARPArcReactor::UpdatePowerProducedThisCycle(float dT) {
+	float tempProduced = (this->FGPowerConnection->GetPowerInfo()->GetRegulatedDynamicProduction())* dT;
+	PowerProducedThisCycle += tempProduced;
 }
 /*####################*/
 
@@ -173,7 +180,8 @@ void ARPArcReactor::RenderStateSpunUp() {
 }
 
 void ARPArcReactor::ProduceMW() {
-	this->FGPowerConnection->GetPowerInfo()->SetBaseProduction(getBaseReactorPowerProduction());
+	//this->FGPowerConnection->GetPowerInfo()->SetBaseProduction(getBaseReactorPowerProduction());
+	this->FGPowerConnection->GetPowerInfo()->SetDynamicProductionCapacity(getBaseReactorPowerProduction());
 }
 
 void ARPArcReactor::RenderReactorState() {
@@ -212,7 +220,7 @@ void ARPArcReactor::CalcAudio() {
 //tick function - primary logic
 void ARPArcReactor::Factory_Tick(float dT) {
 	ToggleLight();
-	
+
 	/*##### Collect Inputs #####*/
 	/*CollectInputConveyor1*/
 	InputConveyor1Amount = ARPReactorBaseActor::collectInputResource(InputConveyor1, Conveyor1InputClass, MaxResourceAmount, InputConveyor1Amount);
@@ -225,8 +233,13 @@ void ARPArcReactor::Factory_Tick(float dT) {
 	/*##########################*/
 
 	CalcResourceState();
-	/*Delay 0.3s - Is this needed??*/
 	CalcReactorState();
-	/*Delay 59.2s*/
-	ReduceResourceAmounts();
+	if (ReactorState == EReactorState::RP_State_Producing) {
+		UpdatePowerProducedThisCycle(dT);
+	}
+	if (PowerProducedThisCycle >= PowerValuePerCycle) {
+		ReduceResourceAmounts();
+		PowerProducedThisCycle = 0.0f;
+	}
+	
 }

@@ -36,6 +36,8 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 			void CalcReactorState();
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void ReduceResourceAmounts();
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			void UpdatePowerProducedThisCycle(float dT);
 		/*################################################*/
 
 		/*########## Utility functions ##########*/
@@ -102,12 +104,17 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 			int InputPipe1Amount;
 
 
-		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			int MaxResourceAmount;
-		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			int MinStartAmount;
-		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			int MinStopAmount;
+
+		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
+			float PowerProducedThisCycle;
+		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
+			float PowerValuePerCycle;
 
 		/*#######################################*/
 
