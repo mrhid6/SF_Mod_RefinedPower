@@ -12,10 +12,11 @@ ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Spotlight"));
 	SpotLight->SetupAttachment(RootComponent);
 	//particles
-	ParticleData = CreateDefaultSubobject<UChildActorComponent>(TEXT("ParticleData"));
 	PlasmaParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("PlasmaParticles"));
-	ParticleData->SetupAttachment(RootComponent);
 	PlasmaParticles->SetupAttachment(RootComponent);
+	//sound
+	ArcReactorSound = CreateDefaultSubobject<UAudioComponent>(TEXT("ArcReactorSound"));
+	ArcReactorSound->SetupAttachment(RootComponent);
 
 	/*############### Settup machine item inputs ###############*/
 	InputConveyor1 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputConveyor1"));
@@ -39,6 +40,7 @@ ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	MaxResourceAmount = 2000;
 	MinStartAmount = 1500;
 	MinStopAmount = 1000;
+	particlesEnabled = false;
 	bReplicates = true;
 	/*############################################################*/
 }
@@ -93,28 +95,35 @@ void ARPArcReactor::CalcResourceState() {
 	}
 }
 
-void ARPArcReactor::CalcReactorState(EReactorState RS) {
+void ARPArcReactor::CalcReactorState() {
 	switch (ReactorState) {
 		case EReactorState::RP_State_SpinUp:
 			IncreaseSpinAmount();
 			break;
 		case EReactorState::RP_State_Producing:
-			//RenderStateSpunUp();
+			RenderStateSpunUp();
 			ProduceMW();
 			break;
 		case EReactorState::RP_State_SpinDown:
 			DecreaseSpinAmount();
 			break;
 		case EReactorState::RP_State_SpunDown:
-			//RenderStateSpunDown();
+			RenderStateSpunDown();
 			break;
 	}
 	RenderReactorState();
-	//CalcAudio();
+	CalcAudio();
 }
 
 void ARPArcReactor::ReduceResourceAmounts() {
-	//TODO
+	if (ReactorState != EReactorState::RP_State_Producing) {
+		return;
+	}
+	else {
+		FMath::Clamp(InputConveyor2Amount - 10, 0, MaxResourceAmount);
+		FMath::Clamp(InputConveyor1Amount - 10, 0, MaxResourceAmount);
+		FMath::Clamp(InputPipe1Amount - 10, 0, MaxResourceAmount);
+	}
 }
 /*####################*/
 
@@ -137,13 +146,30 @@ void ARPArcReactor::CalcSpinningState() {
 		SetReactorState(EReactorState::RP_State_Producing);
 	}
 	else {
-		//FIXME - Need particle data child
+		float temp = ReactorSpinAmount * 0.01f;
+		if (particlesEnabled) {
+			SpinupRotation = FVector(0, 0, temp);
+		}
+		else {
+			SpinupRotation = FVector(0, 0, 0);
+		}
+		SpinupOpacity = temp;
 	}
 }
 
 void ARPArcReactor::RenderStateSpunDown() {
 	SpinupRotation = FVector(0);
 	SpinupOpacity = 0.0f;
+}
+
+void ARPArcReactor::RenderStateSpunUp() {
+	if (particlesEnabled) {
+		SpinupRotation = FVector(0, 0, 1);
+	}
+	else {
+		SpinupRotation = FVector(0, 0, 0);
+	}
+	SpinupOpacity = 1.0f;
 }
 
 void ARPArcReactor::ProduceMW() {
@@ -169,7 +195,17 @@ void ARPArcReactor::SetReactorPlasmaColor() {
 }
 
 void ARPArcReactor::CalcAudio() {
-	//TODO
+	if (!ArcReactorSound->IsPlaying()) {
+		if (ReactorState == EReactorState::RP_State_SpinUp) {
+			StartSpinupSound();
+		}
+		else if (ReactorState == EReactorState::RP_State_Producing) {
+			StartProducingSound();
+		}
+		else if (ReactorState == EReactorState::RP_State_SpinDown) {
+			StartShutdownSound();
+		}
+	}
 }
 /*#######################################*/
 
@@ -178,7 +214,6 @@ void ARPArcReactor::Factory_Tick(float dT) {
 	ToggleLight();
 	
 	/*##### Collect Inputs #####*/
-	
 	/*CollectInputConveyor1*/
 	InputConveyor1Amount = ARPReactorBaseActor::collectInputResource(InputConveyor1, Conveyor1InputClass, MaxResourceAmount, InputConveyor1Amount);
 
@@ -189,13 +224,9 @@ void ARPArcReactor::Factory_Tick(float dT) {
 	InputPipe1Amount = ARPReactorBaseActor::collectInputResource(InputPipe1, Pipe1InputClass, MaxResourceAmount, InputPipe1Amount);
 	/*##########################*/
 
-	/*CalcResourceState*/
 	CalcResourceState();
 	/*Delay 0.3s - Is this needed??*/
-
-	/*CalcReactorState*/
-
+	CalcReactorState();
 	/*Delay 59.2s*/
-
-	/*ReduceResourceAmounts*/
+	ReduceResourceAmounts();
 }
