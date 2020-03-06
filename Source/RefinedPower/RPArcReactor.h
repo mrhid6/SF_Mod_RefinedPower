@@ -32,7 +32,7 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void CalcResourceState();
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
-			void CalcReactorState(EReactorState RS);
+			void CalcReactorState();
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void ReduceResourceAmounts();
 		/*################################################*/
@@ -49,6 +49,8 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void RenderStateSpunDown();
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+			void RenderStateSpunUp();
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void ProduceMW();
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void RenderReactorState();
@@ -56,6 +58,12 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 			void SetReactorPlasmaColor();
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
 			void CalcAudio();
+		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ArcReactor")
+			void StartSpinupSound();
+		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ArcReactor")
+			void StartProducingSound();
+		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ArcReactor")
+			void StartShutdownSound();
 		/*#######################################*/
 
 	protected:
@@ -96,7 +104,9 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 		UPROPERTY(EditAnywhere, Category = "RefinedPower")
 			USpotLightComponent* SpotLight;
 		UPROPERTY(EditAnywhere, Category = "RefinedPower")
-			UChildActorComponent* ParticleData;
+			bool particlesEnabled;
 		UPROPERTY(EditAnywhere, Category = "RefinedPower")
 			UParticleSystemComponent* PlasmaParticles;
+		UPROPERTY(EditAnywhere, Category = "RefinedPower")
+			UAudioComponent* ArcReactorSound;
 };
