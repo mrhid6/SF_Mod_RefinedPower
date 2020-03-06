@@ -27,86 +27,112 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 
 	public:
 		/*########## Main operational functions ##########*/
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void ToggleLight();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void CalcResourceState();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void CalcReactorState();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void ReduceResourceAmounts();
 		/*################################################*/
 
 		/*########## Utility functions ##########*/
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void SetReactorState(EReactorState state);
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void IncreaseSpinAmount();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void DecreaseSpinAmount();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void CalcSpinningState();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void RenderStateSpunDown();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void RenderStateSpunUp();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void ProduceMW();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void RenderReactorState();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void SetReactorPlasmaColor();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|ArcReactor")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void CalcAudio();
-		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ArcReactor")
-			void StartSpinupSound();
-		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ArcReactor")
-			void StartProducingSound();
-		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ArcReactor")
-			void StartShutdownSound();
+		
 		/*#######################################*/
 
 	protected:
-		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower|ArcReactor")
+
+		/*################### Partcile Variables ####################*/
+
+		UPROPERTY(EditDefaultsOnly, Replicated, Category = "RefinedPower")
 			FVector SpinupRotation;
-		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower|ArcReactor")
+
+		UPROPERTY(EditDefaultsOnly, Replicated, Category = "RefinedPower")
 			float SpinupOpacity;
-		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower|ArcReactor")
-			EReactorState ReactorState;
-		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower|ArcReactor")
+
+		UPROPERTY(EditDefaultsOnly, Replicated, Category = "RefinedPower")
 			int ReactorSpinAmount;
-		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower|ArcReactor")
+
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+			bool particlesEnabled;
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+			UParticleSystemComponent* PlasmaParticles;
+
+		/*#######################################*/
+
+		/*################### Reactor State ####################*/
+
+		UPROPERTY(EditDefaultsOnly, Replicated, Category = "RefinedPower")
+			EReactorState ReactorState;
+		UPROPERTY(EditDefaultsOnly, Replicated, Category = "RefinedPower")
 			EReactorState ReactorPrevState;
+
+		/*#######################################*/
+
+		/*################### Input Varibles ####################*/
+
 		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower")
 			int InputConveyor1Amount;
 		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower")
 			int InputConveyor2Amount;
 		UPROPERTY(EditAnywhere, Replicated, Category = "RefinedPower")
 			int InputPipe1Amount;
-		UPROPERTY(EditAnywhere, Category = "RefinedPower|ArcReactor")
+
+
+		UPROPERTY(EditAnywhere, Category = "RefinedPower")
 			int MaxResourceAmount;
-		UPROPERTY(EditAnywhere, Category = "RefinedPower|ArcReactor")
+		UPROPERTY(EditAnywhere, Category = "RefinedPower")
 			int MinStartAmount;
-		UPROPERTY(EditAnywhere, Category = "RefinedPower|ArcReactor")
+		UPROPERTY(EditAnywhere, Category = "RefinedPower")
 			int MinStopAmount;
-		UPROPERTY(EditAnywhere, Category = "RefinedPower|ArcReactor")
+
+		/*#######################################*/
+
+		/*################### Input Connection Components ####################*/
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 			TSubclassOf<UFGItemDescriptor> Conveyor1InputClass;
-		UPROPERTY(EditAnywhere, Category = "RefinedPower|ArcReactor")
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 			TSubclassOf<UFGItemDescriptor> Conveyor2InputClass;
-		UPROPERTY(EditAnywhere, Category = "RefinedPower|ArcReactor")
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 			TSubclassOf<UFGItemDescriptor> Pipe1InputClass;
-		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 			UFGFactoryConnectionComponent* InputConveyor1;
-		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 			UFGFactoryConnectionComponent* InputConveyor2;
-		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 			UFGFactoryConnectionComponent* InputPipe1;
+
+		/*#######################################*/
+
+		/*################### Misc Components ####################*/
 		UPROPERTY(EditAnywhere, Category = "RefinedPower")
 			USpotLightComponent* SpotLight;
-		UPROPERTY(EditAnywhere, Category = "RefinedPower")
-			bool particlesEnabled;
-		UPROPERTY(EditAnywhere, Category = "RefinedPower")
-			UParticleSystemComponent* PlasmaParticles;
+
 		UPROPERTY(EditAnywhere, Category = "RefinedPower")
 			UAudioComponent* ArcReactorSound;
+
+		/*#######################################*/
 };

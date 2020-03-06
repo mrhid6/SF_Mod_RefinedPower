@@ -18,17 +18,24 @@ class REFINEDPOWER_API ARPReactorBaseActor : public AFGBuildableGenerator
 
 		ARPReactorBaseActor();
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor")
 			float getBaseReactorPowerProduction();
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor")
 			void startReactorPowerProduction();
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor")
 			void setBaseReactorPowerProduction(float p);
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower")
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor")
 			int collectInputResource(UFGFactoryConnectionComponent* inputConnection, TSubclassOf<UFGItemDescriptor> type, const int maxStorage, int& inputAmount);
+
+		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Reactor")
+			void StartSpinupSound();
+		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Reactor")
+			void StartProducingSound();
+		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Reactor")
+			void StartShutdownSound();
 
 	protected:
 
