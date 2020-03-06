@@ -11,6 +11,8 @@ ARPReactorBaseActor::ARPReactorBaseActor() {
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection1"));
 	FGPowerConnection->SetupAttachment(RootComponent);
 	FGPowerConnection->SetPowerInfo(FGPowerInfo);
+
+	mReactorSoundEnabled = true;
 }
 
 void ARPReactorBaseActor::startReactorPowerProduction() {

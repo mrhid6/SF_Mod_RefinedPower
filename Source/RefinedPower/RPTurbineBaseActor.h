@@ -6,6 +6,7 @@
 #include "FGBuildableGenerator.h"
 #include "FGPowerConnectionComponent.h"
 #include "Containers/Array.h"
+#include "UnrealNetwork.h"
 #include "RPTurbineBaseActor.generated.h"
 
 UENUM(BlueprintType)
@@ -24,26 +25,31 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	void calculateTurbinePowerProduction();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
-	float getTurbinePowerProduction();
+	float getTurbineBasePowerProduction();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	float getTurbineHeightPowerProduction();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
-	void startTurbinePowerProduction();
+	void setTurbinePowerOutput();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
-	TArray< ARPTurbineBaseActor*> getNearbyTurbineCount();
+	TArray< ARPTurbineBaseActor*> getNearbyWindTurbineCount();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
-	void updateNearbyTurbineCount();
+	void updateNearbyWindTurbineCount();
 
-	
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+		void updateTurbineEnabled(bool turbineEnabled);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Turbine")
+	void updateTurbineParticleState();
 
 protected:
 	/** Amount of power this Turbine produces in MW. */
@@ -58,13 +64,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 	ETurbineType mTurbineType;
 
+	/** Is turbine enabled or disabled */
+	UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower")
+	bool mTurbineEnabled;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UFGPowerConnectionComponent* FGPowerConnection;
 
+	/** The amount of wind turbines in the area */
 	UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
-	uint32 mTurbinesInArea;
+	uint32 mWindTurbinesInArea;
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
-	void calcNearbyTurbines();
+	void calcNearbyWindTurbines();
 
 };

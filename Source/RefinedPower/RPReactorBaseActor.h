@@ -30,6 +30,9 @@ class REFINEDPOWER_API ARPReactorBaseActor : public AFGBuildableGenerator
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor")
 			int collectInputResource(UFGFactoryConnectionComponent* inputConnection, TSubclassOf<UFGItemDescriptor> type, const int maxStorage, int& inputAmount);
 
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+			bool mReactorSoundEnabled;
+
 		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Reactor")
 			void StartSpinupSound();
 		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Reactor")
