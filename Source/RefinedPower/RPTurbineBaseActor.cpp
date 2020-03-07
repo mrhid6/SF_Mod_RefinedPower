@@ -8,16 +8,16 @@
 
 
 ARPTurbineBaseActor::ARPTurbineBaseActor() {
-	UFGPowerInfoComponent* FGPowerInfo = CreateDefaultSubobject<UFGPowerInfoComponent>(TEXT("FGPowerInfo1"));
+	FGPowerInfo = CreateDefaultSubobject<UFGPowerInfoComponent>(TEXT("FGPowerInfo1"));
 
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection1"));
 	FGPowerConnection->SetupAttachment(RootComponent);
-	FGPowerConnection->SetPowerInfo(FGPowerInfo);
-
+	
 	mTurbineEnabled = true;
 }
 
 void ARPTurbineBaseActor::BeginPlay() {
+	FGPowerConnection->SetPowerInfo(FGPowerInfo);
 	calculateTurbinePowerProduction();
 
 	Super::BeginPlay();
@@ -63,13 +63,15 @@ void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
 }
 
 void ARPTurbineBaseActor::setTurbinePowerOutput() {
-	UFGPowerInfoComponent* FGPowerInfo = FGPowerConnection->GetPowerInfo();
+	UFGPowerInfoComponent* TempFGPowerInfo = FGPowerConnection->GetPowerInfo();
 
 	if (FGPowerInfo != nullptr) {
 		const float powerOutput = mTurbinePowerProduction / float(mWindTurbinesInArea + 1);
 		SML::Logging::info("[RefinedPower] - Power Out: ", powerOutput);
-		FGPowerInfo->SetBaseProduction(powerOutput);
+		TempFGPowerInfo->SetBaseProduction(powerOutput);
+		SML::Logging::info("[RefinedPower] - PowerInfo Out: ", TempFGPowerInfo->GetBaseProduction());
 		SML::Logging::info("[RefinedPower] - PowerInfo Out: ", FGPowerInfo->GetBaseProduction());
+		SML::Logging::info("[RefinedPower] - isConnected: ", FGPowerInfo->IsConnected());
 	}
 }
 

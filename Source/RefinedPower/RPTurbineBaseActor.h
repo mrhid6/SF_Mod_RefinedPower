@@ -74,6 +74,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UFGPowerConnectionComponent* FGPowerConnection;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		class UFGPowerInfoComponent* FGPowerInfo;
+
 	/** The amount of wind turbines in the area */
 	UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
 	uint32 mWindTurbinesInArea;
