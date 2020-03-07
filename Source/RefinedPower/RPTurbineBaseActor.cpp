@@ -8,7 +8,6 @@
 
 
 ARPTurbineBaseActor::ARPTurbineBaseActor() {
-	FGPowerInfo = CreateDefaultSubobject<UFGPowerInfoComponent>(TEXT("FGPowerInfo1"));
 
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection1"));
 	FGPowerConnection->SetupAttachment(RootComponent);
@@ -17,15 +16,15 @@ ARPTurbineBaseActor::ARPTurbineBaseActor() {
 }
 
 void ARPTurbineBaseActor::BeginPlay() {
-	FGPowerConnection->SetPowerInfo(FGPowerInfo);
-	calculateTurbinePowerProduction();
-
 	Super::BeginPlay();
+
+	FGPowerConnection->SetPowerInfo(GetPowerInfo());
+	calculateTurbinePowerProduction();
+	updateTurbineParticleState();
 }
 
 void ARPTurbineBaseActor::EndPlay(const EEndPlayReason::Type endPlayReason) {
 
-	SML::Logging::info("[RefinedPower] - EndPlay: 1");
 	if (endPlayReason == EEndPlayReason::Destroyed) {
 		SML::Logging::info("[RefinedPower] - EndPlay: 2");
 		calcNearbyWindTurbines();
@@ -50,6 +49,10 @@ void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
 		else {
 			mTurbinePowerProduction = getTurbineBasePowerProduction();
 		}
+
+		if (mWindTurbinesInArea >= mMaxWindTurbinesInArea) {
+			mTurbinePowerProduction = 0;
+		}
 	}
 	else {
 		mTurbinePowerProduction = getTurbineBasePowerProduction();
@@ -65,13 +68,12 @@ void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
 void ARPTurbineBaseActor::setTurbinePowerOutput() {
 	UFGPowerInfoComponent* TempFGPowerInfo = FGPowerConnection->GetPowerInfo();
 
-	if (FGPowerInfo != nullptr) {
-		const float powerOutput = mTurbinePowerProduction / float(mWindTurbinesInArea + 1);
+	if (TempFGPowerInfo != nullptr) {
+		const float powerOutput = getTurbineActualPowerProduction();
 		SML::Logging::info("[RefinedPower] - Power Out: ", powerOutput);
 		TempFGPowerInfo->SetBaseProduction(powerOutput);
 		SML::Logging::info("[RefinedPower] - PowerInfo Out: ", TempFGPowerInfo->GetBaseProduction());
-		SML::Logging::info("[RefinedPower] - PowerInfo Out: ", FGPowerInfo->GetBaseProduction());
-		SML::Logging::info("[RefinedPower] - isConnected: ", FGPowerInfo->IsConnected());
+		//SML::Logging::info("[RefinedPower] - PowerInfo Out: ", mPowerInfo->GetBaseProduction());
 	}
 }
 
@@ -106,7 +108,18 @@ float ARPTurbineBaseActor::getTurbineHeightPowerProduction() {
 	return tempPower;
 }
 
-TArray< ARPTurbineBaseActor*> ARPTurbineBaseActor::getNearbyWindTurbineCount() {
+float ARPTurbineBaseActor::getTurbineActualPowerProduction() {
+	float powerOutput = 0.0f;
+	if (mTurbineType == ETurbineType::RP_Wind) {
+		powerOutput = mTurbinePowerProduction / float(getNearbyWindTurbinesCount() + 1);
+	}
+	else {
+		powerOutput = mTurbinePowerProduction;
+	}
+	return powerOutput;
+}
+
+TArray< ARPTurbineBaseActor*> ARPTurbineBaseActor::getNearbyWindTurbines() {
 	const FVector ActorLocation = GetActorLocation();
 
 	const TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes = TArray< TEnumAsByte< EObjectTypeQuery > >{ EObjectTypeQuery::ObjectTypeQuery1, EObjectTypeQuery::ObjectTypeQuery2 };
@@ -133,6 +146,10 @@ TArray< ARPTurbineBaseActor*> ARPTurbineBaseActor::getNearbyWindTurbineCount() {
 	return TurbineArray;
 }
 
+int ARPTurbineBaseActor::getNearbyWindTurbinesCount() {
+	return mWindTurbinesInArea;
+}
+
 void ARPTurbineBaseActor::calcNearbyWindTurbines() {
 
 	if (mTurbineType == ETurbineType::RP_Water) {
@@ -140,7 +157,7 @@ void ARPTurbineBaseActor::calcNearbyWindTurbines() {
 	}
 
 	updateNearbyWindTurbineCount();
-	TArray< ARPTurbineBaseActor*> TurbineArray = getNearbyWindTurbineCount();
+	TArray< ARPTurbineBaseActor*> TurbineArray = getNearbyWindTurbines();
 
 	for (ARPTurbineBaseActor* turbine : TurbineArray) {
 		turbine->updateNearbyWindTurbineCount();
@@ -150,7 +167,7 @@ void ARPTurbineBaseActor::calcNearbyWindTurbines() {
 
 void ARPTurbineBaseActor::updateNearbyWindTurbineCount() {
 	mWindTurbinesInArea = 0;
-	TArray< ARPTurbineBaseActor*> TurbineArray = getNearbyWindTurbineCount();
+	TArray< ARPTurbineBaseActor*> TurbineArray = getNearbyWindTurbines();
 	mWindTurbinesInArea = FMath::Clamp(TurbineArray.Num(), 0, 9999);
 }
 
@@ -158,7 +175,7 @@ bool ARPTurbineBaseActor::isTurbineEnabled() {
 	return mTurbineEnabled;
 }
 
-void ARPTurbineBaseActor::updateTurbineEnabled(bool turbineEnabled) {
+void ARPTurbineBaseActor::setTurbineEnabled(bool turbineEnabled) {
 	mTurbineEnabled = turbineEnabled;
 	calculateTurbinePowerProduction();
 	updateTurbineParticleState();

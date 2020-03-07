@@ -27,36 +27,30 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	void calculateTurbinePowerProduction();
-
-	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	float getTurbineBasePowerProduction();
-
-	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	float getTurbineHeightPowerProduction();
-
-	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	void setTurbinePowerOutput();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
-	TArray< ARPTurbineBaseActor*> getNearbyWindTurbineCount();
+	float getTurbineActualPowerProduction();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	TArray< ARPTurbineBaseActor*> getNearbyWindTurbines();
+
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	int getNearbyWindTurbinesCount();
+
 	void updateNearbyWindTurbineCount();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
-		void updateTurbineEnabled(bool turbineEnabled);
+	void setTurbineEnabled(bool turbineEnabled);
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	bool isTurbineEnabled();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Turbine")
-	void updateTurbineParticleState();
-
 protected:
-	/** Amount of power this Turbine produces in MW. */
-	UPROPERTY(VisibleDefaultsOnly, Category = "RefinedPower")
+
 	float mTurbinePowerProduction;
 
 	/** Is this turbine based on height eg higher height = more power */
@@ -74,14 +68,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UFGPowerConnectionComponent* FGPowerConnection;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class UFGPowerInfoComponent* FGPowerInfo;
+	int mWindTurbinesInArea;
+	
+	/** The max amount of other wind turbines in the area */
+	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+	int mMaxWindTurbinesInArea;
 
-	/** The amount of wind turbines in the area */
-	UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
-	uint32 mWindTurbinesInArea;
-
-	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	void calcNearbyWindTurbines();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Turbine")
+	void updateTurbineParticleState();
 
 };
