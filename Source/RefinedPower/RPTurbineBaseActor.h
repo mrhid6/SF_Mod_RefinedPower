@@ -48,6 +48,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 		void updateTurbineEnabled(bool turbineEnabled);
 
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	bool isTurbineEnabled();
+
 	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Turbine")
 	void updateTurbineParticleState();
 

@@ -152,6 +152,10 @@ void ARPTurbineBaseActor::updateNearbyWindTurbineCount() {
 	mWindTurbinesInArea = FMath::Clamp(TurbineArray.Num(), 0, 9999);
 }
 
+bool ARPTurbineBaseActor::isTurbineEnabled() {
+	return mTurbineEnabled;
+}
+
 void ARPTurbineBaseActor::updateTurbineEnabled(bool turbineEnabled) {
 	mTurbineEnabled = turbineEnabled;
 	calculateTurbinePowerProduction();
