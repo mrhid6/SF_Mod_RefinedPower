@@ -23,7 +23,7 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
-	virtual void Factory_Tick(float dT) override;
+	virtual void Factory_Tick(float dt) override;
 
 	public:
 		/*########## Main operational functions ##########*/
@@ -135,7 +135,7 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 			UFGFactoryConnectionComponent* InputConveyor2;
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
-			UFGFactoryConnectionComponent* InputPipe1;
+			UFGPipeConnectionComponent* InputPipe;
 
 		/*#######################################*/
 

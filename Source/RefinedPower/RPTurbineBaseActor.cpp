@@ -119,6 +119,10 @@ float ARPTurbineBaseActor::getTurbineActualPowerProduction() {
 	return powerOutput;
 }
 
+float ARPTurbineBaseActor::getMaxTurbinePowerProduction() {
+	return mMaxTurbinePowerProduction;
+}
+
 TArray< ARPTurbineBaseActor*> ARPTurbineBaseActor::getNearbyWindTurbines() {
 	const FVector ActorLocation = GetActorLocation();
 

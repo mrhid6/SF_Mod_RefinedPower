@@ -36,6 +36,9 @@ public:
 	float getTurbineActualPowerProduction();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	float getMaxTurbinePowerProduction();
+
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	TArray< ARPTurbineBaseActor*> getNearbyWindTurbines();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
@@ -52,6 +55,10 @@ public:
 protected:
 
 	float mTurbinePowerProduction;
+
+	/** Max power this turbine can produce */
+	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+	float mMaxTurbinePowerProduction;
 
 	/** Is this turbine based on height eg higher height = more power */
 	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")

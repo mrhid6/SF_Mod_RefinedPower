@@ -1,9 +1,11 @@
 #include "RPArcReactor.h"
 #include "FGFactoryConnectionComponent.h"
+#include "FGPipeConnectionComponent.h"
 #include "FGGameState.h"
 #include "FGTimeSubsystem.h"
 #include "UnrealNetwork.h"
 #include "FGPowerInfoComponent.h"
+#include "util/Logging.h"
 
 ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	//pwr initialized with parent's constructor
@@ -21,14 +23,15 @@ ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	/*############### Settup machine item inputs ###############*/
 	InputConveyor1 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputConveyor1"));
 	InputConveyor2 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputConveyor2"));
-	InputPipe1 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputPipe1"));
+	InputPipe = CreateDefaultSubobject<UFGPipeConnectionComponent>(TEXT("InputPipe"));
+
 	InputConveyor1->SetupAttachment(RootComponent);
 	InputConveyor2->SetupAttachment(RootComponent);
-	InputPipe1->SetupAttachment(RootComponent);
+	InputPipe->SetupAttachment(RootComponent);
 	/*############################################################*/
 
 	/*############### Settup default values for UPROPERTIES ###############*/
-	SpinupRotation = FVector(0);
+	SpinupRotation = FVector(0.0f,0.0f,0.0f);
 	SpinupOpacity = 0.0f;
 	ReactorState = EReactorState::RP_State_SpunDown;
 	ReactorSpinAmount = 0;
@@ -44,6 +47,9 @@ ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	PowerValuePerCycle = 30000.0f;
 	particlesEnabled = false;
 	bReplicates = true;
+
+	mFactoryTickFunction.bCanEverTick = true;
+
 	/*############################################################*/
 }
 
@@ -63,13 +69,25 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 
 void ARPArcReactor::BeginPlay() {
 	//left empty
+	Super::BeginPlay();
 }
 
 /*########## Main Functions ##########*/
 void ARPArcReactor::ToggleLight() {
 	//toggles light on and off depending on time of day
-	AFGGameState* state = (AFGGameState*)UGameplayStatics::GetGameState;
-	if (state->GetTimeSubsystem()->IsNight()) {
+	AFGGameState* state = (AFGGameState*)UGameplayStatics::GetGameState(this);
+
+	if (state == nullptr) {
+		return;
+	}
+
+	AFGTimeOfDaySubsystem* timeSubsystem = state->GetTimeSubsystem();
+
+	if (timeSubsystem == nullptr) {
+		return;
+	}
+
+	if (timeSubsystem->IsNight() == true) {
 		SpotLight->Activate();
 	}
 	else {
@@ -191,13 +209,13 @@ void ARPArcReactor::RenderReactorState() {
 
 void ARPArcReactor::SetReactorPlasmaColor() {
 	if (ReactorSpinAmount <= 50) {
-		PlasmaParticles->SetVectorParameter(FName("PlasmaColor"), FVector(1, 0, 0));
+		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.0f, 0.0f));
 	}
 	else if (ReactorSpinAmount <= 75) {
-		PlasmaParticles->SetVectorParameter(FName("PlasmaColor"), FVector(1, 0.473217, 0));
+		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.473217f, 0.0f));
 	}
 	else {
-		PlasmaParticles->SetVectorParameter(FName("PlasmaColor"), FVector(.22684, 1, 0));
+		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(0.22684f, 1.0f, 0.0f));
 	}
 }
 
@@ -221,7 +239,10 @@ int ARPArcReactor::getReactorSpinAmount() {
 /*#######################################*/
 
 //tick function - primary logic
-void ARPArcReactor::Factory_Tick(float dT) {
+void ARPArcReactor::Factory_Tick(float dt) {
+	Super::Factory_Tick(dt);
+
+	SML::Logging::info("[RefinedPower] - Ticky Tick: ");
 	ToggleLight();
 
 	/*##### Collect Inputs #####*/
@@ -232,13 +253,13 @@ void ARPArcReactor::Factory_Tick(float dT) {
 	InputConveyor2Amount = ARPReactorBaseActor::collectInputResource(InputConveyor2, Conveyor2InputClass, MaxResourceAmount, InputConveyor2Amount);
 
 	/*CollectInputPipe1*/
-	InputPipe1Amount = ARPReactorBaseActor::collectInputResource(InputPipe1, Pipe1InputClass, MaxResourceAmount, InputPipe1Amount);
+	InputPipe1Amount = ARPReactorBaseActor::collectInputFluidResource(dt, InputPipe, Pipe1InputClass, MaxResourceAmount, InputPipe1Amount);
 	/*##########################*/
 
 	CalcResourceState();
 	CalcReactorState();
 	if (ReactorState == EReactorState::RP_State_Producing) {
-		UpdatePowerProducedThisCycle(dT);
+		UpdatePowerProducedThisCycle(dt);
 		if (PowerProducedThisCycle >= PowerValuePerCycle) {
 			ReduceResourceAmounts();
 			PowerProducedThisCycle = 0.0f;
