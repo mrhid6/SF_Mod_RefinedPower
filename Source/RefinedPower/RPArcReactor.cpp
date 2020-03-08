@@ -129,7 +129,7 @@ void ARPArcReactor::ReduceResourceAmounts() {
 }
 
 void ARPArcReactor::UpdatePowerProducedThisCycle(float dT) {
-	float tempProduced = (this->FGPowerConnection->GetPowerInfo()->GetRegulatedDynamicProduction())* dT;
+	float tempProduced = (this->FGPowerConnection->GetPowerInfo()->GetRegulatedDynamicProduction()) * dT;
 	PowerProducedThisCycle += tempProduced;
 }
 /*####################*/
@@ -180,8 +180,7 @@ void ARPArcReactor::RenderStateSpunUp() {
 }
 
 void ARPArcReactor::ProduceMW() {
-	//this->FGPowerConnection->GetPowerInfo()->SetBaseProduction(getBaseReactorPowerProduction());
-	this->FGPowerConnection->GetPowerInfo()->SetDynamicProductionCapacity(getBaseReactorPowerProduction());
+	ARPReactorBaseActor::startReactorPowerProduction();
 }
 
 void ARPArcReactor::RenderReactorState() {
@@ -215,6 +214,10 @@ void ARPArcReactor::CalcAudio() {
 		}
 	}
 }
+
+int ARPArcReactor::getReactorSpinAmount() {
+	return(ReactorSpinAmount);
+}
 /*#######################################*/
 
 //tick function - primary logic
@@ -236,10 +239,10 @@ void ARPArcReactor::Factory_Tick(float dT) {
 	CalcReactorState();
 	if (ReactorState == EReactorState::RP_State_Producing) {
 		UpdatePowerProducedThisCycle(dT);
-	}
-	if (PowerProducedThisCycle >= PowerValuePerCycle) {
-		ReduceResourceAmounts();
-		PowerProducedThisCycle = 0.0f;
+		if (PowerProducedThisCycle >= PowerValuePerCycle) {
+			ReduceResourceAmounts();
+			PowerProducedThisCycle = 0.0f;
+		}
 	}
 	
 }

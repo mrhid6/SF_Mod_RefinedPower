@@ -21,16 +21,13 @@ class REFINEDPOWER_API ARPReactorBaseActor : public AFGBuildableGenerator
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor")
 			float getBaseReactorPowerProduction();
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor")
 			void startReactorPowerProduction();
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor")
 			void setBaseReactorPowerProduction(float p);
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor")
 			int collectInputResource(UFGFactoryConnectionComponent* inputConnection, TSubclassOf<UFGItemDescriptor> type, const int maxStorage, int& inputAmount);
 
-		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower|Reactor")
 			bool mReactorSoundEnabled;
 
 		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Reactor")

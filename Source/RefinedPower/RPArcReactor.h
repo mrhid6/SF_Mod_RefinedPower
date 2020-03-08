@@ -30,13 +30,13 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void ToggleLight();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void CalcResourceState();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void CalcReactorState();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void ReduceResourceAmounts();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void UpdatePowerProducedThisCycle(float dT);
 		/*################################################*/
 
@@ -44,25 +44,27 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void SetReactorState(EReactorState state);
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void IncreaseSpinAmount();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void DecreaseSpinAmount();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void CalcSpinningState();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void RenderStateSpunDown();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void RenderStateSpunUp();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void ProduceMW();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void RenderReactorState();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void SetReactorPlasmaColor();
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+
 			void CalcAudio();
 		
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			int getReactorSpinAmount();
 		/*#######################################*/
 
 	protected:
@@ -80,6 +82,7 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			bool particlesEnabled;
+
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			UParticleSystemComponent* PlasmaParticles;
 
