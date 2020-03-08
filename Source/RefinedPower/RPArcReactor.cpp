@@ -62,6 +62,7 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	DOREPLIFETIME(ARPArcReactor, ReactorState);
 	DOREPLIFETIME(ARPArcReactor, ReactorSpinAmount);
 	DOREPLIFETIME(ARPArcReactor, ReactorPrevState);
+	DOREPLIFETIME(ARPArcReactor, particlesEnabled);
 	DOREPLIFETIME(ARPArcReactor, InputConveyor1Amount);
 	DOREPLIFETIME(ARPArcReactor, InputConveyor2Amount);
 	DOREPLIFETIME(ARPArcReactor, InputPipe1Amount);
@@ -70,6 +71,13 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 void ARPArcReactor::BeginPlay() {
 	//left empty
 	Super::BeginPlay();
+}
+
+void ARPArcReactor::Tick(float dt) {
+	//left empty
+	Super::Tick(dt);
+
+	UpdateParticleVariables();
 }
 
 /*########## Main Functions ##########*/
@@ -131,7 +139,6 @@ void ARPArcReactor::CalcReactorState() {
 			RenderStateSpunDown();
 			break;
 	}
-	RenderReactorState();
 	CalcAudio();
 }
 
@@ -140,9 +147,9 @@ void ARPArcReactor::ReduceResourceAmounts() {
 		return;
 	}
 	else {
-		FMath::Clamp(InputConveyor2Amount - 1, 0, MaxResourceAmount);
-		FMath::Clamp(InputConveyor1Amount - 1, 0, MaxResourceAmount);
-		FMath::Clamp(InputPipe1Amount - 1, 0, MaxResourceAmount);
+		InputConveyor2Amount = FMath::Clamp(InputConveyor2Amount - 1, 0, MaxResourceAmount);
+		InputConveyor1Amount = FMath::Clamp(InputConveyor1Amount - 1, 0, MaxResourceAmount);
+		InputPipe1Amount = FMath::Clamp(InputPipe1Amount - 1, 0, MaxResourceAmount);
 	}
 }
 
@@ -154,12 +161,12 @@ void ARPArcReactor::UpdatePowerProducedThisCycle(float dT) {
 
 /*########## Utility Functions ##########*/
 void ARPArcReactor::IncreaseSpinAmount() {
-	FMath::Clamp(ReactorSpinAmount++, 0, 100);
+	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount++, 0, 100);
 	CalcSpinningState();
 }
 
 void ARPArcReactor::DecreaseSpinAmount() {
-	FMath::Clamp(ReactorSpinAmount--, 0, 100);
+	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount--, 0, 100);
 	CalcSpinningState();
 }
 
@@ -185,6 +192,7 @@ void ARPArcReactor::CalcSpinningState() {
 void ARPArcReactor::RenderStateSpunDown() {
 	SpinupRotation = FVector(0);
 	SpinupOpacity = 0.0f;
+	mUpdateParticleVars = true;
 }
 
 void ARPArcReactor::RenderStateSpunUp() {
@@ -195,27 +203,37 @@ void ARPArcReactor::RenderStateSpunUp() {
 		SpinupRotation = FVector(0, 0, 0);
 	}
 	SpinupOpacity = 1.0f;
+
+	mUpdateParticleVars = true;
 }
 
 void ARPArcReactor::ProduceMW() {
 	ARPReactorBaseActor::startReactorPowerProduction();
 }
 
-void ARPArcReactor::RenderReactorState() {
-	PlasmaParticles->SetVectorParameter(FName("OrbitRate"), SpinupRotation);
-	PlasmaParticles->SetFloatParameter(FName("PlasmaOpacity"), SpinupOpacity);
-	SetReactorPlasmaColor();
-}
+void ARPArcReactor::UpdateParticleVariables() {
+	if (mUpdateParticleVars == true) {
+		mUpdateParticleVars = false;
 
-void ARPArcReactor::SetReactorPlasmaColor() {
-	if (ReactorSpinAmount <= 50) {
-		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.0f, 0.0f));
-	}
-	else if (ReactorSpinAmount <= 75) {
-		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.473217f, 0.0f));
-	}
-	else {
-		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(0.22684f, 1.0f, 0.0f));
+		SML::Logging::info("[RefinedPower] - Test1 ");
+
+		PlasmaParticles->SetVectorParameter(FName("OrbitRate"), SpinupRotation);
+		PlasmaParticles->SetFloatParameter(FName("PlasmaOpacity"), SpinupOpacity);
+		SML::Logging::info("[RefinedPower] - Test2 ");
+
+		if (ReactorSpinAmount <= 50) {
+			PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.0f, 0.0f));
+		}
+		else if (ReactorSpinAmount <= 75) {
+			PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.473217f, 0.0f));
+		}
+		else {
+			SML::Logging::info("[RefinedPower] - Test3 ");
+			PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(0.22684f, 1.0f, 0.0f));
+		}
+		SML::Logging::info("[RefinedPower] - Test4 ");
+
+		
 	}
 }
 

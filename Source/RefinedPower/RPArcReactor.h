@@ -24,6 +24,7 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
 	virtual void Factory_Tick(float dt) override;
+	virtual void Tick(float dt) override;
 
 	public:
 		/*########## Main operational functions ##########*/
@@ -57,9 +58,7 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 
 			void ProduceMW();
 
-			void RenderReactorState();
-
-			void SetReactorPlasmaColor();
+			void UpdateParticleVariables();
 
 			void CalcAudio();
 		
@@ -71,39 +70,41 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 
 		/*################### Partcile Variables ####################*/
 
-		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			FVector SpinupRotation;
 
-		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			float SpinupOpacity;
 
-		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			int ReactorSpinAmount;
 
-		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+		UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower")
 			bool particlesEnabled;
 
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			UParticleSystemComponent* PlasmaParticles;
 
+		bool mUpdateParticleVars;
+
 		/*#######################################*/
 
 		/*################### Reactor State ####################*/
 
-		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			EReactorState ReactorState;
-		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			EReactorState ReactorPrevState;
 
 		/*#######################################*/
 
 		/*################### Input Varibles ####################*/
 
-		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			int InputConveyor1Amount;
-		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			int InputConveyor2Amount;
-		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			int InputPipe1Amount;
 
 
