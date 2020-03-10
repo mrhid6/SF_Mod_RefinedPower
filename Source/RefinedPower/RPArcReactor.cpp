@@ -215,11 +215,8 @@ void ARPArcReactor::UpdateParticleVariables() {
 	if (mUpdateParticleVars == true) {
 		mUpdateParticleVars = false;
 
-		SML::Logging::info("[RefinedPower] - Test1 ");
-
 		PlasmaParticles->SetVectorParameter(FName("OrbitRate"), SpinupRotation);
 		PlasmaParticles->SetFloatParameter(FName("PlasmaOpacity"), SpinupOpacity);
-		SML::Logging::info("[RefinedPower] - Test2 ");
 
 		if (ReactorSpinAmount <= 50) {
 			PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.0f, 0.0f));
@@ -228,10 +225,8 @@ void ARPArcReactor::UpdateParticleVariables() {
 			PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.473217f, 0.0f));
 		}
 		else {
-			SML::Logging::info("[RefinedPower] - Test3 ");
 			PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(0.22684f, 1.0f, 0.0f));
 		}
-		SML::Logging::info("[RefinedPower] - Test4 ");
 
 		
 	}
@@ -254,24 +249,36 @@ void ARPArcReactor::CalcAudio() {
 int ARPArcReactor::getReactorSpinAmount() {
 	return(ReactorSpinAmount);
 }
+
+int ARPArcReactor::getInput1Amount() {
+	return(InputConveyor1Amount);
+}
+
+int ARPArcReactor::getInput2Amount() {
+	return(InputConveyor2Amount);
+}
+
+int ARPArcReactor::getPipeInputAmount() {
+	return(InputPipe1Amount);
+}
+
 /*#######################################*/
 
 //tick function - primary logic
 void ARPArcReactor::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
 
-	SML::Logging::info("[RefinedPower] - Ticky Tick: ");
 	ToggleLight();
 
 	/*##### Collect Inputs #####*/
 	/*CollectInputConveyor1*/
-	InputConveyor1Amount = ARPReactorBaseActor::collectInputResource(InputConveyor1, Conveyor1InputClass, MaxResourceAmount, InputConveyor1Amount);
+	ARPReactorBaseActor::collectInputResource(InputConveyor1, Conveyor1InputClass, MaxResourceAmount, InputConveyor1Amount);
 
 	/*CollectInputConveyor2*/
-	InputConveyor2Amount = ARPReactorBaseActor::collectInputResource(InputConveyor2, Conveyor2InputClass, MaxResourceAmount, InputConveyor2Amount);
+	ARPReactorBaseActor::collectInputResource(InputConveyor2, Conveyor2InputClass, MaxResourceAmount, InputConveyor2Amount);
 
 	/*CollectInputPipe1*/
-	InputPipe1Amount = ARPReactorBaseActor::collectInputFluidResource(dt, InputPipe, Pipe1InputClass, MaxResourceAmount, InputPipe1Amount);
+	ARPReactorBaseActor::collectInputFluidResource(dt, InputPipe, Pipe1InputClass, MaxResourceAmount, InputPipe1Amount);
 	/*##########################*/
 
 	CalcResourceState();

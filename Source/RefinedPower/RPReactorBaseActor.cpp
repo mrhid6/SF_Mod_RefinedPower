@@ -43,7 +43,11 @@ int ARPReactorBaseActor::collectInputResource(UFGFactoryConnectionComponent* inp
 
 	//grabbing the item from the input and placing in internal storage
 	if (inputConnection->Factory_GrabOutput(out_item,out_OffsetBeyond,type)) {
-		inputAmount = FMath::Clamp(inputAmount++, 0, maxStorage);
+		inputAmount = inputAmount + 1;
+		inputAmount = FMath::Clamp(inputAmount, 0, maxStorage);
+
+		SML::Logging::info("[RefinedPower] - Input: ", inputAmount);
+		SML::Logging::info("[RefinedPower] - MaxStorage: ", maxStorage);
 		return inputAmount;
 	}
 	else {
@@ -61,7 +65,8 @@ int ARPReactorBaseActor::collectInputFluidResource(float dt, UFGPipeConnectionCo
 
 	//grabbing the item from the input and placing in internal storage
 	if (inputConnection->Factory_PullPipeInput(dt, out_item, type)) {
-		inputAmount = FMath::Clamp(inputAmount++, 0, maxStorage);
+		inputAmount = inputAmount + 1;
+		inputAmount = FMath::Clamp(inputAmount, 0, maxStorage);
 		return inputAmount;
 	}
 	else {

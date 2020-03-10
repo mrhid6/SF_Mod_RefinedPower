@@ -64,6 +64,16 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 		
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			int getReactorSpinAmount();
+
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			int getInput1Amount();
+
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			int getInput2Amount();
+
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			int getPipeInputAmount();
+
 		/*#######################################*/
 
 	protected:

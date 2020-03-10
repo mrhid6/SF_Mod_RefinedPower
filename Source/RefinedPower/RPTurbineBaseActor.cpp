@@ -39,6 +39,10 @@ void ARPTurbineBaseActor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 	DOREPLIFETIME(ARPTurbineBaseActor, mTurbineEnabled);
 }
 
+bool ARPTurbineBaseActor::ShouldSave_Implementation() const {
+	return true;
+}
+
 void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
 
 	if (mTurbineType == ETurbineType::RP_Wind) {

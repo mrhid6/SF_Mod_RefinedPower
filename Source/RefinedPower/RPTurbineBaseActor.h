@@ -7,6 +7,7 @@
 #include "FGPowerConnectionComponent.h"
 #include "Containers/Array.h"
 #include "UnrealNetwork.h"
+#include "FGSaveInterface.h"
 #include "RPTurbineBaseActor.generated.h"
 
 UENUM(BlueprintType)
@@ -26,6 +27,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual bool ShouldSave_Implementation() const override;
 
 	void calculateTurbinePowerProduction();
 	float getTurbineBasePowerProduction();
@@ -69,7 +71,7 @@ protected:
 	ETurbineType mTurbineType;
 
 	/** Is turbine enabled or disabled */
-	UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower")
+	UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower", meta = (NoAutoJson = true))
 	bool mTurbineEnabled;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
