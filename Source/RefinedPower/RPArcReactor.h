@@ -81,16 +81,16 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 		/*################### Partcile Variables ####################*/
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			FVector SpinupRotation;
+			FVector SpinupRotation = FVector(0.0f, 0.0f, 0.0f);
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			float SpinupOpacity;
+			float SpinupOpacity= 0.0f;
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			int ReactorSpinAmount;
+			int ReactorSpinAmount = 0;
 
 		UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower")
-			bool particlesEnabled;
+			bool particlesEnabled = false;
 
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			UParticleSystemComponent* PlasmaParticles;
@@ -102,33 +102,49 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 		/*################### Reactor State ####################*/
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			EReactorState ReactorState;
+			EReactorState ReactorState = EReactorState::RP_State_SpunDown;
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			EReactorState ReactorPrevState;
+			EReactorState ReactorPrevState = EReactorState::RP_State_SpunDown;
 
 		/*#######################################*/
 
 		/*################### Input Varibles ####################*/
 
+		/*Amount stored in item input 1*/
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			int InputConveyor1Amount;
+			int InputConveyor1Amount = 0;
+
+		/*Amount stored in item input 2*/
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			int InputConveyor2Amount;
+			int InputConveyor2Amount = 0;
+
+		/*Amount stored in pipe input*/
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			int InputPipe1Amount;
+			int InputPipe1Amount = 0;
 
+		/*Max amount of items we can store*/
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+			int MaxResourceAmount = 2000;
 
+		/*Max Amount of fluids we can store -- this is the max amount a pipe can output in 2 minutes*/
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
-			int MaxResourceAmount;
-		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
-			int MinStartAmount;
-		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
-			int MinStopAmount;
+			int MaxFluidAmount = 6000;
 
+		/*Min amount of resources required to start production*/
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+			int MinStartAmount = 1500;
+
+		/*When the resources fall below this amount, the reactor will shut off*/
+		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+			int MinStopAmount = 1000;
+
+		/*Amount of power produced since the last item consumed*/
 		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
-			float PowerProducedThisCycle;
+			float PowerProducedThisCycle = 0.0f;
+
+		/*How much power we produce per item consumption*/
 		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
-			float PowerValuePerCycle;
+			float PowerValuePerCycle = 30000.0f;
 
 		/*#######################################*/
 

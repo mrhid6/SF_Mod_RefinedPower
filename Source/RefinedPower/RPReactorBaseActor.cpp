@@ -34,7 +34,7 @@ float ARPReactorBaseActor::getBaseReactorPowerProduction() {
 //General function for grabbing resource from an input connection
 int ARPReactorBaseActor::collectInputResource(UFGFactoryConnectionComponent* inputConnection, TSubclassOf<UFGItemDescriptor> type, const int maxStorage, int& inputAmount) {
 	//check that amount is not too large
-	if (inputAmount > maxStorage) {
+	if (inputAmount >= maxStorage) {
 		return inputAmount;
 	}
 	//dont need these for this implementation - left empty
@@ -46,8 +46,6 @@ int ARPReactorBaseActor::collectInputResource(UFGFactoryConnectionComponent* inp
 		inputAmount = inputAmount + 1;
 		inputAmount = FMath::Clamp(inputAmount, 0, maxStorage);
 
-		SML::Logging::info("[RefinedPower] - Input: ", inputAmount);
-		SML::Logging::info("[RefinedPower] - MaxStorage: ", maxStorage);
 		return inputAmount;
 	}
 	else {
@@ -57,7 +55,7 @@ int ARPReactorBaseActor::collectInputResource(UFGFactoryConnectionComponent* inp
 
 int ARPReactorBaseActor::collectInputFluidResource(float dt, UFGPipeConnectionComponent* inputConnection, TSubclassOf<UFGItemDescriptor> type, const int maxStorage, int& inputAmount) {
 	//check that amount is not too large
-	if (inputAmount > maxStorage) {
+	if (inputAmount >= maxStorage) {
 		return inputAmount;
 	}
 	//dont need these for this implementation - left empty
@@ -67,6 +65,9 @@ int ARPReactorBaseActor::collectInputFluidResource(float dt, UFGPipeConnectionCo
 	if (inputConnection->Factory_PullPipeInput(dt, out_item, type)) {
 		inputAmount = inputAmount + 1;
 		inputAmount = FMath::Clamp(inputAmount, 0, maxStorage);
+
+
+		SML::Logging::info("[RefinedPower] - PipeInput: ", inputAmount, "/", maxStorage);
 		return inputAmount;
 	}
 	else {

@@ -30,24 +30,9 @@ ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
 	InputPipe->SetupAttachment(RootComponent);
 	/*############################################################*/
 
-	/*############### Settup default values for UPROPERTIES ###############*/
-	SpinupRotation = FVector(0.0f,0.0f,0.0f);
-	SpinupOpacity = 0.0f;
-	ReactorState = EReactorState::RP_State_SpunDown;
-	ReactorSpinAmount = 0;
-	ReactorPrevState = EReactorState::RP_State_SpunDown;
-	InputConveyor1Amount = 0;
-	InputConveyor2Amount = 0;
-	InputPipe1Amount = 0;
+	/*############### Settup default values ###############*/
 	ARPReactorBaseActor::setBaseReactorPowerProduction(5000.0f);
-	MaxResourceAmount = 2000;
-	MinStartAmount = 1500;
-	MinStopAmount = 1000;
-	PowerProducedThisCycle = 0.0f;
-	PowerValuePerCycle = 30000.0f;
-	particlesEnabled = false;
 	bReplicates = true;
-
 	mFactoryTickFunction.bCanEverTick = true;
 
 	/*############################################################*/
@@ -147,9 +132,15 @@ void ARPArcReactor::ReduceResourceAmounts() {
 		return;
 	}
 	else {
-		InputConveyor2Amount = FMath::Clamp(InputConveyor2Amount - 1, 0, MaxResourceAmount);
-		InputConveyor1Amount = FMath::Clamp(InputConveyor1Amount - 1, 0, MaxResourceAmount);
-		InputPipe1Amount = FMath::Clamp(InputPipe1Amount - 1, 0, MaxResourceAmount);
+		/*Consumes 1 item per 6 seconds, or 10 items per minute.*/
+		InputConveyor2Amount--;
+		InputConveyor1Amount--;
+		InputConveyor2Amount = FMath::Clamp(InputConveyor2Amount, 0, MaxResourceAmount);
+		InputConveyor1Amount = FMath::Clamp(InputConveyor1Amount, 0, MaxResourceAmount);
+
+		/*Consumes 300 Fluid per 6 seconds, or 3000 fluid per minute -- max allowed in pipes is 6000 from testing*/
+		InputPipe1Amount = InputPipe1Amount - 300;
+		InputPipe1Amount = FMath::Clamp(InputPipe1Amount, 0, MaxFluidAmount);
 	}
 }
 
@@ -161,12 +152,14 @@ void ARPArcReactor::UpdatePowerProducedThisCycle(float dT) {
 
 /*########## Utility Functions ##########*/
 void ARPArcReactor::IncreaseSpinAmount() {
-	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount++, 0, 100);
+	ReactorSpinAmount++;
+	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount, 0, 100);
 	CalcSpinningState();
 }
 
 void ARPArcReactor::DecreaseSpinAmount() {
-	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount--, 0, 100);
+	ReactorSpinAmount--;
+	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount, 0, 100);
 	CalcSpinningState();
 }
 
@@ -278,7 +271,7 @@ void ARPArcReactor::Factory_Tick(float dt) {
 	ARPReactorBaseActor::collectInputResource(InputConveyor2, Conveyor2InputClass, MaxResourceAmount, InputConveyor2Amount);
 
 	/*CollectInputPipe1*/
-	ARPReactorBaseActor::collectInputFluidResource(dt, InputPipe, Pipe1InputClass, MaxResourceAmount, InputPipe1Amount);
+	ARPReactorBaseActor::collectInputFluidResource(dt, InputPipe, Pipe1InputClass, MaxFluidAmount, InputPipe1Amount);
 	/*##########################*/
 
 	CalcResourceState();
