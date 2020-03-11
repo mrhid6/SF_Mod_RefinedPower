@@ -46,6 +46,9 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void SetReactorState(EReactorState state);
 
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			EReactorState GetReactorState();
+
 			void IncreaseSpinAmount();
 
 			void DecreaseSpinAmount();
@@ -73,6 +76,18 @@ class REFINEDPOWER_API ARPArcReactor : public ARPReactorBaseActor
 
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			int getPipeInputAmount();
+
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			bool isSoundEnabled();
+
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			void setSoundEnabled(bool enabled);
+
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			bool isParticlesEnabled();
+
+		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+			void setParticlesEnabled(bool enabled);
 
 		/*#######################################*/
 

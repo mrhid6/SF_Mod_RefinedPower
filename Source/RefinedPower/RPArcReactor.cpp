@@ -93,6 +93,10 @@ void ARPArcReactor::SetReactorState(EReactorState state) {
 	ReactorState = state;
 }
 
+EReactorState ARPArcReactor::GetReactorState() {
+	return ReactorState;
+}
+
 void ARPArcReactor::CalcResourceState() {
 	if (InputConveyor1Amount >= MinStartAmount &&
 		InputConveyor2Amount >= MinStartAmount &&
@@ -180,6 +184,8 @@ void ARPArcReactor::CalcSpinningState() {
 		}
 		SpinupOpacity = temp;
 	}
+
+	mUpdateParticleVars = true;
 }
 
 void ARPArcReactor::RenderStateSpunDown() {
@@ -226,17 +232,46 @@ void ARPArcReactor::UpdateParticleVariables() {
 }
 
 void ARPArcReactor::CalcAudio() {
-	if (!ArcReactorSound->IsPlaying()) {
-		if (ReactorState == EReactorState::RP_State_SpinUp) {
-			StartSpinupSound();
-		}
-		else if (ReactorState == EReactorState::RP_State_Producing) {
-			StartProducingSound();
-		}
-		else if (ReactorState == EReactorState::RP_State_SpinDown) {
-			StartShutdownSound();
+	if (mReactorSoundEnabled == true) {
+		if (!ArcReactorSound->IsPlaying()) {
+			if (ReactorState == EReactorState::RP_State_SpinUp) {
+				StartSpinupSound();
+			}
+			else if (ReactorState == EReactorState::RP_State_Producing) {
+				StartProducingSound();
+			}
+			else if (ReactorState == EReactorState::RP_State_SpinDown) {
+				StartShutdownSound();
+			}
 		}
 	}
+	else {
+		if (ArcReactorSound->IsPlaying()) {
+			ArcReactorSound->Stop();
+		}
+	}
+}
+
+bool ARPArcReactor::isSoundEnabled() {
+	return mReactorSoundEnabled;
+}
+
+void ARPArcReactor::setSoundEnabled(bool enabled) {
+	mReactorSoundEnabled = enabled;
+	CalcAudio();
+}
+
+bool ARPArcReactor::isParticlesEnabled() {
+	return particlesEnabled;
+}
+
+void ARPArcReactor::setParticlesEnabled(bool enabled) {
+	particlesEnabled = enabled;
+	if (particlesEnabled == false) {
+		SpinupRotation = FVector(0, 0, 0);
+	}
+
+	mUpdateParticleVars = true;
 }
 
 int ARPArcReactor::getReactorSpinAmount() {
