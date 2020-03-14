@@ -11,7 +11,8 @@ ARPTurbineBaseActor::ARPTurbineBaseActor() {
 
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection1"));
 	FGPowerConnection->SetupAttachment(RootComponent);
-	
+
+	bReplicates = true;
 	mTurbineEnabled = true;
 }
 
