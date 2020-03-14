@@ -7,13 +7,12 @@
 #include "FGPowerInfoComponent.h"
 #include "util/Logging.h"
 #include "FGPowerConnectionComponent.h"
+#include "FGInventoryComponent.h"
 
 ARPArcReactor::ARPArcReactor() {
 	//pwr
-	UFGPowerInfoComponent* FGPowerInfo = CreateDefaultSubobject<UFGPowerInfoComponent>(TEXT("FGPowerInfo"));
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection"));
 	FGPowerConnection->SetupAttachment(RootComponent);
-	FGPowerConnection->SetPowerInfo(FGPowerInfo);
 
 	//spotlight
 	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Spotlight"));
@@ -33,6 +32,8 @@ ARPArcReactor::ARPArcReactor() {
 
 	InputConveyor->SetupAttachment(RootComponent);
 	InputPipe->SetupAttachment(RootComponent);
+
+	mFuelInventory = CreateDefaultSubobject<UFGInventoryComponent>(TEXT("FuelInventory"));
 	/*############################################################*/
 
 	/*############### Settup tick values ###############*/
@@ -52,6 +53,8 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 
 void ARPArcReactor::BeginPlay() {
 	Super::BeginPlay();
+
+	FGPowerConnection->SetPowerInfo(GetPowerInfo());
 }
 
 void ARPArcReactor::Tick(float dt) {
@@ -102,8 +105,11 @@ void ARPArcReactor::CalcReactorState() {
 	{
 		TSubclassOf< class UFGItemDescriptor > fuel = GetCurrentFuelClass();
 		int fuelAmnt = GetFuelInventory()->GetNumItems(fuel);
+		SML::Logging::info("[RefinedPower] - AR: ", fuelAmnt);
+
+
 		if (fuelAmnt >= MinStartAmount) {
-			ReactorState = EReactorState::RP_State_SpinUp;
+			SetReactorState(EReactorState::RP_State_SpinUp);
 			CalcAudio();
 		}
 		break;
@@ -123,7 +129,7 @@ void ARPArcReactor::CalcReactorState() {
 		TSubclassOf< class UFGItemDescriptor > fuel = GetCurrentFuelClass();
 		int fuelAmnt = GetFuelInventory()->GetNumItems(fuel);
 		if (fuelAmnt <= MinStopAmount) {
-			ReactorState = EReactorState::RP_State_SpinDown;
+			SetReactorState(EReactorState::RP_State_SpinDown);
 			CalcAudio();
 		}
 		break;
