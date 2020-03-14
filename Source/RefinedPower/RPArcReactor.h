@@ -140,7 +140,7 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			int MinStopAmount = 1000;
 
-		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower|Reactor")
+		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
 			bool mReactorSoundEnabled = true;
 
 		/*#### End input vars ####*/
@@ -156,10 +156,10 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 
 		/*#### start misc componenents ####*/
 
-		UPROPERTY(EditAnywhere, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
 			USpotLightComponent* SpotLight;
 
-		UPROPERTY(EditAnywhere, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
 			UAudioComponent* ArcReactorSound;
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

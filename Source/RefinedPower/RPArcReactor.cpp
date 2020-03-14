@@ -57,7 +57,9 @@ void ARPArcReactor::BeginPlay() {
 void ARPArcReactor::Tick(float dt) {
 	Super::Tick(dt);
 
-	UpdateParticleVariables();
+	if (mUpdateParticleVars && particlesEnabled) {
+		UpdateParticleVariables();
+	}
 }
 
 bool ARPArcReactor::CanStartPowerProduction_Implementation() const {
@@ -275,8 +277,4 @@ void ARPArcReactor::Factory_Tick(float dt) {
 	ToggleLight();
 
 	CalcReactorState();
-
-	if (mUpdateParticleVars && particlesEnabled) {
-		UpdateParticleVariables();
-	}
 }
