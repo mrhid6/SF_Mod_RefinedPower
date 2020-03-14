@@ -6,32 +6,36 @@
 #include "UnrealNetwork.h"
 #include "FGPowerInfoComponent.h"
 #include "util/Logging.h"
+#include "FGPowerConnectionComponent.h"
 
-ARPArcReactor::ARPArcReactor() : ARPReactorBaseActor() {
-	//pwr initialized with parent's constructor
+ARPArcReactor::ARPArcReactor() {
+	//pwr
+	UFGPowerInfoComponent* FGPowerInfo = CreateDefaultSubobject<UFGPowerInfoComponent>(TEXT("FGPowerInfo"));
+	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection"));
+	FGPowerConnection->SetupAttachment(RootComponent);
+	FGPowerConnection->SetPowerInfo(FGPowerInfo);
 
 	//spotlight
 	SpotLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("Spotlight"));
 	SpotLight->SetupAttachment(RootComponent);
+
 	//particles
 	PlasmaParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("PlasmaParticles"));
 	PlasmaParticles->SetupAttachment(RootComponent);
+
 	//sound
 	ArcReactorSound = CreateDefaultSubobject<UAudioComponent>(TEXT("ArcReactorSound"));
 	ArcReactorSound->SetupAttachment(RootComponent);
 
 	/*############### Settup machine item inputs ###############*/
-	InputConveyor1 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputConveyor1"));
-	InputConveyor2 = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputConveyor2"));
+	InputConveyor = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputConveyor"));
 	InputPipe = CreateDefaultSubobject<UFGPipeConnectionComponent>(TEXT("InputPipe"));
 
-	InputConveyor1->SetupAttachment(RootComponent);
-	InputConveyor2->SetupAttachment(RootComponent);
+	InputConveyor->SetupAttachment(RootComponent);
 	InputPipe->SetupAttachment(RootComponent);
 	/*############################################################*/
 
-	/*############### Settup default values ###############*/
-	ARPReactorBaseActor::setBaseReactorPowerProduction(5000.0f);
+	/*############### Settup tick values ###############*/
 	bReplicates = true;
 	mFactoryTickFunction.bCanEverTick = true;
 
@@ -42,27 +46,29 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(ARPArcReactor, SpinupRotation);
-	DOREPLIFETIME(ARPArcReactor, SpinupOpacity);
 	DOREPLIFETIME(ARPArcReactor, ReactorState);
 	DOREPLIFETIME(ARPArcReactor, ReactorSpinAmount);
-	DOREPLIFETIME(ARPArcReactor, ReactorPrevState);
-	DOREPLIFETIME(ARPArcReactor, particlesEnabled);
-	DOREPLIFETIME(ARPArcReactor, InputConveyor1Amount);
-	DOREPLIFETIME(ARPArcReactor, InputConveyor2Amount);
-	DOREPLIFETIME(ARPArcReactor, InputPipe1Amount);
 }
 
 void ARPArcReactor::BeginPlay() {
-	//left empty
 	Super::BeginPlay();
 }
 
 void ARPArcReactor::Tick(float dt) {
-	//left empty
 	Super::Tick(dt);
 
 	UpdateParticleVariables();
+}
+
+bool ARPArcReactor::CanStartPowerProduction_Implementation() const {
+	Super::CanStartPowerProduction_Implementation();
+
+	if (ReactorState == EReactorState::RP_State_Producing) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 /*########## Main Functions ##########*/
@@ -88,70 +94,53 @@ void ARPArcReactor::ToggleLight() {
 	}
 }
 
-void ARPArcReactor::SetReactorState(EReactorState state) {
-	ReactorPrevState = ReactorState;
-	ReactorState = state;
-}
-
-EReactorState ARPArcReactor::GetReactorState() {
-	return ReactorState;
-}
-
-void ARPArcReactor::CalcResourceState() {
-	if (InputConveyor1Amount >= MinStartAmount &&
-		InputConveyor2Amount >= MinStartAmount &&
-		InputPipe1Amount >= MinStartAmount &&
-		ReactorState == EReactorState::RP_State_SpunDown &&
-		ReactorSpinAmount == 0) {
-
-		SetReactorState(EReactorState::RP_State_SpinUp);
-	}
-	else if ((InputConveyor1Amount < MinStopAmount || InputConveyor2Amount < MinStopAmount || InputPipe1Amount < MinStopAmount) && ReactorState == EReactorState::RP_State_Producing) {
-			
-		SetReactorState(EReactorState::RP_State_SpinDown);
-	}
-}
-
 void ARPArcReactor::CalcReactorState() {
 	switch (ReactorState) {
-		case EReactorState::RP_State_SpinUp:
-			IncreaseSpinAmount();
-			break;
-		case EReactorState::RP_State_Producing:
+	case EReactorState::RP_State_SpunDown:
+	{
+		TSubclassOf< class UFGItemDescriptor > fuel = GetCurrentFuelClass();
+		int fuelAmnt = GetFuelInventory()->GetNumItems(fuel);
+		if (fuelAmnt >= MinStartAmount) {
+			ReactorState = EReactorState::RP_State_SpinUp;
+			CalcAudio();
+		}
+		break;
+	}
+	case EReactorState::RP_State_SpinUp:
+	{
+		IncreaseSpinAmount();
+		if (ReactorSpinAmount >= 100) {
+			SetReactorState(EReactorState::RP_State_Producing);
 			RenderStateSpunUp();
-			ProduceMW();
-			break;
-		case EReactorState::RP_State_SpinDown:
-			DecreaseSpinAmount();
-			break;
-		case EReactorState::RP_State_SpunDown:
+			CalcAudio();
+		}
+		break;
+	}
+	case EReactorState::RP_State_Producing:
+	{
+		TSubclassOf< class UFGItemDescriptor > fuel = GetCurrentFuelClass();
+		int fuelAmnt = GetFuelInventory()->GetNumItems(fuel);
+		if (fuelAmnt <= MinStopAmount) {
+			ReactorState = EReactorState::RP_State_SpinDown;
+			CalcAudio();
+		}
+		break;
+	}
+	case EReactorState::RP_State_SpinDown:
+	{
+		DecreaseSpinAmount();
+		if (ReactorSpinAmount <= 0) {
+			SetReactorState(EReactorState::RP_State_SpunDown);
 			RenderStateSpunDown();
-			break;
+			CalcAudio();
+		}
+		break;
 	}
-	CalcAudio();
-}
-
-void ARPArcReactor::ReduceResourceAmounts() {
-	if (ReactorState != EReactorState::RP_State_Producing) {
-		return;
-	}
-	else {
-		/*Consumes 1 item per 6 seconds, or 10 items per minute.*/
-		InputConveyor2Amount--;
-		InputConveyor1Amount--;
-		InputConveyor2Amount = FMath::Clamp(InputConveyor2Amount, 0, MaxResourceAmount);
-		InputConveyor1Amount = FMath::Clamp(InputConveyor1Amount, 0, MaxResourceAmount);
-
-		/*Consumes 300 Fluid per 6 seconds, or 3000 fluid per minute -- max allowed in pipes is 6000 from testing*/
-		InputPipe1Amount = InputPipe1Amount - 300;
-		InputPipe1Amount = FMath::Clamp(InputPipe1Amount, 0, MaxFluidAmount);
+	default:
+		break;
 	}
 }
 
-void ARPArcReactor::UpdatePowerProducedThisCycle(float dT) {
-	float tempProduced = (this->FGPowerConnection->GetPowerInfo()->GetRegulatedDynamicProduction()) * dT;
-	PowerProducedThisCycle += tempProduced;
-}
 /*####################*/
 
 /*########## Utility Functions ##########*/
@@ -168,22 +157,14 @@ void ARPArcReactor::DecreaseSpinAmount() {
 }
 
 void ARPArcReactor::CalcSpinningState() {
-	if (ReactorSpinAmount <= 0) {
-		SetReactorState(EReactorState::RP_State_SpunDown);
-	}
-	else if (ReactorSpinAmount >= 100) {
-		SetReactorState(EReactorState::RP_State_Producing);
+	float temp = ReactorSpinAmount * 0.01f;
+	if (particlesEnabled) {
+		SpinupRotation = FVector(0, 0, temp);
 	}
 	else {
-		float temp = ReactorSpinAmount * 0.01f;
-		if (particlesEnabled) {
-			SpinupRotation = FVector(0, 0, temp);
-		}
-		else {
-			SpinupRotation = FVector(0, 0, 0);
-		}
-		SpinupOpacity = temp;
+		SpinupRotation = FVector(0, 0, 0);
 	}
+	SpinupOpacity = temp;
 
 	mUpdateParticleVars = true;
 }
@@ -206,28 +187,20 @@ void ARPArcReactor::RenderStateSpunUp() {
 	mUpdateParticleVars = true;
 }
 
-void ARPArcReactor::ProduceMW() {
-	ARPReactorBaseActor::startReactorPowerProduction();
-}
-
 void ARPArcReactor::UpdateParticleVariables() {
-	if (mUpdateParticleVars == true) {
-		mUpdateParticleVars = false;
+	mUpdateParticleVars = false;
 
-		PlasmaParticles->SetVectorParameter(FName("OrbitRate"), SpinupRotation);
-		PlasmaParticles->SetFloatParameter(FName("PlasmaOpacity"), SpinupOpacity);
+	PlasmaParticles->SetVectorParameter(FName("OrbitRate"), SpinupRotation);
+	PlasmaParticles->SetFloatParameter(FName("PlasmaOpacity"), SpinupOpacity);
 
-		if (ReactorSpinAmount <= 50) {
-			PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.0f, 0.0f));
-		}
-		else if (ReactorSpinAmount <= 75) {
-			PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.473217f, 0.0f));
-		}
-		else {
-			PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(0.22684f, 1.0f, 0.0f));
-		}
-
-		
+	if (ReactorSpinAmount <= 50) {
+		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.0f, 0.0f));
+	}
+	else if (ReactorSpinAmount <= 75) {
+		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.473217f, 0.0f));
+	}
+	else {
+		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(0.22684f, 1.0f, 0.0f));
 	}
 }
 
@@ -252,6 +225,15 @@ void ARPArcReactor::CalcAudio() {
 	}
 }
 
+/*#### Getters & setters ####*/
+void ARPArcReactor::SetReactorState(EReactorState state) {
+	ReactorState = state;
+}
+
+EReactorState ARPArcReactor::GetReactorState() {
+	return ReactorState;
+}
+
 bool ARPArcReactor::isSoundEnabled() {
 	return mReactorSoundEnabled;
 }
@@ -267,8 +249,12 @@ bool ARPArcReactor::isParticlesEnabled() {
 
 void ARPArcReactor::setParticlesEnabled(bool enabled) {
 	particlesEnabled = enabled;
-	if (particlesEnabled == false) {
+	if (!particlesEnabled) {
 		SpinupRotation = FVector(0, 0, 0);
+		SpinupOpacity = 0.0f;
+	}
+	else {
+		CalcSpinningState();
 	}
 
 	mUpdateParticleVars = true;
@@ -278,17 +264,7 @@ int ARPArcReactor::getReactorSpinAmount() {
 	return(ReactorSpinAmount);
 }
 
-int ARPArcReactor::getInput1Amount() {
-	return(InputConveyor1Amount);
-}
-
-int ARPArcReactor::getInput2Amount() {
-	return(InputConveyor2Amount);
-}
-
-int ARPArcReactor::getPipeInputAmount() {
-	return(InputPipe1Amount);
-}
+/*#### End getters and setters*/
 
 /*#######################################*/
 
@@ -298,25 +274,9 @@ void ARPArcReactor::Factory_Tick(float dt) {
 
 	ToggleLight();
 
-	/*##### Collect Inputs #####*/
-	/*CollectInputConveyor1*/
-	ARPReactorBaseActor::collectInputResource(InputConveyor1, Conveyor1InputClass, MaxResourceAmount, InputConveyor1Amount);
-
-	/*CollectInputConveyor2*/
-	ARPReactorBaseActor::collectInputResource(InputConveyor2, Conveyor2InputClass, MaxResourceAmount, InputConveyor2Amount);
-
-	/*CollectInputPipe1*/
-	ARPReactorBaseActor::collectInputFluidResource(dt, InputPipe, Pipe1InputClass, MaxFluidAmount, InputPipe1Amount);
-	/*##########################*/
-
-	CalcResourceState();
 	CalcReactorState();
-	if (ReactorState == EReactorState::RP_State_Producing) {
-		UpdatePowerProducedThisCycle(dt);
-		if (PowerProducedThisCycle >= PowerValuePerCycle) {
-			ReduceResourceAmounts();
-			PowerProducedThisCycle = 0.0f;
-		}
+
+	if (mUpdateParticleVars && particlesEnabled) {
+		UpdateParticleVariables();
 	}
-	
 }
