@@ -10,6 +10,7 @@
 #include "FGInventoryComponent.h"
 #include "FGInventoryLibrary.h"
 
+
 ARPArcReactor::ARPArcReactor() {
 	//pwr
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection"));
@@ -57,6 +58,7 @@ void ARPArcReactor::BeginPlay() {
 
 	FGPowerConnection->SetPowerInfo(GetPowerInfo());
 	mUpdateParticleVars = true;
+	mUpdateAudio = true;
 }
 
 void ARPArcReactor::Tick(float dt) {
@@ -64,6 +66,10 @@ void ARPArcReactor::Tick(float dt) {
 
 	if (mUpdateParticleVars) {
 		UpdateParticleVariables();
+	}
+
+	if (mUpdateAudio) {
+		CalcAudio();
 	}
 }
 
@@ -79,63 +85,42 @@ bool ARPArcReactor::CanStartPowerProduction_Implementation() const {
 }
 
 /*########## Main Functions ##########*/
-void ARPArcReactor::ToggleLight() {
-	//toggles light on and off depending on time of day
-	AFGGameState* state = (AFGGameState*)UGameplayStatics::GetGameState(this);
-
-	if (state == nullptr) {
-		return;
-	}
-
-	AFGTimeOfDaySubsystem* timeSubsystem = state->GetTimeSubsystem();
-
-	if (timeSubsystem == nullptr) {
-		return;
-	}
-
-	if (timeSubsystem->IsNight() == true) {
-		SpotLight->Activate();
-	}
-	else {
-		SpotLight->Deactivate();
-	}
-}
 
 void ARPArcReactor::CalcReactorState() {
 	switch (ReactorState) {
 	case EReactorState::RP_State_SpunDown:
 	{
-		if (getReactorCores() >= MinStartAmount) {
+		if (getReactorCores() >= MinStartAmount && getReactorCoolantInternal() >= 8000) {
 			SetReactorState(EReactorState::RP_State_SpinUp);
-			CalcAudio();
+			mUpdateAudio = true;
 		}
 		break;
 	}
 	case EReactorState::RP_State_SpinUp:
 	{
 		IncreaseSpinAmount();
-		if (ReactorSpinAmount >= 100) {
+		if (ReactorSpinAmount >= 100.0f) {
 			SetReactorState(EReactorState::RP_State_Producing);
 			RenderStateSpunUp();
-			CalcAudio();
+			mUpdateAudio = true;
 		}
 		break;
 	}
 	case EReactorState::RP_State_Producing:
 	{
-		if (getReactorCores() <= MinStopAmount) {
+		if (getReactorCores() <= MinStopAmount || getReactorCoolantInternal() < 2000) {
 			SetReactorState(EReactorState::RP_State_SpinDown);
-			CalcAudio();
+			mUpdateAudio = true;
 		}
 		break;
 	}
 	case EReactorState::RP_State_SpinDown:
 	{
 		DecreaseSpinAmount();
-		if (ReactorSpinAmount <= 0) {
+		if (ReactorSpinAmount <= 0.0f) {
 			SetReactorState(EReactorState::RP_State_SpunDown);
 			RenderStateSpunDown();
-			CalcAudio();
+			mUpdateAudio = true;
 		}
 		break;
 	}
@@ -208,7 +193,14 @@ void ARPArcReactor::UpdateParticleVariables() {
 }
 
 void ARPArcReactor::CalcAudio() {
-	if (mReactorSoundEnabled == true) {
+	mUpdateAudio = false;
+
+	UFGGameUserSettings* UserSettings = UFGGameUserSettings::GetFGGameUserSettings();
+	float Volume = UserSettings->GetAudioVolume("SFX_Bus_Volume") * 0.6;
+
+	ArcReactorSound->SetVolumeMultiplier(Volume);
+
+	if (mReactorSoundEnabled == true && ReactorState != EReactorState::RP_State_SpunDown) {
 		if (!ArcReactorSound->IsPlaying()) {
 			if (ReactorState == EReactorState::RP_State_SpinUp) {
 				StartSpinupSound();
@@ -243,7 +235,7 @@ bool ARPArcReactor::isSoundEnabled() {
 
 void ARPArcReactor::setSoundEnabled(bool enabled) {
 	mReactorSoundEnabled = enabled;
-	CalcAudio();
+	mUpdateAudio = true;
 }
 
 bool ARPArcReactor::isParticlesEnabled() {
@@ -282,11 +274,11 @@ int ARPArcReactor::getReactorCores() {
 
 float ARPArcReactor::getReactorCoolantInternal() {
 	FInventoryStack out_stack;
-	bool gotFuel = GetFuelInventory()->GetStackFromIndex(mSupplementalInventoryIndex, out_stack);
+	bool gotCoolant = GetFuelInventory()->GetStackFromIndex(mSupplementalInventoryIndex, out_stack);
 
 	int coolantAmnt = 0;
 
-	if (gotFuel) {
+	if (gotCoolant) {
 		coolantAmnt = out_stack.NumItems;
 	}
 
@@ -313,8 +305,6 @@ float ARPArcReactor::getReactorCoolantBufferMax() {
 //tick function - primary logic
 void ARPArcReactor::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
-
-	ToggleLight();
 
 	CalcReactorState();
 }

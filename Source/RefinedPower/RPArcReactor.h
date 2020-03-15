@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Core.h"
 #include "Buildables/FGBuildableGeneratorFuel.h"
+#include "FGGameUserSettings.h"
 #include "RPArcReactor.generated.h"
 
 UENUM(BlueprintType)
@@ -30,9 +31,6 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 
 	public:
 		/*#### start Main operational functions ####*/
-
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
-			void ToggleLight();
 
 		void CalcReactorState();
 
@@ -127,6 +125,7 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 			UParticleSystemComponent* PlasmaParticles;
 
 		bool mUpdateParticleVars;
+		bool mUpdateAudio;
 
 		/*#### End Particle vars ####*/
 
@@ -166,7 +165,7 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
 			USpotLightComponent* SpotLight;
 
-		UPROPERTY(VisibleAnywhere, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 			UAudioComponent* ArcReactorSound;
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
