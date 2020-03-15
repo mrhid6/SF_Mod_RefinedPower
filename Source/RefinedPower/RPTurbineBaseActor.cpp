@@ -5,6 +5,8 @@
 #include "FGPowerConnectionComponent.h"
 #include "FGPowerInfoComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "UnrealNetwork.h"
+#include "Engine.h"
 
 
 ARPTurbineBaseActor::ARPTurbineBaseActor() {

@@ -8,6 +8,7 @@
 #include "util/Logging.h"
 #include "FGPowerConnectionComponent.h"
 #include "FGInventoryComponent.h"
+#include "FGInventoryLibrary.h"
 
 ARPArcReactor::ARPArcReactor() {
 	//pwr
@@ -27,8 +28,8 @@ ARPArcReactor::ARPArcReactor() {
 	ArcReactorSound->SetupAttachment(RootComponent);
 
 	/*############### Settup machine item inputs ###############*/
-	InputConveyor = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("InputConveyor"));
-	InputPipe = CreateDefaultSubobject<UFGPipeConnectionComponent>(TEXT("InputPipe"));
+	InputConveyor = CreateDefaultSubobject<UFGFactoryConnectionComponent>(TEXT("ConveyorInput1"));
+	InputPipe = CreateDefaultSubobject<UFGPipeConnectionComponent>(TEXT("PipeInput1"));
 
 	InputConveyor->SetupAttachment(RootComponent);
 	InputPipe->SetupAttachment(RootComponent);
@@ -55,12 +56,13 @@ void ARPArcReactor::BeginPlay() {
 	Super::BeginPlay();
 
 	FGPowerConnection->SetPowerInfo(GetPowerInfo());
+	mUpdateParticleVars = true;
 }
 
 void ARPArcReactor::Tick(float dt) {
 	Super::Tick(dt);
 
-	if (mUpdateParticleVars && particlesEnabled) {
+	if (mUpdateParticleVars) {
 		UpdateParticleVariables();
 	}
 }
@@ -103,12 +105,7 @@ void ARPArcReactor::CalcReactorState() {
 	switch (ReactorState) {
 	case EReactorState::RP_State_SpunDown:
 	{
-		TSubclassOf< class UFGItemDescriptor > fuel = GetCurrentFuelClass();
-		int fuelAmnt = GetFuelInventory()->GetNumItems(fuel);
-		SML::Logging::info("[RefinedPower] - AR: ", fuelAmnt);
-
-
-		if (fuelAmnt >= MinStartAmount) {
+		if (getReactorCores() >= MinStartAmount) {
 			SetReactorState(EReactorState::RP_State_SpinUp);
 			CalcAudio();
 		}
@@ -126,9 +123,7 @@ void ARPArcReactor::CalcReactorState() {
 	}
 	case EReactorState::RP_State_Producing:
 	{
-		TSubclassOf< class UFGItemDescriptor > fuel = GetCurrentFuelClass();
-		int fuelAmnt = GetFuelInventory()->GetNumItems(fuel);
-		if (fuelAmnt <= MinStopAmount) {
+		if (getReactorCores() <= MinStopAmount) {
 			SetReactorState(EReactorState::RP_State_SpinDown);
 			CalcAudio();
 		}
@@ -153,14 +148,14 @@ void ARPArcReactor::CalcReactorState() {
 
 /*########## Utility Functions ##########*/
 void ARPArcReactor::IncreaseSpinAmount() {
-	ReactorSpinAmount++;
-	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount, 0, 100);
+	ReactorSpinAmount+= 0.02f;
+	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount, 0.0f, 100.0f);
 	CalcSpinningState();
 }
 
 void ARPArcReactor::DecreaseSpinAmount() {
-	ReactorSpinAmount--;
-	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount, 0, 100);
+	ReactorSpinAmount-= 0.02f;
+	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount, 0.0f, 100.0f);
 	CalcSpinningState();
 }
 
@@ -271,6 +266,45 @@ void ARPArcReactor::setParticlesEnabled(bool enabled) {
 int ARPArcReactor::getReactorSpinAmount() {
 	return(ReactorSpinAmount);
 }
+
+int ARPArcReactor::getReactorCores() {
+	FInventoryStack out_stack;
+	bool gotFuel = GetFuelInventory()->GetStackFromIndex(mFuelInventoryIndex, out_stack);
+
+	int fuelAmnt = 0;
+
+	if (gotFuel) {
+		fuelAmnt = out_stack.NumItems;
+	}
+
+	return fuelAmnt;
+}
+
+float ARPArcReactor::getReactorCoolantInternal() {
+	FInventoryStack out_stack;
+	bool gotFuel = GetFuelInventory()->GetStackFromIndex(mSupplementalInventoryIndex, out_stack);
+
+	int coolantAmnt = 0;
+
+	if (gotFuel) {
+		coolantAmnt = out_stack.NumItems;
+	}
+
+	return coolantAmnt;
+}
+
+float ARPArcReactor::getReactorCoolantInternalMax() {
+	return float(50000);
+}
+
+float ARPArcReactor::getReactorCoolantBuffer() {
+	return mCurrentSupplementalAmount;
+}
+
+float ARPArcReactor::getReactorCoolantBufferMax() {
+	return mSupplementalLoadAmount;
+}
+
 
 /*#### End getters and setters*/
 

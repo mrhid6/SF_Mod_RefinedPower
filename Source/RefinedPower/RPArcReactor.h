@@ -75,20 +75,35 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 
 		/*#### Start getters and setters ####*/
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
 			int getReactorSpinAmount();
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
 			bool isSoundEnabled();
 
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void setSoundEnabled(bool enabled);
 
-		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
+		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
 			bool isParticlesEnabled();
 
 		UFUNCTION(BlueprintCallable, Category = "RefinedPower|Reactor|ArcReactor")
 			void setParticlesEnabled(bool enabled);
+
+		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
+			int getReactorCores();
+
+		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
+			float getReactorCoolantInternal();
+
+		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
+			float getReactorCoolantInternalMax();
+
+		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
+			float getReactorCoolantBuffer();
+
+		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
+			float getReactorCoolantBufferMax();
 
 		/*#### End getters and setters #####*/
 
@@ -103,7 +118,7 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 			float SpinupOpacity= 0.0f;
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			int ReactorSpinAmount = 0;
+			float ReactorSpinAmount = 0;
 
 		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
 			bool particlesEnabled = false;
@@ -123,14 +138,6 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 		/*#### End Reactor State vars ####*/
 
 		/*#### Start Input vars ####*/
-
-		/*Max amount of items we can store*/
-		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
-			int MaxResourceAmount = 2000;
-
-		/*Max Amount of fluids we can store -- this is the max amount a pipe can output in 2 minutes*/
-		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
-			int MaxFluidAmount = 6000;
 
 		/*Min amount of resources required to start production*/
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")

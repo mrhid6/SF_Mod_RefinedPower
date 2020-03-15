@@ -27,9 +27,8 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool ShouldSave_Implementation() const override;
-
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
 	void calculateTurbinePowerProduction();
 	float getTurbineBasePowerProduction();
 	float getTurbineHeightPowerProduction();
@@ -73,7 +72,7 @@ protected:
 
 	/** Is turbine enabled or disabled */
 	UPROPERTY( SaveGame, Replicated, meta = (NoAutoJson = true))
-	bool mTurbineEnabled;
+		uint32  mTurbineEnabled;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UFGPowerConnectionComponent* FGPowerConnection;
