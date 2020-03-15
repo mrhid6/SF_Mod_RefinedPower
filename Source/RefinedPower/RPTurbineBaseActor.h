@@ -7,6 +7,7 @@
 #include "FGPowerConnectionComponent.h"
 #include "Containers/Array.h"
 #include "UnrealNetwork.h"
+#include "Engine.h"
 #include "FGSaveInterface.h"
 #include "RPTurbineBaseActor.generated.h"
 
@@ -71,7 +72,7 @@ protected:
 	ETurbineType mTurbineType;
 
 	/** Is turbine enabled or disabled */
-	UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower", meta = (NoAutoJson = true))
+	UPROPERTY( SaveGame, Replicated, meta = (NoAutoJson = true))
 	bool mTurbineEnabled;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
