@@ -51,12 +51,16 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 
 	DOREPLIFETIME(ARPArcReactor, ReactorState);
 	DOREPLIFETIME(ARPArcReactor, ReactorSpinAmount);
+	DOREPLIFETIME(ARPArcReactor, RPFuelInvIndex);
+	DOREPLIFETIME(ARPArcReactor, RPCoolantInvIndex);
 }
 
 void ARPArcReactor::BeginPlay() {
 	Super::BeginPlay();
 
-	FGPowerConnection->SetPowerInfo(GetPowerInfo());
+	if (HasAuthority()) {
+		FGPowerConnection->SetPowerInfo(GetPowerInfo());
+	}
 	mUpdateParticleVars = true;
 	mUpdateAudio = true;
 }
@@ -261,7 +265,7 @@ int ARPArcReactor::getReactorSpinAmount() {
 
 int ARPArcReactor::getReactorCores() {
 	FInventoryStack out_stack;
-	bool gotFuel = GetFuelInventory()->GetStackFromIndex(mFuelInventoryIndex, out_stack);
+	bool gotFuel = GetFuelInventory()->GetStackFromIndex(RPFuelInvIndex, out_stack);
 
 	int fuelAmnt = 0;
 
@@ -274,7 +278,7 @@ int ARPArcReactor::getReactorCores() {
 
 float ARPArcReactor::getReactorCoolantInternal() {
 	FInventoryStack out_stack;
-	bool gotCoolant = GetFuelInventory()->GetStackFromIndex(mSupplementalInventoryIndex, out_stack);
+	bool gotCoolant = GetFuelInventory()->GetStackFromIndex(RPCoolantInvIndex, out_stack);
 
 	int coolantAmnt = 0;
 
@@ -306,5 +310,7 @@ float ARPArcReactor::getReactorCoolantBufferMax() {
 void ARPArcReactor::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
 
-	CalcReactorState();
+	if (HasAuthority()) {
+		CalcReactorState();
+	}
 }

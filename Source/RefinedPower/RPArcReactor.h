@@ -118,6 +118,12 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			float ReactorSpinAmount = 0;
 
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
+			int32 RPFuelInvIndex = mFuelInventoryIndex;
+
+		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
+			int32 RPCoolantInvIndex = mSupplementalInventoryIndex;
+
 		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
 			bool particlesEnabled = false;
 

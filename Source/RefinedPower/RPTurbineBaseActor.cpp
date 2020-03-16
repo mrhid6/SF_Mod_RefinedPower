@@ -22,11 +22,11 @@ ARPTurbineBaseActor::ARPTurbineBaseActor() {
 void ARPTurbineBaseActor::BeginPlay() {
 	Super::BeginPlay();
 
-	FGPowerConnection->SetPowerInfo(GetPowerInfo());
-
-
-	calculateTurbinePowerProduction();
-	updateTurbineParticleState();
+	if (HasAuthority()) {
+		FGPowerConnection->SetPowerInfo(GetPowerInfo());
+		calculateTurbinePowerProduction();
+		updateTurbineParticleState();
+	}
 }
 
 void ARPTurbineBaseActor::EndPlay(const EEndPlayReason::Type endPlayReason) {
