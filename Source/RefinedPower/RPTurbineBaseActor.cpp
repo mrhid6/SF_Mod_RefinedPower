@@ -23,6 +23,8 @@ void ARPTurbineBaseActor::BeginPlay() {
 	Super::BeginPlay();
 
 	FGPowerConnection->SetPowerInfo(GetPowerInfo());
+
+
 	calculateTurbinePowerProduction();
 	updateTurbineParticleState();
 }
