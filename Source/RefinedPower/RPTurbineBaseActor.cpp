@@ -9,6 +9,17 @@
 #include "Engine.h"
 
 
+void URPTurbineBaseRCO::SetTurbineEnabled_Implementation(ARPTurbineBaseActor* turbine, bool enabled){
+	turbine->mTurbineEnabled = enabled;
+	turbine->calculateTurbinePowerProduction();
+	turbine->updateTurbineParticleState();
+	turbine->ForceNetUpdate();
+}
+
+bool URPTurbineBaseRCO::SetTurbineEnabled_Validate(ARPTurbineBaseActor* turbine, bool enabled){
+	return true;
+}
+
 ARPTurbineBaseActor::ARPTurbineBaseActor() {
 
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection1"));
@@ -43,6 +54,7 @@ void ARPTurbineBaseActor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ARPTurbineBaseActor, mTurbineEnabled);
+	DOREPLIFETIME(ARPTurbineBaseActor, mWindTurbinesInArea);
 }
 
 bool ARPTurbineBaseActor::ShouldSave_Implementation() const {
@@ -189,8 +201,12 @@ bool ARPTurbineBaseActor::isTurbineEnabled() {
 	return mTurbineEnabled;
 }
 
+
+
 void ARPTurbineBaseActor::setTurbineEnabled(bool turbineEnabled) {
-	mTurbineEnabled = turbineEnabled;
-	calculateTurbinePowerProduction();
-	updateTurbineParticleState();
+	auto rco = Cast<URPTurbineBaseRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPTurbineBaseRCO::StaticClass()));
+
+	if (rco) {
+		rco->SetTurbineEnabled(this, turbineEnabled);
+	}
 }
