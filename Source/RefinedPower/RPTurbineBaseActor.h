@@ -19,6 +19,16 @@ enum class ETurbineType : uint8
 };
 
 UCLASS()
+class REFINEDPOWER_API URPTurbineBaseRCO : UFGRemoteCallObject {
+	GENERATED_BODY()
+	
+public:
+	UFUNCTION(Server, WithValidation, Reliable)
+		void SetTurbineEnabled(ARPTurbineBaseActor* turbine, bool enabled);
+		
+};
+
+UCLASS()
 class REFINEDPOWER_API ARPTurbineBaseActor : public AFGBuildableGenerator {
 	GENERATED_BODY()
 public:
