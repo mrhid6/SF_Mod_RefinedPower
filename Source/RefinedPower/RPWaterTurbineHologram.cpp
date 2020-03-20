@@ -8,99 +8,90 @@
 #include "Kismet/GameplayStatics.h"
 #include "UObject/WeakObjectPtr.h"
 #include "Components/BoxComponent.h"
+#include "FGConstructDisqualifier.h"
 
 ARPWaterTurbineHologram::ARPWaterTurbineHologram() {
-	WaterTest = CreateDefaultSubobject<UBoxComponent>(TEXT("WaterTest"));
-	WaterTest->SetupAttachment(RootComponent);
+	mWaterTest = CreateDefaultSubobject<UBoxComponent>(TEXT("WaterTest"));
+	mWaterTest->SetupAttachment(RootComponent);
 
 	FVector boxSize = FVector(100, 100, 100);
-	WaterTest->SetBoxExtent(boxSize);
+	mWaterTest->SetBoxExtent(boxSize);
 
-	WaterTest->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	mWaterTest->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bAllowTickOnDedicatedServer = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	PrimaryActorTick.SetTickFunctionEnable(true);
+
+	mMaxPlacementFloorAngle = 90;
+}
+
+void ARPWaterTurbineHologram::BeginPlay() {
+	Super::BeginPlay();
+}
+
+void ARPWaterTurbineHologram::Tick(float dt) {
+	Super::Tick(dt);
+
+	SML::Logging::info("[RefinedPower] - TickTock!");
 }
 
 bool ARPWaterTurbineHologram::IsValidHitResult(const FHitResult& hitResult) const {
 	Super::IsValidHitResult(hitResult);
 
-	return SetOverlapWaterVolume();
+	AFGWaterVolume* foundWater;
+	return CheckOverlapWaterVolume(foundWater);
 }
 
-bool ARPWaterTurbineHologram::SetOverlapWaterVolume() const {
+bool ARPWaterTurbineHologram::CheckOverlapWaterVolume(AFGWaterVolume* &foundWater) const {
 
-	ARPWaterTurbineHologram* ptr = const_cast<ARPWaterTurbineHologram*>(this);
+	TArray<AActor*> foundWaterArr;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFGWaterVolume::StaticClass(), foundWaterArr);
 
-	TArray<AActor*> foundWater;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFGWaterVolume::StaticClass(), foundWater);
+	foundWater = nullptr;
 
-	for (int i = 0; i < foundWater.Num(); i++)
+	for (int i = 0; i < foundWaterArr.Num(); i++)
 	{
-		AFGWaterVolume* water = (AFGWaterVolume*)foundWater[i];
+		AFGWaterVolume* water = (AFGWaterVolume*)foundWaterArr[i];
 
 		// This WORKS!
-		if (WaterTest->IsOverlappingActor(water)) {
-			SML::Logging::info("[RefinedPower] - Valid Water Volume");
-
-
-			// CANT SET THIS!!!
-			ptr->FoundWater = water;
+		if (mWaterTest->IsOverlappingActor(water)) {
+			foundWater = water;
 			return true;
 		}
 	}
 
-	ptr->FoundWater = nullptr;
+	SML::Logging::info("[RefinedPower] - inValid Water Volume");
 	return false;
 }
 
+void ARPWaterTurbineHologram::CheckValidPlacement() {
+	Super::CheckValidPlacement();
 
+	if (!CheckOverlapWaterVolume(mFoundWater)) {
+		SML::Logging::info("[RefinedPower] - AddConstructDisqualifier");
+		AddConstructDisqualifier(UFGCDNeedsWaterVolume::StaticClass());
+	}
+}
 
 void ARPWaterTurbineHologram::SetHologramLocationAndRotation(const FHitResult& hitResult) {
 	
 	// Some weird shit going on here! probs IF statement?
 
-	if (!FoundWater) {
-		Super::SetHologramLocationAndRotation(hitResult);
-	}
-	else {
+	if (mFoundWater) {
 		SML::Logging::info("[RefinedPower] - Set Location to WATER?");
 		FVector WaterOrigin;
 		FVector WaterBounds;
-		FoundWater->GetActorBounds(false, WaterOrigin, WaterBounds);
+		mFoundWater->GetActorBounds(false, WaterOrigin, WaterBounds);
 
 		float WaterZ = WaterOrigin.Z;
 		WaterZ += WaterBounds.Z;
 
 		FVector location = FVector(hitResult.ImpactPoint.X, hitResult.ImpactPoint.Y, WaterZ);
-
+		FRotator Rotation = FRotator(0, mScrollRotation, 0);
 		this->SetActorLocation(location, false);
+		this->SetActorRotation(Rotation);
 	}
 }
-
-
-void ARPWaterTurbineHologram::BeginPlay() {
-	Super::BeginPlay();
-
-	testScript();
-}
-
-void ARPWaterTurbineHologram::testScript() {
-	//Grabs class names of valid hit results -- remove on release
-	/*SML::Logging::info("[RefinedPower] - ValidHitClasses: ");
-	AddValidHitClass(AFGWaterVolume::StaticClass());
-	for (int i = 0; i < mValidHitClasses.Num(); i++){
-		const char* className = "NULL";
-		const char* objectName = "NULL";
-		UObject* const pCastedToUObject = (UObject*)(mValidHitClasses[i]);
-
-		if (pCastedToUObject)
-		{
-			className = TCHAR_TO_UTF8(*pCastedToUObject->GetClass()->GetName());
-			objectName = TCHAR_TO_UTF8(*pCastedToUObject->GetName());
-		}
-
-		SML::Logging::info("[RefinedPower] - ", className, " ", objectName);
-	}*/
-}
-//void ARPWaterTurbineHologram::CheckValidPlacement() {
-//	Super::CheckValidPlacement();
-//
-//}
