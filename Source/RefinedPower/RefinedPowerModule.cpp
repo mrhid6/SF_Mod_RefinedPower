@@ -2,13 +2,19 @@
 #include "RPTurbineBaseActor.h"
 #include "../SML/mod/hooking.h"
 #include "FGGameMode.h"
+
+#include "RPTurbineBaseActor.h"
 #include <fstream>
 
+
+void GameModePostLogin(CallScope<void(*)(AFGGameMode*, APlayerController*)>& scope, AFGGameMode* gm, APlayerController* pc) {
+	if (gm->HasAuthority() && !gm->IsMainMenuGameMode()) {
+		gm->RegisterRemoteCallObjectClass(URPTurbineBaseRCO::StaticClass());
+	}
+}
+
 void FRefinedPowerModule::StartupModule() {
-	/*SUBSCRIBE_METHOD("?InitGameState@AFGGameMode@@UEAAXXZ", AFGGameMode::InitGameState, [](CallResult<void>&, AFGGameMode* gameMode) {
-		AExampleActor* actor = gameMode->GetWorld()->SpawnActor<AExampleActor>(FVector::ZeroVector, FRotator::ZeroRotator);
-		actor->DoStuff();
-	});*/
+	SUBSCRIBE_METHOD("?PostLogin@AFGGameMode@@UEAAXPEAVAPlayerController@@@Z", AFGGameMode::PostLogin, &GameModePostLogin)
 }
 
 IMPLEMENT_GAME_MODULE(FRefinedPowerModule, RefinedPower);

@@ -9,6 +9,7 @@
 #include "UnrealNetwork.h"
 #include "Engine.h"
 #include "FGSaveInterface.h"
+#include "FGRemoteCallObject.h"
 #include "RPTurbineBaseActor.generated.h"
 
 UENUM(BlueprintType)
@@ -19,7 +20,7 @@ enum class ETurbineType : uint8
 };
 
 UCLASS()
-class REFINEDPOWER_API URPTurbineBaseRCO : UFGRemoteCallObject {
+class REFINEDPOWER_API URPTurbineBaseRCO : public UFGRemoteCallObject {
 	GENERATED_BODY()
 	
 public:
@@ -64,6 +65,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	bool isTurbineEnabled();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Turbine")
+		void updateTurbineParticleState();
+
+
+	/** Is turbine enabled or disabled */
+	UPROPERTY(SaveGame, Replicated, meta = (NoAutoJson = true))
+		uint32  mTurbineEnabled;
+
 protected:
 
 	float mTurbinePowerProduction;
@@ -80,10 +89,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 	ETurbineType mTurbineType;
 
-	/** Is turbine enabled or disabled */
-	UPROPERTY( SaveGame, Replicated, meta = (NoAutoJson = true))
-		uint32  mTurbineEnabled;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UFGPowerConnectionComponent* FGPowerConnection;
 
@@ -94,8 +99,5 @@ protected:
 	int mMaxWindTurbinesInArea;
 
 	void calcNearbyWindTurbines();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Turbine")
-	void updateTurbineParticleState();
 
 };

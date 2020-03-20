@@ -7,6 +7,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "UnrealNetwork.h"
 #include "Engine.h"
+#include "FGPlayerController.h"
 
 
 void URPTurbineBaseRCO::SetTurbineEnabled_Implementation(ARPTurbineBaseActor* turbine, bool enabled){
