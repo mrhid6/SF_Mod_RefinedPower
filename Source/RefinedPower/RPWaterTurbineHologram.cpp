@@ -14,7 +14,7 @@ ARPWaterTurbineHologram::ARPWaterTurbineHologram() {
 	mWaterTest = CreateDefaultSubobject<UBoxComponent>(TEXT("WaterTest"));
 	mWaterTest->SetupAttachment(RootComponent);
 
-	FVector boxSize = FVector(100, 100, 100);
+	FVector boxSize = FVector(10, 10, 10);
 	mWaterTest->SetBoxExtent(boxSize);
 
 	mWaterTest->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
@@ -28,28 +28,21 @@ ARPWaterTurbineHologram::ARPWaterTurbineHologram() {
 	mMaxPlacementFloorAngle = 90;
 }
 
+ARPWaterTurbineHologram::~ARPWaterTurbineHologram() {}
+
 void ARPWaterTurbineHologram::BeginPlay() {
 	Super::BeginPlay();
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFGWaterVolume::StaticClass(), foundWaterArr);
 }
 
 void ARPWaterTurbineHologram::Tick(float dt) {
 	Super::Tick(dt);
 
-	SML::Logging::info("[RefinedPower] - TickTock!");
-}
-
-bool ARPWaterTurbineHologram::IsValidHitResult(const FHitResult& hitResult) const {
-	Super::IsValidHitResult(hitResult);
-
-	AFGWaterVolume* foundWater;
-	return CheckOverlapWaterVolume(foundWater);
+	//SML::Logging::info("[RefinedPower] - TickTock!");
 }
 
 bool ARPWaterTurbineHologram::CheckOverlapWaterVolume(AFGWaterVolume* &foundWater) const {
-
-	TArray<AActor*> foundWaterArr;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFGWaterVolume::StaticClass(), foundWaterArr);
-
 	foundWater = nullptr;
 
 	for (int i = 0; i < foundWaterArr.Num(); i++)
@@ -72,7 +65,7 @@ void ARPWaterTurbineHologram::CheckValidPlacement() {
 
 	if (!CheckOverlapWaterVolume(mFoundWater)) {
 		SML::Logging::info("[RefinedPower] - AddConstructDisqualifier");
-		AddConstructDisqualifier(UFGCDNeedsWaterVolume::StaticClass());
+		AddConstructDisqualifier(UFGCDInvalidPlacement::StaticClass());
 	}
 }
 
@@ -81,7 +74,7 @@ void ARPWaterTurbineHologram::SetHologramLocationAndRotation(const FHitResult& h
 	// Some weird shit going on here! probs IF statement?
 
 	if (mFoundWater) {
-		SML::Logging::info("[RefinedPower] - Set Location to WATER?");
+		//SML::Logging::info("[RefinedPower] - Set Location to WATER?");
 		FVector WaterOrigin;
 		FVector WaterBounds;
 		mFoundWater->GetActorBounds(false, WaterOrigin, WaterBounds);
@@ -90,6 +83,13 @@ void ARPWaterTurbineHologram::SetHologramLocationAndRotation(const FHitResult& h
 		WaterZ += WaterBounds.Z;
 
 		FVector location = FVector(hitResult.ImpactPoint.X, hitResult.ImpactPoint.Y, WaterZ);
+		FRotator Rotation = FRotator(0, mScrollRotation, 0);
+		this->SetActorLocation(location, false);
+		this->SetActorRotation(Rotation);
+	}
+	else {
+		//SML::Logging::info("[RefinedPower] - Set Location to GROUND?");
+		FVector location = FVector(hitResult.ImpactPoint.X, hitResult.ImpactPoint.Y, hitResult.ImpactPoint.Z);
 		FRotator Rotation = FRotator(0, mScrollRotation, 0);
 		this->SetActorLocation(location, false);
 		this->SetActorRotation(Rotation);

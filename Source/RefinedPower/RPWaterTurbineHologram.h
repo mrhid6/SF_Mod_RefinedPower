@@ -17,20 +17,23 @@ class REFINEDPOWER_API ARPWaterTurbineHologram : public AFGFactoryHologram
 	GENERATED_BODY()
 
 		ARPWaterTurbineHologram();
-public:
-	virtual void BeginPlay() override;
-	virtual void Tick(float dt) override;
-	virtual bool IsValidHitResult(const FHitResult& hitResult) const override;
-	virtual void SetHologramLocationAndRotation(const FHitResult& hitResult) override;
-	virtual void CheckValidPlacement() override;
+		~ARPWaterTurbineHologram();
+	public:
+		virtual void BeginPlay() override;
+		virtual void Tick(float dt) override;
+		virtual void SetHologramLocationAndRotation(const FHitResult& hitResult) override;
+		virtual void CheckValidPlacement() override;
 
-	bool CheckOverlapWaterVolume(AFGWaterVolume* &foundWater) const;
+		bool CheckOverlapWaterVolume(AFGWaterVolume* &foundWater) const;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class UBoxComponent* mWaterTest;
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+			class UBoxComponent* mWaterTest;
+		/*Array of all water volumes on map. Only call this once.*/
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+			TArray<AActor*> foundWaterArr;
 
-protected:
+	protected:
 
-	AFGWaterVolume* mFoundWater;
+		AFGWaterVolume* mFoundWater;
 
 };
