@@ -1,9 +1,7 @@
 #include "RefinedPowerModule.h"
-#include "RPTurbineBaseActor.h"
+#include "Turbine/RPTurbineBaseActor.h"
 #include "../SML/mod/hooking.h"
 #include "FGGameMode.h"
-
-#include "RPTurbineBaseActor.h"
 #include <fstream>
 
 
