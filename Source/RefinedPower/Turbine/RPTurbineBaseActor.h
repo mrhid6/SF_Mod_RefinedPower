@@ -26,6 +26,9 @@ class REFINEDPOWER_API URPTurbineBaseRCO : public UFGRemoteCallObject {
 public:
 	UFUNCTION(Server, WithValidation, Reliable)
 		void SetTurbineEnabled(ARPTurbineBaseActor* turbine, bool enabled);
+
+	UPROPERTY(Replicated)
+		bool bTest = true;
 		
 };
 
@@ -40,6 +43,7 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
 	virtual bool ShouldSave_Implementation() const override;
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
+	virtual void Tick(float dt) override;
 	void calculateTurbinePowerProduction();
 	float getTurbineBasePowerProduction();
 	float getTurbineHeightPowerProduction();
@@ -70,8 +74,15 @@ public:
 
 
 	/** Is turbine enabled or disabled */
-	UPROPERTY(SaveGame, Replicated, meta = (NoAutoJson = true))
+	UPROPERTY(SaveGame, ReplicatedUsing = OnRep_SetTurbineEnabled, meta = (NoAutoJson = true))
 		uint32  mTurbineEnabled;
+
+	UFUNCTION()
+		void OnRep_SetTurbineEnabled();
+
+	/** Is turbine enabled or disabled */
+	UPROPERTY(Replicated)
+		uint32  mTurbineStateUpdated;
 
 protected:
 
@@ -92,6 +103,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UFGPowerConnectionComponent* FGPowerConnection;
 
+	UPROPERTY(Replicated)
 	int mWindTurbinesInArea;
 	
 	/** The max amount of other wind turbines in the area */

@@ -9,7 +9,34 @@
 #include "FGPowerConnectionComponent.h"
 #include "FGInventoryComponent.h"
 #include "FGInventoryLibrary.h"
+#include "FGPlayerController.h"
 
+
+void URPArcReactorRCO::SetParticlesEnabled_Implementation(ARPArcReactor* reactor, bool enabled) {
+	reactor->mParticlesEnabled = enabled;
+	reactor->CalcSpinningState();
+	reactor->ForceNetUpdate();
+}
+
+bool URPArcReactorRCO::SetParticlesEnabled_Validate(ARPArcReactor* reactor, bool enabled) {
+	return true;
+}
+
+void URPArcReactorRCO::SetSoundEnabled_Implementation(ARPArcReactor* reactor, bool enabled) {
+	reactor->mReactorSoundEnabled = enabled;
+	reactor->mUpdateAudio = true;
+	reactor->ForceNetUpdate();
+}
+
+bool URPArcReactorRCO::SetSoundEnabled_Validate(ARPArcReactor* reactor, bool enabled) {
+	return true;
+}
+
+void URPArcReactorRCO::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(URPArcReactorRCO, bTest)
+}
 
 ARPArcReactor::ARPArcReactor() {
 	//pwr
@@ -50,9 +77,12 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ARPArcReactor, ReactorState);
-	DOREPLIFETIME(ARPArcReactor, ReactorSpinAmount);
+	DOREPLIFETIME(ARPArcReactor, mReactorSpinAmount);
 	DOREPLIFETIME(ARPArcReactor, RPFuelInvIndex);
 	DOREPLIFETIME(ARPArcReactor, RPCoolantInvIndex);
+
+	DOREPLIFETIME(ARPArcReactor, mParticlesEnabled);
+	DOREPLIFETIME(ARPArcReactor, mReactorSoundEnabled);
 }
 
 void ARPArcReactor::BeginPlay() {
@@ -103,7 +133,7 @@ void ARPArcReactor::CalcReactorState() {
 	case EReactorState::RP_State_SpinUp:
 	{
 		IncreaseSpinAmount();
-		if (ReactorSpinAmount >= 100.0f) {
+		if (mReactorSpinAmount >= 100.0f) {
 			SetReactorState(EReactorState::RP_State_Producing);
 			RenderStateSpunUp();
 			mUpdateAudio = true;
@@ -121,7 +151,7 @@ void ARPArcReactor::CalcReactorState() {
 	case EReactorState::RP_State_SpinDown:
 	{
 		DecreaseSpinAmount();
-		if (ReactorSpinAmount <= 0.0f) {
+		if (mReactorSpinAmount <= 0.0f) {
 			SetReactorState(EReactorState::RP_State_SpunDown);
 			RenderStateSpunDown();
 			mUpdateAudio = true;
@@ -137,44 +167,45 @@ void ARPArcReactor::CalcReactorState() {
 
 /*########## Utility Functions ##########*/
 void ARPArcReactor::IncreaseSpinAmount() {
-	ReactorSpinAmount+= 0.02f;
-	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount, 0.0f, 100.0f);
+	mReactorSpinAmount+= 0.02f;
+	mReactorSpinAmount = FMath::Clamp(mReactorSpinAmount, 0.0f, 100.0f);
 	CalcSpinningState();
 }
 
 void ARPArcReactor::DecreaseSpinAmount() {
-	ReactorSpinAmount-= 0.02f;
-	ReactorSpinAmount = FMath::Clamp(ReactorSpinAmount, 0.0f, 100.0f);
+	mReactorSpinAmount-= 0.02f;
+	mReactorSpinAmount = FMath::Clamp(mReactorSpinAmount, 0.0f, 100.0f);
 	CalcSpinningState();
 }
 
 void ARPArcReactor::CalcSpinningState() {
-	float temp = ReactorSpinAmount * 0.01f;
-	if (particlesEnabled) {
-		SpinupRotation = FVector(0, 0, temp);
+	float temp = mReactorSpinAmount * 0.01f;
+	if (mParticlesEnabled) {
+		mSpinupRotation = FVector(0, 0, temp);
+		mSpinupOpacity = temp;
 	}
 	else {
-		SpinupRotation = FVector(0, 0, 0);
+		mSpinupRotation = FVector(0, 0, 0);
+		mSpinupOpacity = 0.0f;
 	}
-	SpinupOpacity = temp;
 
 	mUpdateParticleVars = true;
 }
 
 void ARPArcReactor::RenderStateSpunDown() {
-	SpinupRotation = FVector(0);
-	SpinupOpacity = 0.0f;
+	mSpinupRotation = FVector(0);
+	mSpinupOpacity = 0.0f;
 	mUpdateParticleVars = true;
 }
 
 void ARPArcReactor::RenderStateSpunUp() {
-	if (particlesEnabled) {
-		SpinupRotation = FVector(0, 0, 1);
+	if (mParticlesEnabled) {
+		mSpinupRotation = FVector(0, 0, 1);
 	}
 	else {
-		SpinupRotation = FVector(0, 0, 0);
+		mSpinupRotation = FVector(0, 0, 0);
 	}
-	SpinupOpacity = 1.0f;
+	mSpinupOpacity = 1.0f;
 
 	mUpdateParticleVars = true;
 }
@@ -182,13 +213,13 @@ void ARPArcReactor::RenderStateSpunUp() {
 void ARPArcReactor::UpdateParticleVariables() {
 	mUpdateParticleVars = false;
 
-	PlasmaParticles->SetVectorParameter(FName("OrbitRate"), SpinupRotation);
-	PlasmaParticles->SetFloatParameter(FName("PlasmaOpacity"), SpinupOpacity);
+	PlasmaParticles->SetVectorParameter(FName("OrbitRate"), mSpinupRotation);
+	PlasmaParticles->SetFloatParameter(FName("PlasmaOpacity"), mSpinupOpacity);
 
-	if (ReactorSpinAmount <= 50) {
+	if (mReactorSpinAmount <= 50) {
 		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.0f, 0.0f));
 	}
-	else if (ReactorSpinAmount <= 75) {
+	else if (mReactorSpinAmount <= 75) {
 		PlasmaParticles->SetVectorParameter(FName("PlasmaColour"), FVector(1.0f, 0.473217f, 0.0f));
 	}
 	else {
@@ -243,24 +274,19 @@ void ARPArcReactor::setSoundEnabled(bool enabled) {
 }
 
 bool ARPArcReactor::isParticlesEnabled() {
-	return particlesEnabled;
+	return mParticlesEnabled;
 }
 
 void ARPArcReactor::setParticlesEnabled(bool enabled) {
-	particlesEnabled = enabled;
-	if (!particlesEnabled) {
-		SpinupRotation = FVector(0, 0, 0);
-		SpinupOpacity = 0.0f;
-	}
-	else {
-		CalcSpinningState();
-	}
+	auto rco = Cast<URPArcReactorRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPArcReactorRCO::StaticClass()));
 
-	mUpdateParticleVars = true;
+	if (rco) {
+		rco->SetParticlesEnabled(this, enabled);
+	}
 }
 
 int ARPArcReactor::getReactorSpinAmount() {
-	return(ReactorSpinAmount);
+	return(mReactorSpinAmount);
 }
 
 int ARPArcReactor::getReactorCores() {

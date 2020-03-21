@@ -4,6 +4,7 @@
 #include "Core.h"
 #include "Buildables/FGBuildableGeneratorFuel.h"
 #include "FGGameUserSettings.h"
+#include "FGRemoteCallObject.h"
 #include "RPArcReactor.generated.h"
 
 UENUM(BlueprintType)
@@ -13,6 +14,21 @@ enum class EReactorState : uint8
 	RP_State_Producing 	UMETA(DisplayName = "Producing"),
 	RP_State_SpinDown 	UMETA(DisplayName = "SpinDown"),
 	RP_State_SpunDown 	UMETA(DisplayName = "SpunDown")
+};
+
+UCLASS()
+class REFINEDPOWER_API URPArcReactorRCO : public UFGRemoteCallObject {
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(Server, WithValidation, Reliable)
+		void SetParticlesEnabled(ARPArcReactor* reactor, bool enabled);
+
+	UFUNCTION(Server, WithValidation, Reliable)
+		void SetSoundEnabled(ARPArcReactor* reactor, bool enabled);
+
+	UPROPERTY(Replicated)
+		bool bTest = true;
 };
 
 UCLASS()
@@ -105,18 +121,28 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 
 		/*#### End getters and setters #####*/
 
+		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
+			bool mParticlesEnabled = false;
+
+		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
+			bool mReactorSoundEnabled = true;
+
+
+		bool mUpdateParticleVars;
+		bool mUpdateAudio;
+
 	protected:
 
 		/*#### Start Particle vars ####*/
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Category = "RefinedPower")
-			FVector SpinupRotation = FVector(0.0f, 0.0f, 0.0f);
+			FVector mSpinupRotation = FVector(0.0f, 0.0f, 0.0f);
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Category = "RefinedPower")
-			float SpinupOpacity= 0.0f;
+			float mSpinupOpacity= 0.0f;
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			float ReactorSpinAmount = 0;
+			float mReactorSpinAmount = 0;
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			int32 RPFuelInvIndex = mFuelInventoryIndex;
@@ -124,14 +150,8 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			int32 RPCoolantInvIndex = mSupplementalInventoryIndex;
 
-		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
-			bool particlesEnabled = false;
-
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			UParticleSystemComponent* PlasmaParticles;
-
-		bool mUpdateParticleVars;
-		bool mUpdateAudio;
 
 		/*#### End Particle vars ####*/
 
@@ -151,9 +171,6 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 		/*When the resources fall below this amount, the reactor will shut off*/
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			int MinStopAmount = 1000;
-
-		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
-			bool mReactorSoundEnabled = true;
 
 		/*#### End input vars ####*/
 

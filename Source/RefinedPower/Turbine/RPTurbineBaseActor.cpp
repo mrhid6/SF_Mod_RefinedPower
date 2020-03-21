@@ -11,14 +11,22 @@
 
 
 void URPTurbineBaseRCO::SetTurbineEnabled_Implementation(ARPTurbineBaseActor* turbine, bool enabled){
+	SML::Logging::info("[RefinedPower] - Test2");
 	turbine->mTurbineEnabled = enabled;
-	turbine->calculateTurbinePowerProduction();
 	turbine->updateTurbineParticleState();
+
+	turbine->calculateTurbinePowerProduction();
 	turbine->ForceNetUpdate();
 }
 
 bool URPTurbineBaseRCO::SetTurbineEnabled_Validate(ARPTurbineBaseActor* turbine, bool enabled){
 	return true;
+}
+
+void URPTurbineBaseRCO::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(URPTurbineBaseRCO, bTest)
 }
 
 ARPTurbineBaseActor::ARPTurbineBaseActor() {
@@ -28,7 +36,9 @@ ARPTurbineBaseActor::ARPTurbineBaseActor() {
 
 	SetReplicates(true);
 	bReplicates = true;
+
 	mTurbineEnabled = true;
+	mTurbineStateUpdated = true;
 }
 
 void ARPTurbineBaseActor::BeginPlay() {
@@ -36,6 +46,8 @@ void ARPTurbineBaseActor::BeginPlay() {
 
 	if (HasAuthority()) {
 		FGPowerConnection->SetPowerInfo(GetPowerInfo());
+		calcNearbyWindTurbines();
+
 		calculateTurbinePowerProduction();
 		updateTurbineParticleState();
 	}
@@ -56,16 +68,26 @@ void ARPTurbineBaseActor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 
 	DOREPLIFETIME(ARPTurbineBaseActor, mTurbineEnabled);
 	DOREPLIFETIME(ARPTurbineBaseActor, mWindTurbinesInArea);
+	DOREPLIFETIME(ARPTurbineBaseActor, mTurbineStateUpdated);
 }
 
 bool ARPTurbineBaseActor::ShouldSave_Implementation() const {
 	return true;
 }
 
+void ARPTurbineBaseActor::Tick(float dt) {
+	/*if (mTurbineStateUpdated) {
+		mTurbineStateUpdated = false;
+
+		if (HasAuthority()) ForceNetUpdate(); 
+
+		updateTurbineParticleState();
+	}*/
+}
+
 void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
 
 	if (mTurbineType == ETurbineType::RP_Wind) {
-		calcNearbyWindTurbines();
 		if (mIsHeightBasedTurbine == true) {
 			mTurbinePowerProduction = getTurbineHeightPowerProduction();
 		}
@@ -73,7 +95,7 @@ void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
 			mTurbinePowerProduction = getTurbineBasePowerProduction();
 		}
 
-		if (mWindTurbinesInArea >= mMaxWindTurbinesInArea) {
+		if ((mWindTurbinesInArea + 1) >= mMaxWindTurbinesInArea) {
 			mTurbinePowerProduction = 0;
 		}
 	}
@@ -188,6 +210,7 @@ void ARPTurbineBaseActor::calcNearbyWindTurbines() {
 
 	for (ARPTurbineBaseActor* turbine : TurbineArray) {
 		turbine->updateNearbyWindTurbineCount();
+		turbine->calculateTurbinePowerProduction();
 		turbine->setTurbinePowerOutput();
 	}
 }
@@ -208,6 +231,12 @@ void ARPTurbineBaseActor::setTurbineEnabled(bool turbineEnabled) {
 	auto rco = Cast<URPTurbineBaseRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPTurbineBaseRCO::StaticClass()));
 
 	if (rco) {
+		SML::Logging::info("[RefinedPower] - Test1");
 		rco->SetTurbineEnabled(this, turbineEnabled);
 	}
+}
+
+void ARPTurbineBaseActor::OnRep_SetTurbineEnabled() {
+	SML::Logging::info("[RefinedPower] - TestParticles");
+	updateTurbineParticleState();
 }
