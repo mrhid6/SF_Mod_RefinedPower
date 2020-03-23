@@ -66,6 +66,7 @@ ARPArcReactor::ARPArcReactor() {
 	/*############################################################*/
 
 	/*############### Settup tick values ###############*/
+	SetReplicates(true);
 	bReplicates = true;
 	mFactoryTickFunction.bCanEverTick = true;
 
@@ -81,11 +82,18 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	DOREPLIFETIME(ARPArcReactor, RPFuelInvIndex);
 	DOREPLIFETIME(ARPArcReactor, RPCoolantInvIndex);
 
-	DOREPLIFETIME(ARPArcReactor, CachedReactorCoresAmount);
-	DOREPLIFETIME(ARPArcReactor, CachedCoolantAmount);
+	DOREPLIFETIME(ARPArcReactor, mCachedReactorCoresAmount);
+	DOREPLIFETIME(ARPArcReactor, mCachedCoolantAmount);
+
+	DOREPLIFETIME(ARPArcReactor, mUpdateParticleVars);
 
 	DOREPLIFETIME(ARPArcReactor, mParticlesEnabled);
 	DOREPLIFETIME(ARPArcReactor, mReactorSoundEnabled);
+
+	DOREPLIFETIME(ARPArcReactor, mSpinupRotation);
+	DOREPLIFETIME(ARPArcReactor, mSpinupOpacity);
+
+	DOREPLIFETIME(ARPArcReactor, mUpdateAudio);
 }
 
 void ARPArcReactor::BeginPlay() {
@@ -262,8 +270,8 @@ void ARPArcReactor::CalcAudio() {
 }
 
 void ARPArcReactor::CacheFuelAndCoolantAmount() {
-	CachedReactorCoresAmount = getReactorCores();
-	CachedCoolantAmount = getReactorCoolantInternal();
+	mCachedReactorCoresAmount = getReactorCores();
+	mCachedCoolantAmount = getReactorCoolantInternal();
 }
 
 /*#### Getters & setters ####*/
@@ -280,8 +288,11 @@ bool ARPArcReactor::isSoundEnabled() {
 }
 
 void ARPArcReactor::setSoundEnabled(bool enabled) {
-	mReactorSoundEnabled = enabled;
-	mUpdateAudio = true;
+	auto rco = Cast<URPArcReactorRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPArcReactorRCO::StaticClass()));
+
+	if (rco) {
+		rco->SetSoundEnabled(this, enabled);
+	}
 }
 
 bool ARPArcReactor::isParticlesEnabled() {
@@ -317,7 +328,7 @@ int ARPArcReactor::getReactorCores() {
 		return fuelAmnt;
 	}
 	else {
-		return CachedReactorCoresAmount;
+		return mCachedReactorCoresAmount;
 	}
 }
 
@@ -337,7 +348,7 @@ float ARPArcReactor::getReactorCoolantInternal() {
 		return coolantAmnt;
 	}
 	else {
-		return CachedCoolantAmount;
+		return mCachedCoolantAmount;
 	}
 
 	

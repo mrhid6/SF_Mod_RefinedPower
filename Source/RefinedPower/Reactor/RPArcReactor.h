@@ -123,24 +123,26 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 
 		/*#### End getters and setters #####*/
 
-		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
+		UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower")
 			bool mParticlesEnabled = false;
 
-		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
+		UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower")
 			bool mReactorSoundEnabled = true;
 
-
+		UPROPERTY(Replicated)
 		bool mUpdateParticleVars;
+
+		UPROPERTY(Replicated)
 		bool mUpdateAudio;
 
 	protected:
 
 		/*#### Start Particle vars ####*/
 
-		UPROPERTY(VisibleAnywhere, SaveGame, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, Replicated, SaveGame, Category = "RefinedPower")
 			FVector mSpinupRotation = FVector(0.0f, 0.0f, 0.0f);
 
-		UPROPERTY(VisibleAnywhere, SaveGame, Category = "RefinedPower")
+		UPROPERTY(VisibleAnywhere, Replicated, SaveGame, Category = "RefinedPower")
 			float mSpinupOpacity= 0.0f;
 
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
@@ -153,10 +155,10 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 			int32 RPCoolantInvIndex;
 
 		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
-			int32 CachedReactorCoresAmount;
+			int32 mCachedReactorCoresAmount;
 
 		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
-			int32 CachedCoolantAmount;
+			int32 mCachedCoolantAmount;
 
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			UParticleSystemComponent* PlasmaParticles;
