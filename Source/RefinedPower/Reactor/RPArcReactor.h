@@ -90,7 +90,7 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 		/*#### Start getters and setters ####*/
 
 		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
-			int getReactorSpinAmount();
+			float getReactorSpinAmount();
 
 		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
 			bool isSoundEnabled();
@@ -119,6 +119,8 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 		UFUNCTION(BlueprintPure, Category = "RefinedPower|Reactor|ArcReactor")
 			float getReactorCoolantBufferMax();
 
+			void CacheFuelAndCoolantAmount();
+
 		/*#### End getters and setters #####*/
 
 		UPROPERTY(EditDefaultsOnly, SaveGame, Category = "RefinedPower")
@@ -144,11 +146,17 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
 			float mReactorSpinAmount = 0;
 
-		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			int32 RPFuelInvIndex = mFuelInventoryIndex;
+		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+			int32 RPFuelInvIndex;
 
-		UPROPERTY(VisibleAnywhere, SaveGame, Replicated, Category = "RefinedPower")
-			int32 RPCoolantInvIndex = mSupplementalInventoryIndex;
+		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+			int32 RPCoolantInvIndex;
+
+		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+			int32 CachedReactorCoresAmount;
+
+		UPROPERTY(VisibleAnywhere, Replicated, Category = "RefinedPower")
+			int32 CachedCoolantAmount;
 
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 			UParticleSystemComponent* PlasmaParticles;

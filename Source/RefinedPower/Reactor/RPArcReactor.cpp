@@ -81,6 +81,9 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	DOREPLIFETIME(ARPArcReactor, RPFuelInvIndex);
 	DOREPLIFETIME(ARPArcReactor, RPCoolantInvIndex);
 
+	DOREPLIFETIME(ARPArcReactor, CachedReactorCoresAmount);
+	DOREPLIFETIME(ARPArcReactor, CachedCoolantAmount);
+
 	DOREPLIFETIME(ARPArcReactor, mParticlesEnabled);
 	DOREPLIFETIME(ARPArcReactor, mReactorSoundEnabled);
 }
@@ -90,7 +93,10 @@ void ARPArcReactor::BeginPlay() {
 
 	if (HasAuthority()) {
 		FGPowerConnection->SetPowerInfo(GetPowerInfo());
+		RPFuelInvIndex = mFuelInventoryIndex;
+		RPCoolantInvIndex = mSupplementalInventoryIndex;
 	}
+
 	mUpdateParticleVars = true;
 	mUpdateAudio = true;
 }
@@ -255,6 +261,11 @@ void ARPArcReactor::CalcAudio() {
 	}
 }
 
+void ARPArcReactor::CacheFuelAndCoolantAmount() {
+	CachedReactorCoresAmount = getReactorCores();
+	CachedCoolantAmount = getReactorCoolantInternal();
+}
+
 /*#### Getters & setters ####*/
 void ARPArcReactor::SetReactorState(EReactorState state) {
 	ReactorState = state;
@@ -285,34 +296,51 @@ void ARPArcReactor::setParticlesEnabled(bool enabled) {
 	}
 }
 
-int ARPArcReactor::getReactorSpinAmount() {
-	return(mReactorSpinAmount);
+float ARPArcReactor::getReactorSpinAmount() {
+	return mReactorSpinAmount;
 }
 
 int ARPArcReactor::getReactorCores() {
-	FInventoryStack out_stack;
-	bool gotFuel = GetFuelInventory()->GetStackFromIndex(RPFuelInvIndex, out_stack);
+	if (HasAuthority()) {
+		FInventoryStack out_stack;
+		SML::Logging::info("[RefinedPower] - Inventory:", (GetFuelInventory() != nullptr));
+		SML::Logging::info("[RefinedPower] - fuelId:", RPFuelInvIndex);
 
-	int fuelAmnt = 0;
+		bool gotFuel = GetFuelInventory()->GetStackFromIndex(RPFuelInvIndex, out_stack);
 
-	if (gotFuel) {
-		fuelAmnt = out_stack.NumItems;
+		int fuelAmnt = 0;
+
+		if (gotFuel) {
+			fuelAmnt = out_stack.NumItems;
+		}
+
+		return fuelAmnt;
 	}
-
-	return fuelAmnt;
+	else {
+		return CachedReactorCoresAmount;
+	}
 }
 
 float ARPArcReactor::getReactorCoolantInternal() {
-	FInventoryStack out_stack;
-	bool gotCoolant = GetFuelInventory()->GetStackFromIndex(RPCoolantInvIndex, out_stack);
+	
 
-	int coolantAmnt = 0;
+	if (HasAuthority()) {
+		FInventoryStack out_stack;
 
-	if (gotCoolant) {
-		coolantAmnt = out_stack.NumItems;
+		bool gotCoolant = GetFuelInventory()->GetStackFromIndex(RPCoolantInvIndex, out_stack);
+
+		int coolantAmnt = 0;
+
+		if (gotCoolant) {
+			coolantAmnt = out_stack.NumItems;
+		}
+		return coolantAmnt;
+	}
+	else {
+		return CachedCoolantAmount;
 	}
 
-	return coolantAmnt;
+	
 }
 
 float ARPArcReactor::getReactorCoolantInternalMax() {
@@ -338,5 +366,8 @@ void ARPArcReactor::Factory_Tick(float dt) {
 
 	if (HasAuthority()) {
 		CalcReactorState();
+		CacheFuelAndCoolantAmount();
+
+		ForceNetUpdate();
 	}
 }
