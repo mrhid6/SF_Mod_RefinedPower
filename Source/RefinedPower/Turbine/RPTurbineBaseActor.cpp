@@ -11,9 +11,8 @@
 
 
 void URPTurbineBaseRCO::SetTurbineEnabled_Implementation(ARPTurbineBaseActor* turbine, bool enabled){
-	SML::Logging::info("[RefinedPower] - Test2");
 	turbine->mTurbineEnabled = enabled;
-	turbine->updateTurbineParticleState();
+	turbine->TurbineStateUpdated();
 
 	turbine->calculateTurbinePowerProduction();
 	turbine->ForceNetUpdate();
@@ -38,7 +37,6 @@ ARPTurbineBaseActor::ARPTurbineBaseActor() {
 	bReplicates = true;
 
 	mTurbineEnabled = true;
-	mTurbineStateUpdated = true;
 }
 
 void ARPTurbineBaseActor::BeginPlay() {
@@ -46,17 +44,17 @@ void ARPTurbineBaseActor::BeginPlay() {
 
 	if (HasAuthority()) {
 		FGPowerConnection->SetPowerInfo(GetPowerInfo());
-		calcNearbyWindTurbines();
-
-		calculateTurbinePowerProduction();
-		updateTurbineParticleState();
 	}
+
+	calcNearbyWindTurbines();
+	calculateTurbinePowerProduction();
+	TurbineStateUpdated();
+	
 }
 
 void ARPTurbineBaseActor::EndPlay(const EEndPlayReason::Type endPlayReason) {
 
 	if (endPlayReason == EEndPlayReason::Destroyed) {
-		SML::Logging::info("[RefinedPower] - EndPlay: 2");
 		calcNearbyWindTurbines();
 	}
 	Super::EndPlay(endPlayReason);
@@ -68,21 +66,10 @@ void ARPTurbineBaseActor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 
 	DOREPLIFETIME(ARPTurbineBaseActor, mTurbineEnabled);
 	DOREPLIFETIME(ARPTurbineBaseActor, mWindTurbinesInArea);
-	DOREPLIFETIME(ARPTurbineBaseActor, mTurbineStateUpdated);
 }
 
 bool ARPTurbineBaseActor::ShouldSave_Implementation() const {
 	return true;
-}
-
-void ARPTurbineBaseActor::Tick(float dt) {
-	/*if (mTurbineStateUpdated) {
-		mTurbineStateUpdated = false;
-
-		if (HasAuthority()) ForceNetUpdate(); 
-
-		updateTurbineParticleState();
-	}*/
 }
 
 void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
@@ -115,10 +102,7 @@ void ARPTurbineBaseActor::setTurbinePowerOutput() {
 
 	if (TempFGPowerInfo != nullptr) {
 		const float powerOutput = getTurbineActualPowerProduction();
-		SML::Logging::info("[RefinedPower] - Power Out: ", powerOutput);
 		TempFGPowerInfo->SetBaseProduction(powerOutput);
-		SML::Logging::info("[RefinedPower] - PowerInfo Out: ", TempFGPowerInfo->GetBaseProduction());
-		//SML::Logging::info("[RefinedPower] - PowerInfo Out: ", mPowerInfo->GetBaseProduction());
 	}
 }
 
@@ -148,8 +132,6 @@ float ARPTurbineBaseActor::getTurbineHeightPowerProduction() {
 	tempPower = FMath::Clamp(tempPower, float(10.0), float(30.0));
 	tempPower = int(tempPower);
 
-	SML::Logging::info("[RefinedPower] - Power Height: ", tempPower);
-
 	return tempPower;
 }
 
@@ -168,18 +150,17 @@ float ARPTurbineBaseActor::getMaxTurbinePowerProduction() {
 	return mMaxTurbinePowerProduction;
 }
 
-TArray< ARPTurbineBaseActor*> ARPTurbineBaseActor::getNearbyWindTurbines() {
+void ARPTurbineBaseActor::UpdateCachedNearbyWindTurbines() {
 	const FVector ActorLocation = GetActorLocation();
 
 	const TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes = TArray< TEnumAsByte< EObjectTypeQuery > >{ EObjectTypeQuery::ObjectTypeQuery1, EObjectTypeQuery::ObjectTypeQuery2 };
 	TArray< AActor*> ActorsToIgnore = TArray< AActor*>{ this };
 	TArray< AActor*> OutActors;
 
-	TArray< ARPTurbineBaseActor*> TurbineArray;
 
-
-	bool foundTurbines = UKismetSystemLibrary::SphereOverlapActors(this, ActorLocation, float(5200), ObjectTypes, ARPTurbineBaseActor::GetClass(), ActorsToIgnore, OutActors);
+	bool foundTurbines = UKismetSystemLibrary::SphereOverlapActors(this, ActorLocation, float(5200), ObjectTypes, ARPTurbineBaseActor::StaticClass(), ActorsToIgnore, OutActors);
 	
+	mCachedNearbyWindTurbines.Empty();
 
 	if (foundTurbines) {
 
@@ -187,12 +168,10 @@ TArray< ARPTurbineBaseActor*> ARPTurbineBaseActor::getNearbyWindTurbines() {
 			ARPTurbineBaseActor* RPTurbine = (ARPTurbineBaseActor*)turbine;
 
 			if (RPTurbine->mTurbineType == ETurbineType::RP_Wind) {
-				TurbineArray.Add(RPTurbine);
+				mCachedNearbyWindTurbines.Add(RPTurbine);
 			}
 		}
 	}
-
-	return TurbineArray;
 }
 
 int ARPTurbineBaseActor::getNearbyWindTurbinesCount() {
@@ -206,9 +185,8 @@ void ARPTurbineBaseActor::calcNearbyWindTurbines() {
 	}
 
 	updateNearbyWindTurbineCount();
-	TArray< ARPTurbineBaseActor*> TurbineArray = getNearbyWindTurbines();
 
-	for (ARPTurbineBaseActor* turbine : TurbineArray) {
+	for (ARPTurbineBaseActor* turbine : mCachedNearbyWindTurbines) {
 		turbine->updateNearbyWindTurbineCount();
 		turbine->calculateTurbinePowerProduction();
 		turbine->setTurbinePowerOutput();
@@ -216,27 +194,19 @@ void ARPTurbineBaseActor::calcNearbyWindTurbines() {
 }
 
 void ARPTurbineBaseActor::updateNearbyWindTurbineCount() {
+	UpdateCachedNearbyWindTurbines();
 	mWindTurbinesInArea = 0;
-	TArray< ARPTurbineBaseActor*> TurbineArray = getNearbyWindTurbines();
-	mWindTurbinesInArea = FMath::Clamp(TurbineArray.Num(), 0, 9999);
+	mWindTurbinesInArea = FMath::Clamp(mCachedNearbyWindTurbines.Num(), 0, 9999);
 }
 
 bool ARPTurbineBaseActor::isTurbineEnabled() {
 	return mTurbineEnabled;
 }
 
-
-
 void ARPTurbineBaseActor::setTurbineEnabled(bool turbineEnabled) {
 	auto rco = Cast<URPTurbineBaseRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPTurbineBaseRCO::StaticClass()));
 
 	if (rco) {
-		SML::Logging::info("[RefinedPower] - Test1");
 		rco->SetTurbineEnabled(this, turbineEnabled);
 	}
-}
-
-void ARPTurbineBaseActor::OnRep_SetTurbineEnabled() {
-	SML::Logging::info("[RefinedPower] - TestParticles");
-	updateTurbineParticleState();
 }

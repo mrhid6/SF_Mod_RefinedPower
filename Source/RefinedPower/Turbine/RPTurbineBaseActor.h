@@ -43,22 +43,22 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
 	virtual bool ShouldSave_Implementation() const override;
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
-	virtual void Tick(float dt) override;
+
 	void calculateTurbinePowerProduction();
 	float getTurbineBasePowerProduction();
 	float getTurbineHeightPowerProduction();
 	void setTurbinePowerOutput();
 
-	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	UFUNCTION(BlueprintPure, Category = "RefinedPower|Turbine")
 	float getTurbineActualPowerProduction();
 
-	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	UFUNCTION(BlueprintPure, Category = "RefinedPower|Turbine")
 	float getMaxTurbinePowerProduction();
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
-	TArray< ARPTurbineBaseActor*> getNearbyWindTurbines();
+	void UpdateCachedNearbyWindTurbines();
 
-	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	UFUNCTION(BlueprintPure, Category = "RefinedPower|Turbine")
 	int getNearbyWindTurbinesCount();
 
 	void updateNearbyWindTurbineCount();
@@ -66,23 +66,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
 	void setTurbineEnabled(bool turbineEnabled);
 
-	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Turbine")
+	UFUNCTION(BlueprintPure, Category = "RefinedPower|Turbine")
 	bool isTurbineEnabled();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Turbine")
-		void updateTurbineParticleState();
+		void TurbineStateUpdated();
 
 
 	/** Is turbine enabled or disabled */
-	UPROPERTY(SaveGame, ReplicatedUsing = OnRep_SetTurbineEnabled, meta = (NoAutoJson = true))
+	UPROPERTY(SaveGame, ReplicatedUsing = TurbineStateUpdated, meta = (NoAutoJson = true))
 		uint32  mTurbineEnabled;
 
-	UFUNCTION()
-		void OnRep_SetTurbineEnabled();
-
-	/** Is turbine enabled or disabled */
-	UPROPERTY(Replicated)
-		uint32  mTurbineStateUpdated;
+	TArray< ARPTurbineBaseActor*> mCachedNearbyWindTurbines;
 
 protected:
 
