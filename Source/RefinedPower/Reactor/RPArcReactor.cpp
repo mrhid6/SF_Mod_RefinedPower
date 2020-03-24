@@ -15,6 +15,7 @@
 void URPArcReactorRCO::SetParticlesEnabled_Implementation(ARPArcReactor* reactor, bool enabled) {
 	reactor->mParticlesEnabled = enabled;
 	reactor->CalcSpinningState();
+	reactor->UpdateParticleVariables();
 	reactor->ForceNetUpdate();
 }
 
@@ -24,7 +25,7 @@ bool URPArcReactorRCO::SetParticlesEnabled_Validate(ARPArcReactor* reactor, bool
 
 void URPArcReactorRCO::SetSoundEnabled_Implementation(ARPArcReactor* reactor, bool enabled) {
 	reactor->mReactorSoundEnabled = enabled;
-	reactor->mUpdateAudio = true;
+	reactor->CalcAudio();
 	reactor->ForceNetUpdate();
 }
 
@@ -86,14 +87,13 @@ void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	DOREPLIFETIME(ARPArcReactor, mCachedCoolantAmount);
 
 	DOREPLIFETIME(ARPArcReactor, mUpdateParticleVars);
+	DOREPLIFETIME(ARPArcReactor, mUpdateAudio);
 
 	DOREPLIFETIME(ARPArcReactor, mParticlesEnabled);
 	DOREPLIFETIME(ARPArcReactor, mReactorSoundEnabled);
 
 	DOREPLIFETIME(ARPArcReactor, mSpinupRotation);
 	DOREPLIFETIME(ARPArcReactor, mSpinupOpacity);
-
-	DOREPLIFETIME(ARPArcReactor, mUpdateAudio);
 }
 
 void ARPArcReactor::BeginPlay() {

@@ -79,8 +79,10 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 
 		void RenderStateSpunUp();
 
+		UFUNCTION()
 		void UpdateParticleVariables();
 
+		UFUNCTION()
 		void CalcAudio();
 
 
@@ -123,17 +125,18 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 
 		/*#### End getters and setters #####*/
 
-		UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower")
+		UPROPERTY(EditDefaultsOnly, SaveGame, ReplicatedUsing = UpdateParticleVariables, Category = "RefinedPower")
 			bool mParticlesEnabled = false;
 
-		UPROPERTY(EditDefaultsOnly, SaveGame, Replicated, Category = "RefinedPower")
+		UPROPERTY(EditDefaultsOnly, SaveGame, ReplicatedUsing = CalcAudio, Category = "RefinedPower")
 			bool mReactorSoundEnabled = true;
 
-		UPROPERTY(Replicated)
+		UPROPERTY(ReplicatedUsing = UpdateParticleVariables)
 		bool mUpdateParticleVars;
 
-		UPROPERTY(Replicated)
-		bool mUpdateAudio;
+		UPROPERTY(ReplicatedUsing = CalcAudio)
+			bool mUpdateAudio;
+
 
 	protected:
 
