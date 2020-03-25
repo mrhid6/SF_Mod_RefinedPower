@@ -138,7 +138,7 @@ void ARPArcReactor::CalcReactorState() {
 	switch (ReactorState) {
 	case EReactorState::RP_State_SpunDown:
 	{
-		if (getReactorCores() >= MinStartAmount && getReactorCoolantInternal() >= 8000) {
+		if (getReactorCores() >= MinStartAmount && getReactorCoolantInternal() >= 20000) {
 			SetReactorState(EReactorState::RP_State_SpinUp);
 			mUpdateAudio = true;
 		}
@@ -156,7 +156,7 @@ void ARPArcReactor::CalcReactorState() {
 	}
 	case EReactorState::RP_State_Producing:
 	{
-		if (getReactorCores() <= MinStopAmount || getReactorCoolantInternal() < 2000) {
+		if (getReactorCores() <= MinStopAmount || getReactorCoolantInternal() < 10000) {
 			SetReactorState(EReactorState::RP_State_SpinDown);
 			mUpdateAudio = true;
 		}
