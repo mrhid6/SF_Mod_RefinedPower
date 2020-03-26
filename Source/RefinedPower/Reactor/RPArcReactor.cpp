@@ -314,8 +314,6 @@ float ARPArcReactor::getReactorSpinAmount() {
 int ARPArcReactor::getReactorCores() {
 	if (HasAuthority()) {
 		FInventoryStack out_stack;
-		SML::Logging::info("[RefinedPower] - Inventory:", (GetFuelInventory() != nullptr));
-		SML::Logging::info("[RefinedPower] - fuelId:", RPFuelInvIndex);
 
 		bool gotFuel = GetFuelInventory()->GetStackFromIndex(RPFuelInvIndex, out_stack);
 
