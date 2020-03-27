@@ -39,6 +39,8 @@ ARPTurbineBaseActor::ARPTurbineBaseActor() {
 	mTurbineEnabled = true;
 }
 
+ARPTurbineBaseActor::~ARPTurbineBaseActor() {}
+
 void ARPTurbineBaseActor::BeginPlay() {
 	Super::BeginPlay();
 

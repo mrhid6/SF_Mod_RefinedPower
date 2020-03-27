@@ -74,6 +74,8 @@ ARPArcReactor::ARPArcReactor() {
 	/*############################################################*/
 }
 
+ARPArcReactor::~ARPArcReactor() {}
+
 void ARPArcReactor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

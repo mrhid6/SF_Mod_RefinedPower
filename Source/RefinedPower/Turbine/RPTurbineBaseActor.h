@@ -38,6 +38,7 @@ class REFINEDPOWER_API ARPTurbineBaseActor : public AFGBuildableGenerator {
 public:
 
 	ARPTurbineBaseActor();
+	~ARPTurbineBaseActor();
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;

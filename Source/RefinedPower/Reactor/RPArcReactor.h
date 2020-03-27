@@ -37,6 +37,7 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 	GENERATED_BODY()
 
 	ARPArcReactor();
+	~ARPArcReactor();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
