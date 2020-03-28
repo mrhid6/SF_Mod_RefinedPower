@@ -180,11 +180,11 @@ class REFINEDPOWER_API ARPArcReactor : public AFGBuildableGeneratorFuel
 
 		/*Min amount of resources required to start production*/
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
-			int MinStartAmount = 1500;
+			int MinStartAmount = 20;
 
 		/*When the resources fall below this amount, the reactor will shut off*/
 		UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
-			int MinStopAmount = 1000;
+			int MinStopAmount = 10;
 
 		/*#### End input vars ####*/
 
