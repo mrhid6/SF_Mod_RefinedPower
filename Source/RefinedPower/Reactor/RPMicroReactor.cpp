@@ -170,10 +170,15 @@ int ARPMicroReactor::getReactorCoresMax() {
 
 		bool gotFuel = GetFuelInventory()->GetStackFromIndex(mFuelInventoryIndex, out_stack);
 
-		int fuelAmnt = 0;
+		int fuelAmnt = 500;
 
 		if (gotFuel) {
 			TSubclassOf<UFGItemDescriptor> fuelClass = out_stack.Item.ItemClass;
+
+			if (fuelClass == nullptr) {
+				return fuelAmnt;
+			}
+
 			fuelAmnt = UFGItemDescriptor::GetStackSize(fuelClass);
 		}
 
@@ -185,7 +190,7 @@ int ARPMicroReactor::getReactorCoresMax() {
 }
 
 int ARPMicroReactor::GetReactorMinStart() {
-	return int(getReactorCoresMax() * mMinStartAmount);
+	return int(getReactorCoresMax() * mMinStartAmount); 
 }
 
 int ARPMicroReactor::GetReactorMinStop() {
