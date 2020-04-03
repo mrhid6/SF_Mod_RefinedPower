@@ -122,6 +122,7 @@ void ARPDysonSphere::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& Out
 
 
 	// Dont think i need these?
+	//DOREPLIFETIME(ARPDysonSphere, mTriggerHangarLightUpdate);
 	//DOREPLIFETIME(ARPDysonSphere, mTriggerStartShipAnimation);
 	//DOREPLIFETIME(ARPDysonSphere, mTriggerLightBeamUpdate);
 
@@ -155,19 +156,21 @@ void ARPDysonSphere::BeginPlay() {
 void ARPDysonSphere::Tick(float dt) {
 	Super::Tick(dt);
 
-	if (HasAuthority() && mTriggerHangarLightUpdate) {
-		mTriggerHangarLightUpdate = false;
-		OnRep_UpdateHangarLights();
-	}
+	if (HasAuthority()) {
+		if (mTriggerHangarLightEvent) {
+			mTriggerHangarLightEvent = false;
+			Multicast_UpdateHangarLights();
+		}
 
-	if (HasAuthority() && mTriggerStartShipAnimation) {
-		mTriggerStartShipAnimation = false;
-		OnRep_StartShipAnimation();
-	}
+		if (mTriggerShipAnimEvent) {
+			mTriggerShipAnimEvent = false;
+			Multicast_StartShipAnimation();
+		}
 
-	if (HasAuthority() && mTriggerLightBeamUpdate) {
-		mTriggerLightBeamUpdate = false;
-		OnRep_UpdateLightBeam();
+		if (mTriggerLightBeamEvent) {
+			mTriggerLightBeamEvent = false;
+			Multicast_UpdateLightBeam();
+		}
 	}
 }
 
@@ -222,7 +225,7 @@ void ARPDysonSphere::CalcUnlockedHangars() {
 	}
 
 	ForceNetUpdate();
-	mTriggerHangarLightUpdate = true;
+	mTriggerHangarLightEvent = true;
 }
 
 int ARPDysonSphere::GetUnlockedHangarCount(){
@@ -253,6 +256,8 @@ void ARPDysonSphere::CalcDysonSphereState(float dt) {
 	default:
 		break;
 	}
+
+	ForceNetUpdate();
 }
 
 void ARPDysonSphere::SetDysonSphereState(EDysonSphereState state){
@@ -296,8 +301,6 @@ void ARPDysonSphere::SetPowerOutput(){
 
 void ARPDysonSphere::CalcBuildState() {
 
-	mTriggerStartShipAnimation = false;
-
 	switch (mDSBuildState) {
 	case EDSBuildState::RP_DSB_State_0: {
 
@@ -305,7 +308,7 @@ void ARPDysonSphere::CalcBuildState() {
 
 		if (IsBuildStageCompleted()) {
 			SML::Logging::info("[RefinedPower] - BuildStage0 Completed!");
-			mTriggerStartShipAnimation = true;
+			mTriggerShipAnimEvent = true;
 			StartDoorAnimationTimer();
 			ClearBuildStageItemCount();
 			CalcUnlockedHangars();
@@ -318,7 +321,7 @@ void ARPDysonSphere::CalcBuildState() {
 
 		if (IsBuildStageCompleted()) {
 			SML::Logging::info("[RefinedPower] - BuildStage1 Completed!");
-			mTriggerStartShipAnimation = true;
+			mTriggerShipAnimEvent = true;
 			StartDoorAnimationTimer();
 			ClearBuildStageItemCount();
 			CalcUnlockedHangars();
@@ -330,7 +333,7 @@ void ARPDysonSphere::CalcBuildState() {
 
 		if (IsBuildStageCompleted()) {
 			SML::Logging::info("[RefinedPower] - BuildStage2 Completed!");
-			mTriggerStartShipAnimation = true;
+			mTriggerShipAnimEvent = true;
 			StartDoorAnimationTimer();
 			ClearBuildStageItemCount();
 			CalcUnlockedHangars();
@@ -343,9 +346,10 @@ void ARPDysonSphere::CalcBuildState() {
 
 		if (IsBuildStageCompleted()) {
 			SML::Logging::info("[RefinedPower] - BuildStage3 Completed!");
-			mTriggerStartShipAnimation = true;
+			mTriggerShipAnimEvent = true;
 			StartDoorAnimationTimer();
 			ClearBuildStageItemCount();
+			CalcUnlockedHangars();
 			SetBuildStageState(EDSBuildState::RP_DSB_State_Completed);
 		}
 		break;
@@ -496,7 +500,7 @@ void ARPDysonSphere::CalcLightBeamState(){
 void ARPDysonSphere::ResetLightBeam(){
 	mLightBeamScale = FVector(0.0f, 0.0f, 20.0f);
 	mLightBeamVisiable = false;
-	mTriggerLightBeamUpdate = true;
+	mTriggerLightBeamEvent = true;
 }
 
 void ARPDysonSphere::SetLightBeamFull(){
@@ -504,7 +508,7 @@ void ARPDysonSphere::SetLightBeamFull(){
 	if (IsLightBeamCompleted() == false) {
 		mLightBeamScale = FVector(1.0f, 1.0f, 20.0f);
 		mLightBeamVisiable = true;
-		mTriggerLightBeamUpdate = true;
+		mTriggerLightBeamEvent = true;
 	}
 }
 
@@ -516,7 +520,7 @@ void ARPDysonSphere::GrowLightBeam(){
 	mLightBeamScale.X = FMath::Clamp(temp, 0.0f, 1.0f);
 	mLightBeamScale.Y = FMath::Clamp(temp, 0.0f, 1.0f);
 
-	mTriggerLightBeamUpdate = true;
+	mTriggerLightBeamEvent = true;
 }
 
 bool ARPDysonSphere::IsLightBeamCompleted(){
@@ -547,7 +551,7 @@ void ARPDysonSphere::CalcProducingState(float dt){
 				SetDysonSphereState(EDysonSphereState::RP_DS_State_Failed);
 			}
 		}
-		mTriggerStartShipAnimation = true;
+		mTriggerShipAnimEvent = true;
 		StartDoorAnimationTimer();
 		CalcUnlockedHangars();
 		ClearRepairItemCount();
@@ -684,6 +688,21 @@ void ARPDysonSphere::ClearRepairItemCount() {
 		mRepairItemCount[itemIndex] = 0;
 		itemIndex++;
 	}
+}
+
+void ARPDysonSphere::Multicast_UpdateHangarLights_Implementation()
+{
+	OnRep_UpdateHangarLights();
+}
+
+void ARPDysonSphere::Multicast_StartShipAnimation_Implementation()
+{
+	OnRep_StartShipAnimation();
+}
+
+void ARPDysonSphere::Multicast_UpdateLightBeam_Implementation()
+{
+	OnRep_UpdateLightBeam();
 }
 
 void ARPDysonSphere::ResetFailedDysonSphere() {

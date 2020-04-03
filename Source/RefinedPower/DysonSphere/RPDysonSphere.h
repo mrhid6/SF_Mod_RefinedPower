@@ -110,6 +110,14 @@ public:
 	void TransferRepairItem(UFGFactoryConnectionComponent* InputConnection, TSubclassOf<UFGItemDescriptor> InputItem, int InputItemIndex);
 	void ClearRepairItemCount();
 
+	UFUNCTION(NetMulticast, Reliable)
+		void Multicast_UpdateHangarLights();
+
+	UFUNCTION(NetMulticast, Reliable)
+		void Multicast_StartShipAnimation();
+
+	UFUNCTION(NetMulticast, Reliable)
+		void Multicast_UpdateLightBeam();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|DysonSphere")
 		void OnRep_UpdateHangarLights();
@@ -157,6 +165,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "RefinedPower|DysonSphere")
 		int mMaxFailedRepairs = 10;
 
+
+	bool mTriggerHangarLightEvent = false;
+	bool mTriggerLightBeamEvent = false;
+	bool mTriggerShipAnimEvent = false;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
@@ -177,16 +190,6 @@ protected:
 
 	int mDoorAnimationTimer = 0;
 	int mDoorAnimationTimerDuration = 2600;
-
-
-	UPROPERTY(ReplicatedUsing = OnRep_UpdateHangarLights)
-		bool mTriggerHangarLightUpdate;
-
-	UPROPERTY(ReplicatedUsing = OnRep_StartShipAnimation)
-		bool mTriggerStartShipAnimation;
-
-	UPROPERTY(ReplicatedUsing = OnRep_UpdateLightBeam)
-		bool mTriggerLightBeamUpdate;
 
 
 	UPROPERTY(BlueprintReadOnly, SaveGame, ReplicatedUsing = OnRep_UpdateLightBeam)
