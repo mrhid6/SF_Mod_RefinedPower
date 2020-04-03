@@ -271,8 +271,8 @@ void ARPDysonSphere::StartDoorAnimationTimer() {
 	mDoorAnimationTimer = mDoorAnimationTimerDuration;
 }
 
-void ARPDysonSphere::SetPowerOutput(){
-
+float ARPDysonSphere::GetPowerOutput()
+{
 	float resOutput = 0;
 
 	if (mDysonSphereState == EDysonSphereState::RP_DS_State_Producing) {
@@ -283,10 +283,14 @@ void ARPDysonSphere::SetPowerOutput(){
 		resOutput = FMath::Clamp(resOutput, 0.0f, Base);
 	}
 
+	return resOutput;
+}
+
+void ARPDysonSphere::SetPowerOutput(){
 	UFGPowerInfoComponent* TempFGPowerInfo = FGPowerConnection->GetPowerInfo();
 
 	if (TempFGPowerInfo != nullptr) {
-		TempFGPowerInfo->SetBaseProduction(resOutput);
+		TempFGPowerInfo->SetBaseProduction(GetPowerOutput());
 	}
 }
 
@@ -688,4 +692,35 @@ void ARPDysonSphere::ResetFailedDysonSphere() {
 	if (rco) {
 		rco->ResetFailedDysonSphere(this);
 	}
+}
+
+int ARPDysonSphere::GetItemsRemainingForStage()
+{
+	int resCount = 0;
+
+	if (mDysonSphereState == EDysonSphereState::RP_DS_State_Build) {
+		int itemIndex = 0;
+		for (int ItemCount : mBuildStageItemCount) {
+			int count = mBuildStageItemCount[itemIndex];
+			int max = mBuildStageMaxItemNum[itemIndex];
+
+			resCount += (max - count);
+
+			itemIndex++;
+		}
+
+
+	}else if (mDysonSphereState == EDysonSphereState::RP_DS_State_Producing) {
+		int itemIndex = 0;
+		for (int ItemCount : mRepairItemCount) {
+			int count = mRepairItemCount[itemIndex];
+			int max = mRepairMaxItemNum[itemIndex];
+
+			resCount += (max - count);
+
+			itemIndex++;
+		}
+	}
+
+	return resCount;
 }
