@@ -33,6 +33,19 @@ enum class EDSLightBeamState : uint8
 };
 
 UCLASS()
+class REFINEDPOWER_API URPDysonSphereRCO : public UFGRemoteCallObject {
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(Server, WithValidation, Reliable)
+		void ResetFailedDysonSphere(ARPDysonSphere* reactor);
+
+
+	UPROPERTY(Replicated)
+		bool bTest = true;
+};
+
+UCLASS()
 class REFINEDPOWER_API ARPDysonSphere : public AFGBuildableGenerator
 {
 	GENERATED_BODY()
@@ -85,6 +98,8 @@ public:
 	void IncreaseRepairTimer(float dt);
 	void ResetRepairTimer();
 	bool IsRepairTimerFinished();
+
+	UFUNCTION(BlueprintPure, Category = "RefinedPower|DysonSphere")
 	float GetRepairTimerLimit();
 	bool IsRepairItemsCompleted();
 	void CollectRepairItems();
@@ -102,6 +117,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|DysonSphere")
 		void OnRep_UpdateLightBeam();
 
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|DysonSphere")
+		void ResetFailedDysonSphere();
+
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_UpdateHangarLights, Category = "RefinedPower|DysonSphere")
 		bool mHangar1Enabled = false;
 
@@ -114,35 +132,15 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_UpdateHangarLights, Category = "RefinedPower|DysonSphere")
 		bool mHangar4Enabled = false;
 
-protected:
 
 	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Meta = (NoAutoJson = true), Category = "RefinedPower|DysonSphere")
 		EDysonSphereState mDysonSphereState = EDysonSphereState::RP_DS_State_Build;
-	
+
 	UPROPERTY(SaveGame, Replicated, Meta = (NoAutoJson = true))
 		EDSBuildState mDSBuildState = EDSBuildState::RP_DSB_State_0;
 
 	UPROPERTY(SaveGame, Replicated, Meta = (NoAutoJson = true))
 		EDSLightBeamState mDSLightBeamState = EDSLightBeamState::RP_DSLB_State_Grow;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		TArray<TSubclassOf< class UFGItemDescriptor >> mAllowedInputItems;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
-		TArray<int> mBuildStageMaxItemNum;
-
-	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower|DysonSphere")
-		TArray<int> mBuildStageItemCount;
-
-	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
-		TArray<int> mRepairMaxItemNum;
-
-	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower|DysonSphere")
-		TArray<int> mRepairItemCount;
-
-
-	int mDoorAnimationTimer = 0;
-	int mDoorAnimationTimerDuration = 2600;
 
 	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower|DysonSphere")
 		float mRepairTimer;
@@ -152,6 +150,27 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "RefinedPower|DysonSphere")
 		int mMaxFailedRepairs = 10;
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		TArray<TSubclassOf< class UFGItemDescriptor >> mAllowedInputItems;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		TArray<int> mBuildStageMaxItemNum;
+
+	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower|DysonSphere")
+		TArray<int> mBuildStageItemCount;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		TArray<int> mRepairMaxItemNum;
+
+	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower|DysonSphere")
+		TArray<int> mRepairItemCount;
+
+
+	int mDoorAnimationTimer = 0;
+	int mDoorAnimationTimerDuration = 2600;
 
 
 	UPROPERTY(ReplicatedUsing = OnRep_UpdateHangarLights)

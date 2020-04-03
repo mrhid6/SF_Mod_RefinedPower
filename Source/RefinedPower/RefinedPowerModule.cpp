@@ -2,6 +2,7 @@
 #include "Turbine/RPTurbineBaseActor.h"
 #include "Reactor/RPArcReactor.h"
 #include "Reactor/RPMicroReactor.h"
+#include "DysonSphere/RPDysonSphere.h"
 #include "../SML/mod/hooking.h"
 #include "FGGameMode.h"
 #include "util/Logging.h"
@@ -14,6 +15,7 @@ void GameModePostLogin(CallScope<void(*)(AFGGameMode*, APlayerController*)>& sco
 		gm->RegisterRemoteCallObjectClass(URPTurbineBaseRCO::StaticClass());
 		gm->RegisterRemoteCallObjectClass(URPArcReactorRCO::StaticClass());
 		gm->RegisterRemoteCallObjectClass(URPMicroReactorRCO::StaticClass());
+		gm->RegisterRemoteCallObjectClass(URPDysonSphereRCO::StaticClass());
 	}
 }
 

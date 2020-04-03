@@ -13,7 +13,29 @@
 #include "FGSchematicManager.h"
 #include "FGSchematic.h"
 
+void URPDysonSphereRCO::ResetFailedDysonSphere_Implementation(ARPDysonSphere* ds) {
+	ds->mDSLightBeamState = EDSLightBeamState::RP_DSLB_State_Grow;
+	ds->mDSBuildState = EDSBuildState::RP_DSB_State_0;
+	ds->mDysonSphereState = EDysonSphereState::RP_DS_State_Build;
+	ds->mRepairTimer = 0;
+	ds->mFailedRepairs = 0;
+	ds->CalcUnlockedHangars();
+	ds->ClearBuildStageItemCount();
+	ds->ClearRepairItemCount();
+	ds->ResetLightBeam();
 
+	ds->ForceNetUpdate();
+}
+
+bool URPDysonSphereRCO::ResetFailedDysonSphere_Validate(ARPDysonSphere* ds) {
+	return true;
+}
+
+void URPDysonSphereRCO::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(URPDysonSphereRCO, bTest)
+}
 
 
 ARPDysonSphere::ARPDysonSphere() {
@@ -98,8 +120,10 @@ void ARPDysonSphere::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& Out
 	DOREPLIFETIME(ARPDysonSphere, mHangar3Enabled);
 	DOREPLIFETIME(ARPDysonSphere, mHangar4Enabled);
 
-	DOREPLIFETIME(ARPDysonSphere, mTriggerStartShipAnimation);
-	DOREPLIFETIME(ARPDysonSphere, mTriggerLightBeamUpdate);
+
+	// Dont think i need these?
+	//DOREPLIFETIME(ARPDysonSphere, mTriggerStartShipAnimation);
+	//DOREPLIFETIME(ARPDysonSphere, mTriggerLightBeamUpdate);
 
 	DOREPLIFETIME(ARPDysonSphere, mLightBeamScale);
 	DOREPLIFETIME(ARPDysonSphere, mLightBeamVisiable);
@@ -110,8 +134,6 @@ void ARPDysonSphere::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& Out
 	DOREPLIFETIME(ARPDysonSphere, mRepairItemCount);
 	DOREPLIFETIME(ARPDysonSphere, mRepairTimer);
 	DOREPLIFETIME(ARPDysonSphere, mFailedRepairs);
-
-
 }
 
 void ARPDysonSphere::BeginPlay() {
@@ -351,12 +373,14 @@ void ARPDysonSphere::CollectBuildItems() {
 	int InputItemIndex = 0;
 
 	// Loop through all allowed items
-	for (TSubclassOf< UFGItemDescriptor > InputItem: mAllowedInputItems)
+	for (TSubclassOf< UFGItemDescriptor > &InputItem: mAllowedInputItems)
 	{
-
 		bool CanCollectItem = CanTransferItemForBuildState(InputItemIndex);
 
-		if (CanCollectItem == false) continue;
+		if (CanCollectItem == false) {
+			InputItemIndex++;
+			continue;
+		};
 
 		// Transfer all from Hangar1 Inputs
 		TransferBuildStageItem(H1Input1, InputItem, InputItemIndex);
@@ -515,6 +539,7 @@ void ARPDysonSphere::CalcProducingState(float dt){
 			mFailedRepairs = FMath::Clamp(mFailedRepairs, 0, mMaxFailedRepairs);
 
 			if (mFailedRepairs == mMaxFailedRepairs) {
+				ResetLightBeam();
 				SetDysonSphereState(EDysonSphereState::RP_DS_State_Failed);
 			}
 		}
@@ -525,8 +550,10 @@ void ARPDysonSphere::CalcProducingState(float dt){
 		SetPowerOutput();
 	}
 	else {
-		IncreaseRepairTimer(dt);
-		CollectRepairItems();
+		if (IsDoorAnimationFinished()) {
+			IncreaseRepairTimer(dt);
+			CollectRepairItems();
+		}
 	}
 }
 
@@ -582,7 +609,10 @@ void ARPDysonSphere::CollectRepairItems() {
 
 		bool CanCollectItem = CanTransferItemForRepair(InputItemIndex);
 
-		if (CanCollectItem == false) continue;
+		if (CanCollectItem == false) {
+			InputItemIndex++;
+			continue;
+		};
 
 		// Transfer all from Hangar1 Inputs
 		TransferRepairItem(H1Input1, InputItem, InputItemIndex);
@@ -649,5 +679,13 @@ void ARPDysonSphere::ClearRepairItemCount() {
 	for (int ItemCount : mRepairItemCount) {
 		mRepairItemCount[itemIndex] = 0;
 		itemIndex++;
+	}
+}
+
+void ARPDysonSphere::ResetFailedDysonSphere() {
+	auto rco = Cast<URPDysonSphereRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPDysonSphereRCO::StaticClass()));
+
+	if (rco) {
+		rco->ResetFailedDysonSphere(this);
 	}
 }
