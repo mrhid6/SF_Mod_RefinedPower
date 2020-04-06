@@ -70,6 +70,9 @@ public:
 	bool IsDoorAnimationFinished();
 	void StartDoorAnimationTimer();
 
+	UFUNCTION(BlueprintPure, Category = "RefinedPower|DysonSphere")
+		float GetPowerOutput();
+
 	void SetPowerOutput();
 
 	// Calculate Build State
@@ -107,6 +110,14 @@ public:
 	void TransferRepairItem(UFGFactoryConnectionComponent* InputConnection, TSubclassOf<UFGItemDescriptor> InputItem, int InputItemIndex);
 	void ClearRepairItemCount();
 
+	UFUNCTION(NetMulticast, Reliable)
+		void Multicast_UpdateHangarLights();
+
+	UFUNCTION(NetMulticast, Reliable)
+		void Multicast_StartShipAnimation();
+
+	UFUNCTION(NetMulticast, Reliable)
+		void Multicast_UpdateLightBeam();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|DysonSphere")
 		void OnRep_UpdateHangarLights();
@@ -119,6 +130,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RefinedPower|DysonSphere")
 		void ResetFailedDysonSphere();
+
+	UFUNCTION(BlueprintPure, Category = "RefinedPower|DysonSphere")
+		int GetItemsRemainingForStage();
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_UpdateHangarLights, Category = "RefinedPower|DysonSphere")
 		bool mHangar1Enabled = false;
@@ -136,10 +150,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Meta = (NoAutoJson = true), Category = "RefinedPower|DysonSphere")
 		EDysonSphereState mDysonSphereState = EDysonSphereState::RP_DS_State_Build;
 
-	UPROPERTY(SaveGame, Replicated, Meta = (NoAutoJson = true))
+	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Meta = (NoAutoJson = true))
 		EDSBuildState mDSBuildState = EDSBuildState::RP_DSB_State_0;
 
-	UPROPERTY(SaveGame, Replicated, Meta = (NoAutoJson = true))
+	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Meta = (NoAutoJson = true))
 		EDSLightBeamState mDSLightBeamState = EDSLightBeamState::RP_DSLB_State_Grow;
 
 	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower|DysonSphere")
@@ -150,6 +164,11 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = "RefinedPower|DysonSphere")
 		int mMaxFailedRepairs = 10;
+
+
+	bool mTriggerHangarLightEvent = false;
+	bool mTriggerLightBeamEvent = false;
+	bool mTriggerShipAnimEvent = false;
 
 protected:
 
@@ -171,16 +190,6 @@ protected:
 
 	int mDoorAnimationTimer = 0;
 	int mDoorAnimationTimerDuration = 2600;
-
-
-	UPROPERTY(ReplicatedUsing = OnRep_UpdateHangarLights)
-		bool mTriggerHangarLightUpdate;
-
-	UPROPERTY(ReplicatedUsing = OnRep_StartShipAnimation)
-		bool mTriggerStartShipAnimation;
-
-	UPROPERTY(ReplicatedUsing = OnRep_UpdateLightBeam)
-		bool mTriggerLightBeamUpdate;
 
 
 	UPROPERTY(BlueprintReadOnly, SaveGame, ReplicatedUsing = OnRep_UpdateLightBeam)
