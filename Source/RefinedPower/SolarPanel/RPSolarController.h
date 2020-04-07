@@ -27,12 +27,12 @@ public:
 	FRotator getOrientation();
 	float getCurrectProductionScalar();
 
+	/*correct rotator for solar panel orientation*/
+	FRotator orientation = FRotator(0.0, 0.0, 0.0);
+
 protected:
 	/*the current production scalar based on the solarProductionScalar function*/
 	float currentProductionScalar = 0;
-
-	/*correct rotator for solar panel orientation*/
-	FRotator orientation = FRotator(0.0,0.0,0.0);
 
 	/*cached sun and moon actors - [0] is moon - [1] is sun*/
 	TArray<AActor*> moonsun;
