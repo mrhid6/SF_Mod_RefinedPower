@@ -19,23 +19,66 @@ ARPSolarController::ARPSolarController()
 void ARPSolarController::BeginPlay()
 {
 	Super::BeginPlay();
+
 	timeSys = AFGTimeOfDaySubsystem::Get(this);
+	CacheMoonSunActors();
+}
+
+void ARPSolarController::Factory_Tick(float dt)
+{
+	Super::Factory_Tick(dt);
+	if (HasAuthority()) {
+		UpdateSolarProductionScalar();
+		UpdateCorrectOrientation();
+	}
+}
+
+ARPSolarController* ARPSolarController::Get(UWorld* world)
+{
+	TArray<AActor*> temp;
+	UGameplayStatics::GetAllActorsOfClass(world, ARPSolarController::StaticClass(), temp);
+
+	if (temp.Num() > 0) {
+		ARPSolarController* controller = Cast<ARPSolarController>(temp[0]);
+		return controller;
+	}
+	else {
+		SML::Logging::info("CantFind Controller!");
+	}
+
+	return nullptr;
 }
 
 // Called every frame
 void ARPSolarController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	updateSolarProductionScalar();
-	updateCorrectOrientation();
 }
 
+
+
 /*Function to get the sun an moon actors (assumes they are the only directional lights in the level)*/
-void ARPSolarController::getMoonSun() {
+void ARPSolarController::CacheMoonSunActors() {
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADirectionalLight::StaticClass(), moonsun);
 }
 
-void ARPSolarController::updateSolarProductionScalar() {
+TArray<AActor*> ARPSolarController::GetMoonSunActors() {
+	return moonsun;
+}
+
+ADirectionalLight* ARPSolarController::GetSunActor()
+{
+	ADirectionalLight* sun = Cast<ADirectionalLight>(GetMoonSunActors()[1]);
+	return sun;
+}
+
+ADirectionalLight* ARPSolarController::GetMoonActor()
+{
+	ADirectionalLight* moon = Cast<ADirectionalLight>(GetMoonSunActors()[0]);
+	return moon;
+}
+
+void ARPSolarController::UpdateSolarProductionScalar() {
 	float pct = 0;
 	if (timeSys && timeSys->IsDay()) {
 		pct = timeSys->GetDayPct();
@@ -47,27 +90,27 @@ void ARPSolarController::updateSolarProductionScalar() {
 	/*controls the solar panel production ratio based on TOD
 	For a more detailed analysis of this function: https://www.desmos.com/calculator/mfzrurdb5e
 	*/
-	currentProductionScalar = (pow(-pct,2) + (2 * pct));
+	mCurrentProductionScalar = ((2 * pct) - pow(pct, 2));
 }
 
-void ARPSolarController::updateCorrectOrientation() {
+void ARPSolarController::UpdateCorrectOrientation() {
 	FRotator rotation;
 	if (timeSys->GetDayPct() > 0.01f) {
-		rotation = moonsun[0]->GetActorRotation();
+		rotation = GetSunActor()->GetActorRotation();
 	}
 	else {
-		rotation = moonsun[1]->GetActorRotation();
+		rotation = GetMoonActor()->GetActorRotation();
 	}
 	float temp = rotation.GetComponentForAxis(EAxis::Y);
 	temp -= 1;
 	rotation.SetComponentForAxis(EAxis::Y, temp);
 
-	orientation = rotation;
+	mOrientation = rotation;
 }
 
-FRotator ARPSolarController::getOrientation() {
-	return orientation;
+FRotator ARPSolarController::GetOrientation() {
+	return mOrientation;
 }
-float ARPSolarController::getCurrectProductionScalar() {
-	return currentProductionScalar;
+float ARPSolarController::GetCurrectProductionScalar() {
+	return mCurrentProductionScalar;
 }
