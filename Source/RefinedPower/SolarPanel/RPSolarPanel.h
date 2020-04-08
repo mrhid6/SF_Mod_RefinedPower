@@ -14,6 +14,7 @@
 #include "FGRemoteCallObject.h"
 #include "RPSolarController.h"
 #include "FGTimeSubsystem.h"
+#include "RPLineTraceComponent.h"
 #include "RPSolarPanel.generated.h"
 
 UENUM(BlueprintType)
@@ -82,14 +83,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		ESolarPanelType mPanelType = ESolarPanelType::RP_DAYONLY;
 
+	int mTotalBlockingHits;
+
 	/*cached refernce to the solar controller*/
 	ARPSolarController* mSolarController;
 
 	/*getter for the solar controller*/
 	ARPSolarController* GetSolarController();
 
-	void CachePanelStaticMesh();
-	UStaticMeshComponent* mCachedPanelStaticMesh;
+	void CacheTraceLineComponents();
+	TArray<UActorComponent*> mCachedTraceLineComponents;
 
 	void DetectObjectsInWay();
 
