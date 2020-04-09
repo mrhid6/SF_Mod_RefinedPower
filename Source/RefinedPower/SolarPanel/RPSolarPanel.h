@@ -57,6 +57,8 @@ public:
 	virtual void Factory_Tick(float dt) override;
 	virtual void Tick(float dt) override;
 
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	float GetPowerOutput();
 	void SetPowerOutput();
 
@@ -100,6 +102,8 @@ protected:
 	// Used because factory tick is a dick and fires every frame regaurdless of TickInterval!
 	float mDetectShadowsTimer = 0;
 
+	FTimerHandle mSolarPanelHandle;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UFGPowerConnectionComponent* FGPowerConnection;
 
@@ -108,5 +112,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UStaticMeshComponent* SupportMesh;
+
+
 
 };

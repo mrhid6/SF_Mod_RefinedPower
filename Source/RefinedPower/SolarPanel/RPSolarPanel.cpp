@@ -69,6 +69,8 @@ void ARPSolarPanel::BeginPlay()
 		GetSolarController();
 		CacheTraceLineComponents();
 	}
+
+	GetWorld()->GetTimerManager().SetTimer(mSolarPanelHandle, this, &ARPSolarPanel::UpdateSolarPanelRotation, 5.0f, true);
 }
 
 void ARPSolarPanel::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -80,10 +82,6 @@ void ARPSolarPanel::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 
 void ARPSolarPanel::Tick(float dt) {
 	Super::Tick(dt);
-	PrimaryActorTick.TickInterval = 5;
-	if (mSolarController != nullptr) {
-		UpdateSolarPanelRotation();
-	}
 }
 
 void ARPSolarPanel::Factory_Tick(float dt) {
@@ -99,6 +97,12 @@ void ARPSolarPanel::Factory_Tick(float dt) {
 			mDetectShadowsTimer += 1;
 		}
 	}
+}
+
+void ARPSolarPanel::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 }
 
 
@@ -135,11 +139,13 @@ void ARPSolarPanel::SetPowerOutput(){
 
 void ARPSolarPanel::UpdateSolarPanelRotation()
 {
-	FRotator orientation = mSolarController->GetOrientation();
-	FRotator supprtRotation = FRotator(0, orientation.Yaw, 0);
+	if (mSolarController != nullptr) {
+		FRotator orientation = mSolarController->GetOrientation();
+		FRotator supprtRotation = FRotator(0, orientation.Yaw, 0);
 
-	SolarPanelMesh->SetWorldRotation(orientation);
-	SupportMesh->SetWorldRotation(supprtRotation);
+		SolarPanelMesh->SetWorldRotation(orientation);
+		SupportMesh->SetWorldRotation(supprtRotation);
+	}
 }
 
 ARPSolarController* ARPSolarPanel::GetSolarController() {
