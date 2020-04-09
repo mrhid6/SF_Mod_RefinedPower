@@ -15,6 +15,7 @@
 #include "RPSolarController.h"
 #include "FGTimeSubsystem.h"
 #include "RPLineTraceComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "RPSolarPanel.generated.h"
 
 UENUM(BlueprintType)
@@ -59,11 +60,7 @@ public:
 	float GetPowerOutput();
 	void SetPowerOutput();
 
-	UFUNCTION(NetMulticast, Reliable)
-		void Multicast_UpdateSolarPanelRotation();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|Solar")
-		void UpdateSolarPanelRotation(FRotator orientation);
+	void UpdateSolarPanelRotation();
 
 	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated)
 		bool mPanelEnabled = true;
@@ -86,6 +83,7 @@ protected:
 	int mTotalBlockingHits;
 
 	/*cached refernce to the solar controller*/
+	UPROPERTY(Replicated)
 	ARPSolarController* mSolarController;
 
 	/*getter for the solar controller*/
@@ -99,7 +97,16 @@ protected:
 	/*cached time subsystem to avoid getting every actor tick*/
 	AFGTimeOfDaySubsystem* timeSys;
 
+	// Used because factory tick is a dick and fires every frame regaurdless of TickInterval!
+	float mDetectShadowsTimer = 0;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UFGPowerConnectionComponent* FGPowerConnection;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		class UStaticMeshComponent* SolarPanelMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		class UStaticMeshComponent* SupportMesh;
 
 };

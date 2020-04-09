@@ -32,6 +32,13 @@ ARPSolarPanel::ARPSolarPanel()
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection"));
 	FGPowerConnection->SetupAttachment(RootComponent);
 
+	SolarPanelMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SolarPanelMesh"));
+	SolarPanelMesh->SetupAttachment(RootComponent);
+
+	SupportMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SupportMesh"));
+	SupportMesh->SetupAttachment(RootComponent);
+
+
 	SetReplicates(true);
 	bReplicates = true;
 
@@ -54,6 +61,8 @@ void ARPSolarPanel::BeginPlay()
 {
 	Super::BeginPlay();
 
+	PrimaryActorTick.TickInterval = 5;
+
 	if (HasAuthority()) {
 		timeSys = AFGTimeOfDaySubsystem::Get(GetWorld());
 		FGPowerConnection->SetPowerInfo(GetPowerInfo());
@@ -66,21 +75,29 @@ void ARPSolarPanel::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ARPSolarPanel, mPanelEnabled);
+	DOREPLIFETIME(ARPSolarPanel, mSolarController);
 }
 
 void ARPSolarPanel::Tick(float dt) {
 	Super::Tick(dt);
-
-	if (HasAuthority()) {
-		Multicast_UpdateSolarPanelRotation();
+	PrimaryActorTick.TickInterval = 5;
+	if (mSolarController != nullptr) {
+		UpdateSolarPanelRotation();
 	}
 }
 
 void ARPSolarPanel::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
 	if (HasAuthority()) {
-		SetPowerOutput();
-		DetectObjectsInWay();
+
+		if (mDetectShadowsTimer >= 300) {
+			mDetectShadowsTimer = 0.0f;
+			//DetectObjectsInWay();
+			//SetPowerOutput();
+		}
+		else {
+			mDetectShadowsTimer += 1;
+		}
 	}
 }
 
@@ -116,10 +133,13 @@ void ARPSolarPanel::SetPowerOutput(){
 	}
 }
 
-void ARPSolarPanel::Multicast_UpdateSolarPanelRotation_Implementation(){
-	if (mSolarController != nullptr) {
-		UpdateSolarPanelRotation(mSolarController->GetOrientation());
-	}
+void ARPSolarPanel::UpdateSolarPanelRotation()
+{
+	FRotator orientation = mSolarController->GetOrientation();
+	FRotator supprtRotation = FRotator(0, orientation.Yaw, 0);
+
+	SolarPanelMesh->SetWorldRotation(orientation);
+	SupportMesh->SetWorldRotation(supprtRotation);
 }
 
 ARPSolarController* ARPSolarPanel::GetSolarController() {
@@ -161,7 +181,5 @@ void ARPSolarPanel::DetectObjectsInWay() {
 			mTotalBlockingHits++;
 		}
 	}
-
-	SML::Logging::warning("[RefinedPower] - Total Hits: ", mTotalBlockingHits);
 }
 
