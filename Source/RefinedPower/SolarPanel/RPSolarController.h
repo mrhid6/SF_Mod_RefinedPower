@@ -3,15 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Core.h"
 #include "Engine.h"
 #include "FGTimeSubsystem.h"
 #include "Buildables/FGBuildableFactory.h"
 #include "GameFramework/Actor.h"
 #include "util/Logging.h"
+#include "Components/InstancedStaticMeshComponent.h"
 #include "RPSolarController.generated.h"
 
 UCLASS()
-class REFINEDPOWER_API ARPSolarController : public AFGBuildableFactory
+class REFINEDPOWER_API ARPSolarController : public AActor
 {
 	GENERATED_BODY()
 	
@@ -26,13 +28,26 @@ public:
 	void BeginPlay() override;
 
 	// Called Every tick
-	void Factory_Tick(float dt) override;
+	//void Factory_Tick(float dt) override;
 
+	UFUNCTION(BlueprintCallable)
 	static ARPSolarController* Get(UWorld* world);
 
 	/*getters and setters*/
 	FRotator GetOrientation();
 	float GetCurrectProductionScalar();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		class UInstancedStaticMeshComponent* MeshPool;
+
+	TMap<uint32, uint32> IdToInstanceMapping;
+	TArray<uint32> IdBuffer;
+	UFUNCTION(BlueprintCallable)
+	void SpawnIM(FTransform initialTransform, int actorId);
+	void DestroyIM(int actorId);
+	void FinishUpdates();
+
+	void UpdateSolarPanelsRotation();
 
 protected:
 	/*the current production scalar based on the solarProductionScalar function*/
@@ -48,6 +63,8 @@ protected:
 
 	ADirectionalLight* GetSunActor();
 	ADirectionalLight* GetMoonActor();
+
+	FTimerHandle mRotationTimerHandle;
 
 private:
 

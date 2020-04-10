@@ -15,7 +15,6 @@
 #include "RPSolarController.h"
 #include "FGTimeSubsystem.h"
 #include "RPLineTraceComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "RPSolarPanel.generated.h"
 
 UENUM(BlueprintType)
@@ -106,13 +105,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UFGPowerConnectionComponent* FGPowerConnection;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class UStaticMeshComponent* SolarPanelMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class UStaticMeshComponent* SupportMesh;
-
 
 
 };

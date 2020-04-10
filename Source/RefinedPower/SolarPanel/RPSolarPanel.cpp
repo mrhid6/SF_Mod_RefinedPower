@@ -32,12 +32,6 @@ ARPSolarPanel::ARPSolarPanel()
 	FGPowerConnection = CreateDefaultSubobject<UFGPowerConnectionComponent>(TEXT("FGPowerConnection"));
 	FGPowerConnection->SetupAttachment(RootComponent);
 
-	SolarPanelMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SolarPanelMesh"));
-	SolarPanelMesh->SetupAttachment(RootComponent);
-
-	SupportMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SupportMesh"));
-	SupportMesh->SetupAttachment(RootComponent);
-
 
 	SetReplicates(true);
 	bReplicates = true;
@@ -67,10 +61,15 @@ void ARPSolarPanel::BeginPlay()
 		timeSys = AFGTimeOfDaySubsystem::Get(GetWorld());
 		FGPowerConnection->SetPowerInfo(GetPowerInfo());
 		GetSolarController();
-		CacheTraceLineComponents();
-	}
+		if (mSolarController) {
 
-	GetWorld()->GetTimerManager().SetTimer(mSolarPanelHandle, this, &ARPSolarPanel::UpdateSolarPanelRotation, 5.0f, true);
+			FTransform temp = FTransform();
+
+			//mSolarController->SpawnIM(GetActorTransform(), GetUniqueID());
+			mSolarController->SpawnIM(temp, GetUniqueID());
+		}
+		//CacheTraceLineComponents();
+	}
 }
 
 void ARPSolarPanel::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -99,12 +98,14 @@ void ARPSolarPanel::Factory_Tick(float dt) {
 	}
 }
 
-void ARPSolarPanel::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
-}
+void ARPSolarPanel::EndPlay(const EEndPlayReason::Type endPlayReason) {
 
+	if (endPlayReason == EEndPlayReason::Destroyed) {
+		mSolarController->DestroyIM(GetUniqueID());
+	}
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	Super::EndPlay(endPlayReason);
+}
 
 
 float ARPSolarPanel::GetPowerOutput()
@@ -134,17 +135,6 @@ void ARPSolarPanel::SetPowerOutput(){
 
 	if (TempFGPowerInfo != nullptr) {
 		TempFGPowerInfo->SetBaseProduction(GetPowerOutput());
-	}
-}
-
-void ARPSolarPanel::UpdateSolarPanelRotation()
-{
-	if (mSolarController != nullptr) {
-		FRotator orientation = mSolarController->GetOrientation();
-		FRotator supprtRotation = FRotator(0, orientation.Yaw, 0);
-
-		SolarPanelMesh->SetWorldRotation(orientation);
-		SupportMesh->SetWorldRotation(supprtRotation);
 	}
 }
 

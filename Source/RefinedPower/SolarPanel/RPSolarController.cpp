@@ -13,6 +13,26 @@ ARPSolarController::ARPSolarController()
 	PrimaryActorTick.bCanEverTick = true;
 	SetReplicates(true);
 	bReplicates = true;
+
+	MeshPool = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("MeshPool"));
+	MeshPool->SetupAttachment(RootComponent);
+	
+	// Stuff i tried to get it to render instances.
+	MeshPool->SetWorldLocation(GetActorLocation());
+
+	MeshPool->SetBoundsScale(500000.0f);
+	MeshPool->bNeverDistanceCull = true;
+	MeshPool->bAllowCullDistanceVolume = false;
+	MeshPool->bUseAsOccluder = false;
+
+	MeshPool->InstancingRandomSeed = 1;
+
+	//
+
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/RefinedPower/Models/SolarPanelMk2/SolarPanel_Panels.SolarPanel_Panels'"));
+	UStaticMesh* Asset = MeshAsset.Object;
+
+	MeshPool->SetStaticMesh(Asset);
 }
 
 // Called when the game starts or when spawned
@@ -20,18 +40,24 @@ void ARPSolarController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MeshPool->SetVisibilitySML(true, true);
+	MeshPool->Activate();
+
+	MeshPool->AddInstance(FTransform());
+
 	timeSys = AFGTimeOfDaySubsystem::Get(this);
 	CacheMoonSunActors();
+	GetWorld()->GetTimerManager().SetTimer(mRotationTimerHandle, this, &ARPSolarController::UpdateSolarPanelsRotation, 5.0f, true);
 }
 
-void ARPSolarController::Factory_Tick(float dt)
+/*void ARPSolarController::Factory_Tick(float dt)
 {
 	Super::Factory_Tick(dt);
 	if (HasAuthority()) {
 		UpdateSolarProductionScalar();
 		UpdateCorrectOrientation();
 	}
-}
+}*/
 
 ARPSolarController* ARPSolarController::Get(UWorld* world)
 {
@@ -54,7 +80,6 @@ void ARPSolarController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-
 
 
 /*Function to get the sun an moon actors (assumes they are the only directional lights in the level)*/
@@ -111,6 +136,53 @@ void ARPSolarController::UpdateCorrectOrientation() {
 FRotator ARPSolarController::GetOrientation() {
 	return mOrientation;
 }
+
 float ARPSolarController::GetCurrectProductionScalar() {
 	return mCurrentProductionScalar;
+}
+
+
+void ARPSolarController::UpdateSolarPanelsRotation() {
+
+
+	FQuat rotation = GetOrientation().Quaternion();
+
+	int meshCount = MeshPool->GetInstanceCount();
+	SML::Logging::info("Updating all instances: ", meshCount);
+
+	for (int i = 0; i < meshCount; i++) {
+		FTransform origInstTransform;
+		MeshPool->GetInstanceTransform(i, origInstTransform);
+		origInstTransform.SetRotation(rotation);
+
+		SML::Logging::info(TCHAR_TO_UTF8(*origInstTransform.ToString()));
+
+		MeshPool->UpdateInstanceTransform(i, origInstTransform, true, true, true);
+	}
+
+	FinishUpdates();
+}
+
+//Instance Static Mesh Stuff:
+
+void ARPSolarController::SpawnIM(FTransform initialTransform, int actorId) {
+	SML::Logging::info(TCHAR_TO_UTF8(*initialTransform.ToString()));
+	int32 index = MeshPool->AddInstance(initialTransform);
+	IdToInstanceMapping.Add(actorId, index);
+	IdBuffer.Add(actorId);
+	FinishUpdates();
+}
+
+void ARPSolarController::DestroyIM(int actorId) {
+	uint32 indexToRemove = IdToInstanceMapping[actorId];
+	uint32 actorLastIndex = IdBuffer.Num() - 1;
+	uint32 actorToMove = IdBuffer[actorLastIndex];
+	IdBuffer[indexToRemove] = actorToMove;
+	IdToInstanceMapping[actorToMove] = IdToInstanceMapping[actorId];
+	IdToInstanceMapping.Remove(actorId);
+	IdBuffer.RemoveAt(actorLastIndex);
+}
+
+void ARPSolarController::FinishUpdates() {
+	MeshPool->MarkRenderStateDirty();
 }

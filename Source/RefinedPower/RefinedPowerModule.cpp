@@ -27,7 +27,8 @@ void SpawnSolarController(CallScope<void(*)(AFGGameMode*, APlayerController*)>& 
 
 		if (controller == nullptr) {
 			SML::Logging::info("[RefinedPower] - Spawned SolarController");
-			gm->GetWorld()->SpawnActor<ARPSolarController>(FVector::ZeroVector, FRotator::ZeroRotator);
+			ARPSolarController* controller = gm->GetWorld()->SpawnActor<ARPSolarController>(FVector::ZeroVector, FRotator::ZeroRotator);
+			SML::Logging::info("[RefinedPower] - Controller Scale: ",TCHAR_TO_UTF8(*controller->GetActorScale().ToString()));
 		}
 		else {
 			SML::Logging::info("[RefinedPower] - Skipped Spawning SolarController");
