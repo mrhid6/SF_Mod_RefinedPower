@@ -63,10 +63,17 @@ void ARPSolarPanel::BeginPlay()
 		GetSolarController();
 		if (mSolarController) {
 
-			FTransform temp = FTransform();
+			FTransform panelTemp = GetActorTransform();
+			FTransform supportTemp = GetActorTransform();
+			FVector position1 = panelTemp.TransformPosition(FVector(0, -631, 413));
+			FVector position2 = panelTemp.TransformPosition(FVector(0, -631, 255));
 
-			//mSolarController->SpawnIM(GetActorTransform(), GetUniqueID());
-			mSolarController->SpawnIM(temp, GetUniqueID());
+			panelTemp.SetLocation(position1);
+			supportTemp.SetLocation(position2);
+
+
+			mSolarController->SpawnIM(panelTemp, supportTemp, GetUniqueID());
+			
 		}
 		//CacheTraceLineComponents();
 	}
@@ -90,7 +97,7 @@ void ARPSolarPanel::Factory_Tick(float dt) {
 		if (mDetectShadowsTimer >= 300) {
 			mDetectShadowsTimer = 0.0f;
 			//DetectObjectsInWay();
-			//SetPowerOutput();
+			SetPowerOutput();
 		}
 		else {
 			mDetectShadowsTimer += 1;

@@ -13,51 +13,23 @@ ARPSolarController::ARPSolarController()
 	PrimaryActorTick.bCanEverTick = true;
 	SetReplicates(true);
 	bReplicates = true;
-
-	MeshPool = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("MeshPool"));
-	MeshPool->SetupAttachment(RootComponent);
-	
-	// Stuff i tried to get it to render instances.
-	MeshPool->SetWorldLocation(GetActorLocation());
-
-	MeshPool->SetBoundsScale(500000.0f);
-	MeshPool->bNeverDistanceCull = true;
-	MeshPool->bAllowCullDistanceVolume = false;
-	MeshPool->bUseAsOccluder = false;
-
-	MeshPool->InstancingRandomSeed = 1;
-
-	//
-
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Game/RefinedPower/Models/SolarPanelMk2/SolarPanel_Panels.SolarPanel_Panels'"));
-	UStaticMesh* Asset = MeshAsset.Object;
-
-	MeshPool->SetStaticMesh(Asset);
 }
+
+ARPSolarController::~ARPSolarController() {}
 
 // Called when the game starts or when spawned
 void ARPSolarController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	MeshPool->SetVisibilitySML(true, true);
-	MeshPool->Activate();
-
-	MeshPool->AddInstance(FTransform());
+	CacheInstancedMeshPool();
 
 	timeSys = AFGTimeOfDaySubsystem::Get(this);
 	CacheMoonSunActors();
-	GetWorld()->GetTimerManager().SetTimer(mRotationTimerHandle, this, &ARPSolarController::UpdateSolarPanelsRotation, 5.0f, true);
-}
 
-/*void ARPSolarController::Factory_Tick(float dt)
-{
-	Super::Factory_Tick(dt);
-	if (HasAuthority()) {
-		UpdateSolarProductionScalar();
-		UpdateCorrectOrientation();
-	}
-}*/
+	GetWorld()->GetTimerManager().SetTimer(mRotationTimerHandle, this, &ARPSolarController::UpdateSolarPanelsRotation, 5.0f, true);
+	GetWorld()->GetTimerManager().SetTimer(mScalarTimerHandle, this, &ARPSolarController::UpdateSolarProductionScalar, 0.5f, true);
+}
 
 ARPSolarController* ARPSolarController::Get(UWorld* world)
 {
@@ -104,18 +76,22 @@ ADirectionalLight* ARPSolarController::GetMoonActor()
 }
 
 void ARPSolarController::UpdateSolarProductionScalar() {
-	float pct = 0;
-	if (timeSys && timeSys->IsDay()) {
-		pct = timeSys->GetDayPct();
-	}
-	else if (timeSys && timeSys->IsNight()) {
-		pct = timeSys->GetNightPct();
-	}
 
-	/*controls the solar panel production ratio based on TOD
-	For a more detailed analysis of this function: https://www.desmos.com/calculator/mfzrurdb5e
-	*/
-	mCurrentProductionScalar = ((2 * pct) - pow(pct, 2));
+	if (HasAuthority())
+	{
+		float pct = 0;
+		if (timeSys && timeSys->IsDay()) {
+			pct = timeSys->GetDayPct();
+		}
+		else if (timeSys && timeSys->IsNight()) {
+			pct = timeSys->GetNightPct();
+		}
+
+		/*controls the solar panel production ratio based on TOD
+		For a more detailed analysis of this function: https://www.desmos.com/calculator/mfzrurdb5e
+		*/
+		mCurrentProductionScalar = ((2 * pct) - pow(pct, 2));
+	}
 }
 
 void ARPSolarController::UpdateCorrectOrientation() {
@@ -141,23 +117,47 @@ float ARPSolarController::GetCurrectProductionScalar() {
 	return mCurrentProductionScalar;
 }
 
+void ARPSolarController::CacheInstancedMeshPool()
+{
+	FName tag = FName(TEXT("PanelMeshPool"));
+	TArray<UActorComponent*> comps = GetComponentsByTag(UHierarchicalInstancedStaticMeshComponent::StaticClass(), tag);
+	mPanelMeshPool = Cast<UHierarchicalInstancedStaticMeshComponent>(comps[0]);
+
+	tag = FName(TEXT("SupportMeshPool"));
+	comps = GetComponentsByTag(UHierarchicalInstancedStaticMeshComponent::StaticClass(), tag);
+	mSupportMeshPool = Cast<UHierarchicalInstancedStaticMeshComponent>(comps[0]);
+
+}
+
 
 void ARPSolarController::UpdateSolarPanelsRotation() {
 
+	if (mPanelMeshPool == nullptr) return;
+
+	UpdateCorrectOrientation();
 
 	FQuat rotation = GetOrientation().Quaternion();
 
-	int meshCount = MeshPool->GetInstanceCount();
-	SML::Logging::info("Updating all instances: ", meshCount);
+	FRotator rot2 = GetOrientation();
+	rot2.Pitch = 0;
+	rot2.Roll = 0;
+
+	FQuat rotation2 = rot2.Quaternion();
+
+	int meshCount = mPanelMeshPool->GetInstanceCount();
 
 	for (int i = 0; i < meshCount; i++) {
-		FTransform origInstTransform;
-		MeshPool->GetInstanceTransform(i, origInstTransform);
-		origInstTransform.SetRotation(rotation);
+		FTransform origInstTransform1;
+		FTransform origInstTransform2;
 
-		SML::Logging::info(TCHAR_TO_UTF8(*origInstTransform.ToString()));
+		mPanelMeshPool->GetInstanceTransform(i, origInstTransform1, true);
+		mSupportMeshPool->GetInstanceTransform(i, origInstTransform2, true);
 
-		MeshPool->UpdateInstanceTransform(i, origInstTransform, true, true, true);
+		origInstTransform1.SetRotation(rotation);
+		origInstTransform2.SetRotation(rotation2);
+
+		mPanelMeshPool->UpdateInstanceTransform(i, origInstTransform1, true, false, true);
+		mSupportMeshPool->UpdateInstanceTransform(i, origInstTransform2, true, false, true);
 	}
 
 	FinishUpdates();
@@ -165,9 +165,11 @@ void ARPSolarController::UpdateSolarPanelsRotation() {
 
 //Instance Static Mesh Stuff:
 
-void ARPSolarController::SpawnIM(FTransform initialTransform, int actorId) {
-	SML::Logging::info(TCHAR_TO_UTF8(*initialTransform.ToString()));
-	int32 index = MeshPool->AddInstance(initialTransform);
+void ARPSolarController::SpawnIM(FTransform initPanelTransform, FTransform initSupportTransform, int actorId) {
+	//SML::Logging::info(TCHAR_TO_UTF8(*initialTransform.ToString()));
+	int32 index = mPanelMeshPool->AddInstanceWorldSpace(initPanelTransform);
+	mSupportMeshPool->AddInstanceWorldSpace(initSupportTransform);
+
 	IdToInstanceMapping.Add(actorId, index);
 	IdBuffer.Add(actorId);
 	FinishUpdates();
@@ -181,8 +183,12 @@ void ARPSolarController::DestroyIM(int actorId) {
 	IdToInstanceMapping[actorToMove] = IdToInstanceMapping[actorId];
 	IdToInstanceMapping.Remove(actorId);
 	IdBuffer.RemoveAt(actorLastIndex);
+
+	mPanelMeshPool->RemoveInstance(indexToRemove);
+	mSupportMeshPool->RemoveInstance(indexToRemove);
 }
 
 void ARPSolarController::FinishUpdates() {
-	MeshPool->MarkRenderStateDirty();
+	mPanelMeshPool->MarkRenderStateDirty();
+	mSupportMeshPool->MarkRenderStateDirty();
 }

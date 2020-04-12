@@ -27,8 +27,14 @@ void SpawnSolarController(CallScope<void(*)(AFGGameMode*, APlayerController*)>& 
 
 		if (controller == nullptr) {
 			SML::Logging::info("[RefinedPower] - Spawned SolarController");
-			ARPSolarController* controller = gm->GetWorld()->SpawnActor<ARPSolarController>(FVector::ZeroVector, FRotator::ZeroRotator);
-			SML::Logging::info("[RefinedPower] - Controller Scale: ",TCHAR_TO_UTF8(*controller->GetActorScale().ToString()));
+
+			FTransform transform = FTransform();
+			transform.SetScale3D(FVector(1, 1, 1));
+
+			ARPSolarController* controller = gm->GetWorld()->SpawnActorDeferred<ARPSolarController>(ARPSolarController::StaticClass(), transform, NULL, NULL, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			UGameplayStatics::FinishSpawningActor(controller, transform);
+
+			SML::Logging::info(TCHAR_TO_UTF8(*controller->GetTransform().ToString()));
 		}
 		else {
 			SML::Logging::info("[RefinedPower] - Skipped Spawning SolarController");
@@ -38,7 +44,7 @@ void SpawnSolarController(CallScope<void(*)(AFGGameMode*, APlayerController*)>& 
 
 void FRefinedPowerModule::StartupModule() {
 	SUBSCRIBE_METHOD("?PostLogin@AFGGameMode@@UEAAXPEAVAPlayerController@@@Z", AFGGameMode::PostLogin, &GameModePostLogin);
-	SUBSCRIBE_METHOD("?PostLogin@AFGGameMode@@UEAAXPEAVAPlayerController@@@Z", AFGGameMode::PostLogin, &SpawnSolarController);
+	//SUBSCRIBE_METHOD("?PostLogin@AFGGameMode@@UEAAXPEAVAPlayerController@@@Z", AFGGameMode::PostLogin, &SpawnSolarController);
 }
 
 IMPLEMENT_GAME_MODULE(FRefinedPowerModule, RefinedPower);

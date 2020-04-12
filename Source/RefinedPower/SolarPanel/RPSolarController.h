@@ -6,10 +6,12 @@
 #include "Core.h"
 #include "Engine.h"
 #include "FGTimeSubsystem.h"
+#include "FGSubsystem.h"
 #include "Buildables/FGBuildableFactory.h"
 #include "GameFramework/Actor.h"
 #include "util/Logging.h"
-#include "Components/InstancedStaticMeshComponent.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "RPSolarController.generated.h"
 
 UCLASS()
@@ -20,6 +22,7 @@ class REFINEDPOWER_API ARPSolarController : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ARPSolarController();
+	~ARPSolarController();
 
 	// Called when in range (Not needed)
 	void Tick(float DeltaTime) override;
@@ -27,8 +30,6 @@ public:
 	// Called when the game starts or when spawned
 	void BeginPlay() override;
 
-	// Called Every tick
-	//void Factory_Tick(float dt) override;
 
 	UFUNCTION(BlueprintCallable)
 	static ARPSolarController* Get(UWorld* world);
@@ -37,13 +38,15 @@ public:
 	FRotator GetOrientation();
 	float GetCurrectProductionScalar();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class UInstancedStaticMeshComponent* MeshPool;
+	void CacheInstancedMeshPool();
+
+	class UHierarchicalInstancedStaticMeshComponent* mPanelMeshPool;
+	class UHierarchicalInstancedStaticMeshComponent* mSupportMeshPool;
 
 	TMap<uint32, uint32> IdToInstanceMapping;
 	TArray<uint32> IdBuffer;
 	UFUNCTION(BlueprintCallable)
-	void SpawnIM(FTransform initialTransform, int actorId);
+	void SpawnIM(FTransform initPanelTransform, FTransform initSupportTransform, int actorId);
 	void DestroyIM(int actorId);
 	void FinishUpdates();
 
@@ -65,6 +68,7 @@ protected:
 	ADirectionalLight* GetMoonActor();
 
 	FTimerHandle mRotationTimerHandle;
+	FTimerHandle mScalarTimerHandle;
 
 private:
 
