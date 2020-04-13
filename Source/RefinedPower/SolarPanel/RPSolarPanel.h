@@ -61,7 +61,7 @@ public:
 	float GetPowerOutput();
 	void SetPowerOutput();
 
-	void UpdateSolarPanelRotation();
+	void UpdateLineTraceRotation();
 
 	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated)
 		bool mPanelEnabled = true;
@@ -81,6 +81,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		ESolarPanelType mPanelType = ESolarPanelType::RP_DAYONLY;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		bool mRotatesTowardSun = false;
+
 	int mTotalBlockingHits;
 
 	/*cached refernce to the solar controller*/
@@ -92,6 +95,7 @@ protected:
 
 	void CacheTraceLineComponents();
 	TArray<UActorComponent*> mCachedTraceLineComponents;
+	USphereComponent* mCachedTraceLineController;
 
 	void DetectObjectsInWay();
 

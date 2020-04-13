@@ -27,6 +27,8 @@ public:
 	// Called when in range (Not needed)
 	void Tick(float DeltaTime) override;
 
+	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
+
 	// Called when the game starts or when spawned
 	void BeginPlay() override;
 

@@ -61,22 +61,25 @@ void ARPSolarPanel::BeginPlay()
 		timeSys = AFGTimeOfDaySubsystem::Get(GetWorld());
 		FGPowerConnection->SetPowerInfo(GetPowerInfo());
 		GetSolarController();
-		if (mSolarController) {
-
-			FTransform panelTemp = GetActorTransform();
-			FTransform supportTemp = GetActorTransform();
-			FVector position1 = panelTemp.TransformPosition(FVector(0, -631, 413));
-			FVector position2 = panelTemp.TransformPosition(FVector(0, -631, 255));
-
-			panelTemp.SetLocation(position1);
-			supportTemp.SetLocation(position2);
-
-
-			mSolarController->SpawnIM(panelTemp, supportTemp, GetUniqueID());
-			
-		}
-		//CacheTraceLineComponents();
 	}
+
+	if (mSolarController) {
+
+		FTransform panelTemp = GetActorTransform();
+		FTransform supportTemp = GetActorTransform();
+		FVector position1 = panelTemp.TransformPosition(FVector(0, -631, 407));
+		FVector position2 = panelTemp.TransformPosition(FVector(0, -631, 255));
+
+		panelTemp.SetLocation(position1);
+		supportTemp.SetLocation(position2);
+
+
+		mSolarController->SpawnIM(panelTemp, supportTemp, GetUniqueID());
+			
+	}
+	CacheTraceLineComponents();
+
+	GetWorld()->GetTimerManager().SetTimer(mSolarPanelHandle, this, &ARPSolarPanel::UpdateLineTraceRotation, 5.0f, true);
 }
 
 void ARPSolarPanel::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -96,7 +99,6 @@ void ARPSolarPanel::Factory_Tick(float dt) {
 
 		if (mDetectShadowsTimer >= 300) {
 			mDetectShadowsTimer = 0.0f;
-			//DetectObjectsInWay();
 			SetPowerOutput();
 		}
 		else {
@@ -122,14 +124,17 @@ float ARPSolarPanel::GetPowerOutput()
 	if (mSolarController && timeSys) {
 		float scalar = mSolarController->GetCurrectProductionScalar();
 
-		if (timeSys->IsDay()) {
+		if (timeSys->IsDay() && mPanelType != ESolarPanelType::RP_NIGHT) {
 			powerout = mMaxSolarPanelProduction * scalar;
+			powerout = FMath::Clamp(powerout, mMinSolarPanelProduction, mMaxSolarPanelProduction);
 		}
 		else if (mPanelType == ESolarPanelType::RP_DAYONLY && timeSys->IsNight()) {
 			powerout = 0.0f;
 		}
-		else if (mPanelType == ESolarPanelType::RP_DAYNIGHT && timeSys->IsNight()) {
+		else if (mPanelType != ESolarPanelType::RP_DAYONLY && timeSys->IsNight()) {
 			powerout = (mMaxSolarPanelProduction * mNightTimePowerReduction) * scalar;
+
+			powerout = FMath::Clamp(powerout, 0.0f, mMaxSolarPanelProduction);
 		}
 	}
 
@@ -145,6 +150,15 @@ void ARPSolarPanel::SetPowerOutput(){
 	}
 }
 
+void ARPSolarPanel::UpdateLineTraceRotation()
+{
+	if (mCachedTraceLineController && mSolarController && mRotatesTowardSun) {
+		mCachedTraceLineController->SetWorldRotation(mSolarController->GetOrientation());
+	}
+
+	DetectObjectsInWay();
+}
+
 ARPSolarController* ARPSolarPanel::GetSolarController() {
 	if (mSolarController == nullptr) {
 		mSolarController = ARPSolarController::Get(GetWorld());
@@ -157,12 +171,10 @@ void ARPSolarPanel::CacheTraceLineComponents(){
 	FName tag = FName(TEXT("RP_LineTrace"));
 	mCachedTraceLineComponents = GetComponentsByTag(URPLineTraceComponent::StaticClass(), tag);
 
-	if (mCachedTraceLineComponents.Num() > 0) {
-		SML::Logging::info("[RefinedPower] - Found Solar Line Traces: ", mCachedTraceLineComponents.Num());
-	}
-	else {
-		SML::Logging::warning("[RefinedPower] - Couldn't find line traces");
-	}
+	tag = FName(TEXT("RP_LineTrace_Controller"));
+
+	TArray<UActorComponent*>comps = GetComponentsByTag(USphereComponent::StaticClass(), tag);
+	mCachedTraceLineController = Cast<USphereComponent>(comps[0]);
 }
 
 void ARPSolarPanel::DetectObjectsInWay() {

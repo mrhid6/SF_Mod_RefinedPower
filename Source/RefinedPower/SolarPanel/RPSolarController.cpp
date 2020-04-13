@@ -53,6 +53,13 @@ void ARPSolarController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ARPSolarController::EndPlay(const EEndPlayReason::Type endPlayReason) {
+
+
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+	Super::EndPlay(endPlayReason);
+}
+
 
 /*Function to get the sun an moon actors (assumes they are the only directional lights in the level)*/
 void ARPSolarController::CacheMoonSunActors() {
