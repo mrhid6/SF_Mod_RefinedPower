@@ -106,6 +106,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
 	int mMaxWindTurbinesInArea;
 
+	/** The max amount of other wind turbines in the area */
+	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+		float mAreaOfWindTurbines = 5600;
+
 	void calcNearbyWindTurbines();
 
 };
