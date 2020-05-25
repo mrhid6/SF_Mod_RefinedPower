@@ -4,6 +4,7 @@
 #include "Reactor/RPMicroReactor.h"
 #include "DysonSphere/RPDysonSphere.h"
 #include "SolarPanel/RPSolarController.h"
+#include "SolarPanel/RPSolarPanel.h"
 #include "../SML/mod/hooking.h"
 #include "FGGameMode.h"
 #include "util/Logging.h"
@@ -17,6 +18,7 @@ void GameModePostLogin(CallScope<void(*)(AFGGameMode*, APlayerController*)>& sco
 		gm->RegisterRemoteCallObjectClass(URPArcReactorRCO::StaticClass());
 		gm->RegisterRemoteCallObjectClass(URPMicroReactorRCO::StaticClass());
 		gm->RegisterRemoteCallObjectClass(URPDysonSphereRCO::StaticClass());
+		gm->RegisterRemoteCallObjectClass(URPSolarPanelRCO::StaticClass());
 	}
 }
 

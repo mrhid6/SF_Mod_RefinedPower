@@ -4,6 +4,7 @@
 #include "RPSolarController.h"
 #include "FGTimeSubsystem.h"
 #include <cmath>
+#include "UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -103,17 +104,22 @@ void ARPSolarController::UpdateSolarProductionScalar() {
 
 void ARPSolarController::UpdateCorrectOrientation() {
 	FRotator rotation;
-	if (timeSys->GetDayPct() > 0.01f) {
-		rotation = GetSunActor()->GetActorRotation();
+	if (timeSys){
+		if (timeSys->GetDayPct() > 0.01f) {
+			rotation = GetSunActor()->GetActorRotation();
+		}
+		else {
+			rotation = GetMoonActor()->GetActorRotation();
+		}
+		float temp = rotation.GetComponentForAxis(EAxis::Y);
+		temp -= 1;
+		rotation.SetComponentForAxis(EAxis::Y, temp);
+
+		mOrientation = rotation;
 	}
 	else {
-		rotation = GetMoonActor()->GetActorRotation();
+		mOrientation = FRotator(0,0,0);
 	}
-	float temp = rotation.GetComponentForAxis(EAxis::Y);
-	temp -= 1;
-	rotation.SetComponentForAxis(EAxis::Y, temp);
-
-	mOrientation = rotation;
 }
 
 FRotator ARPSolarController::GetOrientation() {
@@ -140,34 +146,37 @@ void ARPSolarController::CacheInstancedMeshPool()
 void ARPSolarController::UpdateSolarPanelsRotation() {
 
 	if (mPanelMeshPool == nullptr) return;
+	if (HasAuthority())
+	{
+		UpdateCorrectOrientation();
 
-	UpdateCorrectOrientation();
+		FQuat rotation = GetOrientation().Quaternion();
 
-	FQuat rotation = GetOrientation().Quaternion();
+		FRotator rot2 = GetOrientation();
+		rot2.Pitch = 0;
+		rot2.Roll = 0;
 
-	FRotator rot2 = GetOrientation();
-	rot2.Pitch = 0;
-	rot2.Roll = 0;
+		FQuat rotation2 = rot2.Quaternion();
 
-	FQuat rotation2 = rot2.Quaternion();
+		int meshCount = mPanelMeshPool->GetInstanceCount();
 
-	int meshCount = mPanelMeshPool->GetInstanceCount();
+		for (int i = 0; i < meshCount; i++) {
+			FTransform origInstTransform1;
+			FTransform origInstTransform2;
 
-	for (int i = 0; i < meshCount; i++) {
-		FTransform origInstTransform1;
-		FTransform origInstTransform2;
+			mPanelMeshPool->GetInstanceTransform(i, origInstTransform1, true);
+			mSupportMeshPool->GetInstanceTransform(i, origInstTransform2, true);
 
-		mPanelMeshPool->GetInstanceTransform(i, origInstTransform1, true);
-		mSupportMeshPool->GetInstanceTransform(i, origInstTransform2, true);
+			origInstTransform1.SetRotation(rotation);
+			origInstTransform2.SetRotation(rotation2);
 
-		origInstTransform1.SetRotation(rotation);
-		origInstTransform2.SetRotation(rotation2);
+			mPanelMeshPool->UpdateInstanceTransform(i, origInstTransform1, true, false, true);
+			mSupportMeshPool->UpdateInstanceTransform(i, origInstTransform2, true, false, true);
+		}
 
-		mPanelMeshPool->UpdateInstanceTransform(i, origInstTransform1, true, false, true);
-		mSupportMeshPool->UpdateInstanceTransform(i, origInstTransform2, true, false, true);
+		FinishUpdates();
+
 	}
-
-	FinishUpdates();
 }
 
 //Instance Static Mesh Stuff:
@@ -198,4 +207,11 @@ void ARPSolarController::DestroyIM(int actorId) {
 void ARPSolarController::FinishUpdates() {
 	mPanelMeshPool->MarkRenderStateDirty();
 	mSupportMeshPool->MarkRenderStateDirty();
+}
+
+void ARPSolarController::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ARPSolarController, mOrientation);
+	DOREPLIFETIME(ARPSolarController, mCurrentProductionScalar);
 }

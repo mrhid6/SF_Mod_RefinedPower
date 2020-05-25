@@ -33,6 +33,12 @@ public:
 	UFUNCTION(Server, WithValidation, Reliable)
 		void SetPanelEnabled(ARPSolarPanel* panel, bool enabled);
 
+	UFUNCTION(Server, WithValidation, Reliable)
+		void SetMaintainMW(ARPSolarPanel* panel, float amount);
+
+	UFUNCTION(Server, WithValidation, Reliable)
+		void SetAmountToStore(ARPSolarPanel* panel, float amount);
+
 	UPROPERTY(Replicated)
 		bool bTest = true;
 };
@@ -58,6 +64,7 @@ public:
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	float GetPanelPowerOutput();
 	float GetPowerOutput();
 	void SetPowerOutput();
 
@@ -66,9 +73,25 @@ public:
 	UPROPERTY(BlueprintReadOnly, SaveGame, Replicated)
 		bool mPanelEnabled = true;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		bool mHasBattery;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		float mMaxBatteryStorage = 10000;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		float mBatteryPowerStored = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower")
+		float mPercentageToStore = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower")
+		float mMaintainPowerOutputAmount = 0;
+
+
 protected:
 	/*Max power output from this solar panel at mid-day*/
-	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		float mMaxSolarPanelProduction;
 
 	/*Min power output from this solar panel at sunrise*/
@@ -98,6 +121,15 @@ protected:
 	USphereComponent* mCachedTraceLineController;
 
 	void DetectObjectsInWay();
+
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Solar")
+		void setPanelEnabled(bool enabled);
+
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Solar")
+		void setPanelMaintainMW(float amount);
+
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|Solar")
+		void setPanelStoreAmount(float amount);
 
 	/*cached time subsystem to avoid getting every actor tick*/
 	AFGTimeOfDaySubsystem* timeSys;

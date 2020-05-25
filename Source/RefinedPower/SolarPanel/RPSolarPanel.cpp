@@ -21,6 +21,28 @@ bool URPSolarPanelRCO::SetPanelEnabled_Validate(ARPSolarPanel* panel, bool enabl
 	return true;
 }
 
+void URPSolarPanelRCO::SetMaintainMW_Implementation(ARPSolarPanel* panel, float amount) {
+	panel->mMaintainPowerOutputAmount = amount;
+	SML::Logging::info("[RefinedPower] - ", amount);
+
+	panel->ForceNetUpdate();
+}
+
+bool URPSolarPanelRCO::SetMaintainMW_Validate(ARPSolarPanel* panel, float amount) {
+	return true;
+}
+
+void URPSolarPanelRCO::SetAmountToStore_Implementation(ARPSolarPanel* panel, float amount) {
+	panel->mPercentageToStore = amount;
+
+	panel->ForceNetUpdate();
+}
+
+bool URPSolarPanelRCO::SetAmountToStore_Validate(ARPSolarPanel* panel, float amount) {
+	return true;
+}
+
+
 void URPSolarPanelRCO::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
@@ -87,6 +109,8 @@ void ARPSolarPanel::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ARPSolarPanel, mPanelEnabled);
 	DOREPLIFETIME(ARPSolarPanel, mSolarController);
+	DOREPLIFETIME(ARPSolarPanel, mPercentageToStore);
+	DOREPLIFETIME(ARPSolarPanel, mMaintainPowerOutputAmount);
 }
 
 void ARPSolarPanel::Tick(float dt) {
@@ -96,28 +120,22 @@ void ARPSolarPanel::Tick(float dt) {
 void ARPSolarPanel::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
 	if (HasAuthority()) {
-
-		if (mDetectShadowsTimer >= 300) {
-			mDetectShadowsTimer = 0.0f;
-			SetPowerOutput();
-		}
-		else {
-			mDetectShadowsTimer += 1;
-		}
+		SetPowerOutput();
 	}
 }
 
 void ARPSolarPanel::EndPlay(const EEndPlayReason::Type endPlayReason) {
 
 	if (endPlayReason == EEndPlayReason::Destroyed) {
-		mSolarController->DestroyIM(GetUniqueID());
+		if (mSolarController) {
+			mSolarController->DestroyIM(GetUniqueID());
+		}
 	}
 	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
 	Super::EndPlay(endPlayReason);
 }
 
-
-float ARPSolarPanel::GetPowerOutput()
+float ARPSolarPanel::GetPanelPowerOutput()
 {
 	float powerout = 0.0f;
 
@@ -139,7 +157,45 @@ float ARPSolarPanel::GetPowerOutput()
 	}
 
 	return powerout;
+}
 
+float ARPSolarPanel::GetPowerOutput()
+{
+	float PanelOutput = GetPanelPowerOutput();
+
+	float PowerOutput = PanelOutput;
+
+	if (mHasBattery) {
+		float amountToStore = PanelOutput * mPercentageToStore;
+
+		if (mBatteryPowerStored >= mMaxBatteryStorage) {
+			amountToStore = 0;
+		}
+		else {
+			mBatteryPowerStored += amountToStore;
+		}
+
+		PowerOutput -= amountToStore;
+
+		if (PowerOutput < mMaintainPowerOutputAmount) {
+			float PowerToTake = mMaintainPowerOutputAmount - PowerOutput;
+
+			if (mBatteryPowerStored > PowerToTake) {
+				mBatteryPowerStored -= PowerToTake;
+			}
+			else {
+				PowerToTake = mBatteryPowerStored;
+				mBatteryPowerStored -= PowerToTake;
+			}
+
+			PowerOutput += PowerToTake;
+		}
+
+		mBatteryPowerStored = FMath::Clamp(mBatteryPowerStored, 0.0f, mMaxBatteryStorage);
+	}
+
+	//SML::Logging::info("[RefinedPower] - %f", mBatteryPowerStored);
+	return PowerOutput;
 }
 
 void ARPSolarPanel::SetPowerOutput(){
@@ -198,3 +254,28 @@ void ARPSolarPanel::DetectObjectsInWay() {
 	}
 }
 
+void ARPSolarPanel::setPanelEnabled(bool enabled) {
+	auto rco = Cast<URPSolarPanelRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPSolarPanelRCO::StaticClass()));
+
+	if (rco) {
+		rco->SetPanelEnabled(this, enabled);
+	}
+}
+
+void ARPSolarPanel::setPanelMaintainMW(float amount)
+{
+	auto rco = Cast<URPSolarPanelRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPSolarPanelRCO::StaticClass()));
+
+	if (rco) {
+		rco->SetMaintainMW(this, amount);
+	}
+}
+
+void ARPSolarPanel::setPanelStoreAmount(float amount)
+{
+	auto rco = Cast<URPSolarPanelRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPSolarPanelRCO::StaticClass()));
+
+	if (rco) {
+		rco->SetAmountToStore(this, amount);
+	}
+}

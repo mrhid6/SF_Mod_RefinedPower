@@ -32,6 +32,8 @@ public:
 	// Called when the game starts or when spawned
 	void BeginPlay() override;
 
+	void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const;
+
 
 	UFUNCTION(BlueprintCallable)
 	static ARPSolarController* Get(UWorld* world);
@@ -56,9 +58,11 @@ public:
 
 protected:
 	/*the current production scalar based on the solarProductionScalar function*/
+	UPROPERTY(Replicated)
 	float mCurrentProductionScalar = 0;
 
 	/*correct rotator for solar panel orientation*/
+	UPROPERTY(Replicated)
 	FRotator mOrientation = FRotator(0.0,0.0,0.0);
 
 	/*cached sun and moon actors - [0] is moon - [1] is sun*/
