@@ -76,7 +76,7 @@ public:
 
 	/** Is turbine enabled or disabled */
 	UPROPERTY(SaveGame, ReplicatedUsing = TurbineStateUpdated, meta = (NoAutoJson = true))
-		uint32  mTurbineEnabled;
+		bool  mTurbineEnabled;
 
 	TArray< ARPTurbineBaseActor*> mCachedNearbyWindTurbines;
 

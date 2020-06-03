@@ -160,7 +160,7 @@ void ARPTurbineBaseActor::UpdateCachedNearbyWindTurbines() {
 	TArray< AActor*> OutActors;
 
 
-	bool foundTurbines = UKismetSystemLibrary::SphereOverlapActors(this, ActorLocation, mAreaOfWindTurbines, ObjectTypes, ARPTurbineBaseActor::StaticClass(), ActorsToIgnore, OutActors);
+	bool foundTurbines = UKismetSystemLibrary::SphereOverlapActors(this, ActorLocation, mAreaOfWindTurbines, ObjectTypes, this->GetClass(), ActorsToIgnore, OutActors);
 	
 	mCachedNearbyWindTurbines.Empty();
 

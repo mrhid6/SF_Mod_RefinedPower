@@ -107,7 +107,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		bool mRotatesTowardSun = false;
 
-	int mTotalBlockingHits;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
+		int mTotalBlockingHits = 0;
 
 	/*cached refernce to the solar controller*/
 	UPROPERTY(Replicated)

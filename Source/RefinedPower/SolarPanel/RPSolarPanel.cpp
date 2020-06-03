@@ -83,6 +83,8 @@ void ARPSolarPanel::BeginPlay()
 		timeSys = AFGTimeOfDaySubsystem::Get(GetWorld());
 		FGPowerConnection->SetPowerInfo(GetPowerInfo());
 		GetSolarController();
+		CacheTraceLineComponents();
+		GetWorld()->GetTimerManager().SetTimer(mSolarPanelHandle, this, &ARPSolarPanel::UpdateLineTraceRotation, 5.0f, true);
 	}
 
 	if (mSolarController) {
@@ -97,11 +99,9 @@ void ARPSolarPanel::BeginPlay()
 
 
 		mSolarController->SpawnIM(panelTemp, supportTemp, GetUniqueID());
-			
-	}
-	CacheTraceLineComponents();
 
-	GetWorld()->GetTimerManager().SetTimer(mSolarPanelHandle, this, &ARPSolarPanel::UpdateLineTraceRotation, 5.0f, true);
+	}
+	
 }
 
 void ARPSolarPanel::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -111,6 +111,7 @@ void ARPSolarPanel::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutL
 	DOREPLIFETIME(ARPSolarPanel, mSolarController);
 	DOREPLIFETIME(ARPSolarPanel, mPercentageToStore);
 	DOREPLIFETIME(ARPSolarPanel, mMaintainPowerOutputAmount);
+	DOREPLIFETIME(ARPSolarPanel, mTotalBlockingHits);
 }
 
 void ARPSolarPanel::Tick(float dt) {
@@ -121,6 +122,8 @@ void ARPSolarPanel::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
 	if (HasAuthority()) {
 		SetPowerOutput();
+
+		ForceNetUpdate();
 	}
 }
 
@@ -208,6 +211,7 @@ void ARPSolarPanel::SetPowerOutput(){
 
 void ARPSolarPanel::UpdateLineTraceRotation()
 {
+	
 	if (mCachedTraceLineController && mSolarController && mRotatesTowardSun) {
 		mCachedTraceLineController->SetWorldRotation(mSolarController->GetOrientation());
 	}
