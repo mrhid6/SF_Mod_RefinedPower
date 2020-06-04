@@ -6,7 +6,16 @@
 #include "GameFramework/Actor.h"
 #include "UnrealNetwork.h"
 #include "FGResourceNode.h"
+#include "util/Logging.h"
 #include "RPWaterTurbineNode.generated.h"
+
+UENUM(BlueprintType)
+enum class EWaterTurbineNodeType : uint8
+{
+	RP_SLOW	UMETA(DisplayName = "Slow"),
+	RP_MEDIUM	UMETA(DisplayName = "Medium"),
+	RP_FAST	UMETA(DisplayName = "Fast")
+};
 
 UCLASS(Blueprintable)
 class REFINEDPOWER_API ARPWaterTurbineNode : public AFGResourceNode
@@ -19,8 +28,11 @@ public:
 
 	virtual FText GetLookAtDecription_Implementation(class AFGCharacterPlayer* byCharacter, const FUseState& state) const override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, SaveGame)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, SaveGame, Category = "Refined Power")
 		bool mHasTurbine = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Refined Power")
+		EWaterTurbineNodeType mNodeType = EWaterTurbineNodeType::RP_SLOW;
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,5 +43,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const;
+
+	UFUNCTION(BlueprintPure, Category = "Refined Power|Turbine|Node")
+		float GetTypePowerProduction() const;
 
 };

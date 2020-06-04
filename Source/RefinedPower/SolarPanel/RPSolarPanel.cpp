@@ -87,7 +87,7 @@ void ARPSolarPanel::BeginPlay()
 		GetWorld()->GetTimerManager().SetTimer(mSolarPanelHandle, this, &ARPSolarPanel::UpdateLineTraceRotation, 5.0f, true);
 	}
 
-	if (mSolarController) {
+	if (mSolarController && mRotatesTowardSun) {
 
 		FTransform panelTemp = GetActorTransform();
 		FTransform supportTemp = GetActorTransform();
@@ -130,7 +130,7 @@ void ARPSolarPanel::Factory_Tick(float dt) {
 void ARPSolarPanel::EndPlay(const EEndPlayReason::Type endPlayReason) {
 
 	if (endPlayReason == EEndPlayReason::Destroyed) {
-		if (mSolarController) {
+		if (mSolarController && mRotatesTowardSun) {
 			mSolarController->DestroyIM(GetUniqueID());
 		}
 	}
@@ -157,6 +157,12 @@ float ARPSolarPanel::GetPanelPowerOutput()
 
 			powerout = FMath::Clamp(powerout, 0.0f, mMaxSolarPanelProduction);
 		}
+
+		if (mTotalBlockingHits > 0) {
+			float reducePower = (powerout * mObstructionPowerPercentLoss) * mTotalBlockingHits;
+			powerout -= reducePower;
+		}
+		powerout = FMath::Clamp(powerout, 0.0f, mMaxSolarPanelProduction);
 	}
 
 	return powerout;

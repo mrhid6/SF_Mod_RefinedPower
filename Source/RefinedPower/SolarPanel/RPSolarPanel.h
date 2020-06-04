@@ -88,6 +88,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower")
 		float mMaintainPowerOutputAmount = 0;
 
+	/* The percentage of power to reduce [0-1]*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		float mObstructionPowerPercentLoss = 0.2;
+
 
 protected:
 	/*Max power output from this solar panel at mid-day*/

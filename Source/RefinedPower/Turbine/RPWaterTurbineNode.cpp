@@ -33,5 +33,25 @@ void ARPWaterTurbineNode::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 
 
 FText ARPWaterTurbineNode::GetLookAtDecription_Implementation(class AFGCharacterPlayer* byCharacter, const FUseState& state) const {
-	return FText::FromString("Water Turbine Node");
+	int32 outputPower = (int32)GetTypePowerProduction();
+
+	FString resString = FString("Water Turbine Node [");
+	resString.Append(FString::FromInt(outputPower));
+	resString.Append(" MW]");
+
+	SML::Logging::info("[RefinedPower] - %s", *resString);
+
+	return FText::FromString(resString);
+}
+
+float ARPWaterTurbineNode::GetTypePowerProduction() const {
+	if (mNodeType == EWaterTurbineNodeType::RP_SLOW) {
+		return 8.0f;
+	} 
+	else if (mNodeType == EWaterTurbineNodeType::RP_MEDIUM) {
+		return 20.0f;
+	}
+	else {
+		return 50.0f;
+	}
 }
