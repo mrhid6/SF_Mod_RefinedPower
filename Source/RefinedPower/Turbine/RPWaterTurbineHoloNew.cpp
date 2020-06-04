@@ -11,14 +11,6 @@
 #include "FGConstructDisqualifier.h"
 
 ARPWaterTurbineHoloNew::ARPWaterTurbineHoloNew() {
-	mWaterTest = CreateDefaultSubobject<UBoxComponent>(TEXT("WaterTest"));
-	mWaterTest->SetupAttachment(RootComponent);
-
-	FVector boxSize = FVector(200, 200, 200);
-	mWaterTest->SetBoxExtent(boxSize);
-	mWaterTest->SetHiddenInGameSML(false);
-
-	mWaterTest->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bAllowTickOnDedicatedServer = true;
@@ -33,28 +25,24 @@ ARPWaterTurbineHoloNew::~ARPWaterTurbineHoloNew() {}
 
 void ARPWaterTurbineHoloNew::BeginPlay() {
 	Super::BeginPlay();
-
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARPWaterTurbineNode::StaticClass(), mCachedWaterNodeArr);
-
-	mSnapLocations.Add(FVector(325454.59f, -210184.08f, 7072.64f));
 }
 
-bool ARPWaterTurbineHoloNew::CheckSnapLocations(){
+bool ARPWaterTurbineHoloNew::CheckSnapLocations(FVector TestLocation){
 
 	mSnapToPoint = FVector(0);
+	const TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes = TArray< TEnumAsByte< EObjectTypeQuery > >{ EObjectTypeQuery::ObjectTypeQuery1, EObjectTypeQuery::ObjectTypeQuery2 };
+	TArray< AActor*> ActorsToIgnore = TArray< AActor*>{ this };
+	TArray< AActor*> OutActors;
 
-	SML::Logging::info("[RefinedPower] - ", mCachedWaterNodeArr.Num());
 
-	for (AActor* node : mCachedWaterNodeArr) {
-		FVector location = node->GetActorLocation();
+	UKismetSystemLibrary::SphereOverlapActors(this, TestLocation, 500, ObjectTypes, ARPWaterTurbineNode::StaticClass(), ActorsToIgnore, OutActors);
+	if (OutActors.Num() > 0) {
+		mWaterTurbineNode = Cast<ARPWaterTurbineNode>(OutActors[0]);
+	}
 
-		bool foundSnap = IsPointInsideBox(location, mWaterTest);
-		if(foundSnap){ 
-
-			SML::Logging::info("[RefinedPower] - Found Snap Point!");
-			mSnapToPoint = location;
-			return true;
-		}
+	if(mWaterTurbineNode){
+		mSnapToPoint = mWaterTurbineNode->GetActorLocation();
+		return true;
 	}
 
 	return false;
@@ -73,10 +61,9 @@ void ARPWaterTurbineHoloNew::CheckValidPlacement() {
 void ARPWaterTurbineHoloNew::SetHologramLocationAndRotation(const FHitResult& hitResult) {
 
 	FVector TestLocation = FVector(hitResult.ImpactPoint.X, hitResult.ImpactPoint.Y, hitResult.ImpactPoint.Z+100);
-	mWaterTest->SetWorldLocation(TestLocation);
 
 	//CheckOverlapWaterVolume();
-	CheckSnapLocations();
+	CheckSnapLocations(TestLocation);
 
 	if (mSnapToPoint != FVector(0)) {
 
@@ -91,20 +78,4 @@ void ARPWaterTurbineHoloNew::SetHologramLocationAndRotation(const FHitResult& hi
 
 		this->SetActorLocationAndRotation(location, Rotation);
 	}
-}
-
-bool ARPWaterTurbineHoloNew::IsPointInsideBox(FVector point, UBoxComponent* boxComponent)
-{
-	float xmin = boxComponent->GetComponentLocation().X - boxComponent->GetScaledBoxExtent().X;
-	float xmax = boxComponent->GetComponentLocation().X + boxComponent->GetScaledBoxExtent().X;
-	float ymin = boxComponent->GetComponentLocation().Y - boxComponent->GetScaledBoxExtent().Y;
-	float ymax = boxComponent->GetComponentLocation().Y + boxComponent->GetScaledBoxExtent().Y;
-	float zmin = boxComponent->GetComponentLocation().Z - boxComponent->GetScaledBoxExtent().Z;
-	float zmax = boxComponent->GetComponentLocation().Z + boxComponent->GetScaledBoxExtent().Z;
-
-	if ((point.X <= xmax && point.X >= xmin) && (point.Y <= ymax && point.Y >= ymin) && (point.Z <= zmax && point.Z >= zmin))
-	{
-		return true;
-	}
-	return false;
 }

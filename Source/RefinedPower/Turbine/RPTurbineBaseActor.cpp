@@ -88,9 +88,6 @@ void ARPTurbineBaseActor::calculateTurbinePowerProduction() {
 			mTurbinePowerProduction = 0;
 		}
 	}
-	else {
-		mTurbinePowerProduction = getTurbineBasePowerProduction();
-	}
 
 	if (mTurbineEnabled == false) {
 		mTurbinePowerProduction = 0;

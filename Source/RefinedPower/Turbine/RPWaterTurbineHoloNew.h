@@ -25,18 +25,14 @@ class REFINEDPOWER_API ARPWaterTurbineHoloNew : public AFGFactoryHologram
 
 		bool CheckOverlapWaterVolume();
 
-		bool CheckSnapLocations();
-		bool IsPointInsideBox(FVector point, UBoxComponent* boxComponent);
-
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-			class UBoxComponent* mWaterTest;
-
-		TArray<FVector> mSnapLocations;
+		bool CheckSnapLocations(FVector TestLocation);
 
 		FVector mSnapToPoint = FVector(0);
 
 		/*Array of all water volumes on map. Only call this once.*/
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 			TArray<AActor*> mCachedWaterNodeArr;
+
+		ARPWaterTurbineNode* mWaterTurbineNode;
 
 };

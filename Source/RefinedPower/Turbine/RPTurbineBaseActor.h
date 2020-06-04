@@ -45,7 +45,7 @@ public:
 	virtual bool ShouldSave_Implementation() const override;
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
 
-	void calculateTurbinePowerProduction();
+	virtual void calculateTurbinePowerProduction();
 	float getTurbineBasePowerProduction();
 	float getTurbineHeightPowerProduction();
 	void setTurbinePowerOutput();
@@ -93,7 +93,7 @@ protected:
 	bool mIsHeightBasedTurbine;
 
 	/** The type of Turbine, Wind Or Water */
-	UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 	ETurbineType mTurbineType;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
