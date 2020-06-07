@@ -17,6 +17,7 @@ class REFINEDPOWER_API ARPWaterTurbine : public ARPTurbineBaseActor
 
 public:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
 
 	virtual void calculateTurbinePowerProduction() override;
 	

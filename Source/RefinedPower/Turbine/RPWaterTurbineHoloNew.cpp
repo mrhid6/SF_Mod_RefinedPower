@@ -39,6 +39,9 @@ bool ARPWaterTurbineHoloNew::CheckSnapLocations(FVector TestLocation){
 	if (OutActors.Num() > 0) {
 		mWaterTurbineNode = Cast<ARPWaterTurbineNode>(OutActors[0]);
 	}
+	else {
+		mWaterTurbineNode = nullptr;
+	}
 
 	if(mWaterTurbineNode){
 		mSnapToPoint = mWaterTurbineNode->GetActorLocation();

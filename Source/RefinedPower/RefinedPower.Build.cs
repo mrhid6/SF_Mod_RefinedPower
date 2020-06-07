@@ -20,6 +20,8 @@ public class RefinedPower : ModuleRules
             "AkAudio",
             "ReplicationGraph",
             "UMG",
+            "Json",
+            "JsonUtilities",
             "AIModule",
             "NavigationSystem",
             "AssetRegistry",

@@ -8,7 +8,9 @@ ARPWaterTurbineNode::ARPWaterTurbineNode()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	mCanPlacePortableMiner = false;
 
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
@@ -39,8 +41,6 @@ FText ARPWaterTurbineNode::GetLookAtDecription_Implementation(class AFGCharacter
 	resString.Append(FString::FromInt(outputPower));
 	resString.Append(" MW]");
 
-	SML::Logging::info("[RefinedPower] - %s", *resString);
-
 	return FText::FromString(resString);
 }
 
@@ -54,4 +54,13 @@ float ARPWaterTurbineNode::GetTypePowerProduction() const {
 	else {
 		return 50.0f;
 	}
+}
+
+bool ARPWaterTurbineNode::CanPlaceResourceExtractor_Implementation() const { return false; }
+void ARPWaterTurbineNode::OnUse_Implementation(class AFGCharacterPlayer* byCharacter, const FUseState& state) {}
+
+void ARPWaterTurbineNode::OnHasTurbineChanged_Implementation() {};
+
+void ARPWaterTurbineNode::ExtractResourceAndGiveToPlayer(AFGCharacterPlayer* toPlayer, int32 amount) {
+
 }

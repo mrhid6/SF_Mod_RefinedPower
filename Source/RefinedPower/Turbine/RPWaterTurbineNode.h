@@ -28,7 +28,9 @@ public:
 
 	virtual FText GetLookAtDecription_Implementation(class AFGCharacterPlayer* byCharacter, const FUseState& state) const override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, SaveGame, Category = "Refined Power")
+	virtual bool CanPlaceResourceExtractor_Implementation() const override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnHasTurbineChanged, SaveGame, Category = "Refined Power")
 		bool mHasTurbine = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Refined Power")
@@ -47,4 +49,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Refined Power|Turbine|Node")
 		float GetTypePowerProduction() const;
 
+	UFUNCTION(BlueprintNativeEvent)
+		void OnHasTurbineChanged();
+
+	virtual void ExtractResourceAndGiveToPlayer(AFGCharacterPlayer* toPlayer, int32 amount = 1) override;
+
+	virtual void OnUse_Implementation(class AFGCharacterPlayer* byCharacter, const FUseState& state) override;
 };
