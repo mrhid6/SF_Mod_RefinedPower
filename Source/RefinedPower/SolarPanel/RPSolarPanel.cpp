@@ -78,11 +78,11 @@ void ARPSolarPanel::BeginPlay()
 	Super::BeginPlay();
 
 	PrimaryActorTick.TickInterval = 5;
+	GetSolarController();
 
 	if (HasAuthority()) {
 		timeSys = AFGTimeOfDaySubsystem::Get(GetWorld());
 		FGPowerConnection->SetPowerInfo(GetPowerInfo());
-		GetSolarController();
 		CacheTraceLineComponents();
 		GetWorld()->GetTimerManager().SetTimer(mSolarPanelHandle, this, &ARPSolarPanel::UpdateLineTraceRotation, 5.0f, true);
 	}
@@ -99,6 +99,8 @@ void ARPSolarPanel::BeginPlay()
 
 
 		mSolarController->SpawnIM(panelTemp, supportTemp, GetUniqueID());
+
+		SML::Logging::info("[RefinedPower] - Spawned SolarPanel Panel!");
 
 	}
 	

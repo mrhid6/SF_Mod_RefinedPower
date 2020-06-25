@@ -350,8 +350,6 @@ float ARPArcReactor::getReactorCoolantInternal() {
 	else {
 		return mCachedCoolantAmount;
 	}
-
-	
 }
 
 float ARPArcReactor::getReactorCoolantInternalMax() {

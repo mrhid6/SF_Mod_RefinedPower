@@ -52,6 +52,7 @@ ARPSolarController* ARPSolarController::Get(UWorld* world)
 void ARPSolarController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	ForceNetUpdate();
 }
 
 void ARPSolarController::EndPlay(const EEndPlayReason::Type endPlayReason) {
@@ -149,34 +150,33 @@ void ARPSolarController::UpdateSolarPanelsRotation() {
 	if (HasAuthority())
 	{
 		UpdateCorrectOrientation();
-
-		FQuat rotation = GetOrientation().Quaternion();
-
-		FRotator rot2 = GetOrientation();
-		rot2.Pitch = 0;
-		rot2.Roll = 0;
-
-		FQuat rotation2 = rot2.Quaternion();
-
-		int meshCount = mPanelMeshPool->GetInstanceCount();
-
-		for (int i = 0; i < meshCount; i++) {
-			FTransform origInstTransform1;
-			FTransform origInstTransform2;
-
-			mPanelMeshPool->GetInstanceTransform(i, origInstTransform1, true);
-			mSupportMeshPool->GetInstanceTransform(i, origInstTransform2, true);
-
-			origInstTransform1.SetRotation(rotation);
-			origInstTransform2.SetRotation(rotation2);
-
-			mPanelMeshPool->UpdateInstanceTransform(i, origInstTransform1, true, false, true);
-			mSupportMeshPool->UpdateInstanceTransform(i, origInstTransform2, true, false, true);
-		}
-
-		FinishUpdates();
-
 	}
+
+	FQuat rotation = GetOrientation().Quaternion();
+
+	FRotator rot2 = GetOrientation();
+	rot2.Pitch = 0;
+	rot2.Roll = 0;
+
+	FQuat rotation2 = rot2.Quaternion();
+
+	int meshCount = mPanelMeshPool->GetInstanceCount();
+
+	for (int i = 0; i < meshCount; i++) {
+		FTransform origInstTransform1;
+		FTransform origInstTransform2;
+
+		mPanelMeshPool->GetInstanceTransform(i, origInstTransform1, true);
+		mSupportMeshPool->GetInstanceTransform(i, origInstTransform2, true);
+
+		origInstTransform1.SetRotation(rotation);
+		origInstTransform2.SetRotation(rotation2);
+
+		mPanelMeshPool->UpdateInstanceTransform(i, origInstTransform1, true, false, true);
+		mSupportMeshPool->UpdateInstanceTransform(i, origInstTransform2, true, false, true);
+	}
+
+	FinishUpdates();
 }
 
 //Instance Static Mesh Stuff:
