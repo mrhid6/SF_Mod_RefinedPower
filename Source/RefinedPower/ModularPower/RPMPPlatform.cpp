@@ -1,4 +1,4 @@
-#include "RPMPBuilding.h"
+#include "RPMPPlatform.h"
 #include "FGFactoryConnectionComponent.h"
 #include "UnrealNetwork.h"
 #include "FGPowerInfoComponent.h"
@@ -7,7 +7,7 @@
 #include "FGPlayerController.h"
 
 
-ARPMPBuilding::ARPMPBuilding() {
+ARPMPPlatform::ARPMPPlatform() {
 
 	SetReplicates(true);
 	bReplicates = true;
@@ -15,15 +15,15 @@ ARPMPBuilding::ARPMPBuilding() {
 
 }
 
-ARPMPBuilding::~ARPMPBuilding() {}
+ARPMPPlatform::~ARPMPPlatform() {}
 
-void ARPMPBuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+void ARPMPPlatform::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 }
 
-void ARPMPBuilding::BeginPlay() {
+void ARPMPPlatform::BeginPlay() {
 	Super::BeginPlay();
 
 	if (HasAuthority()) {
@@ -31,7 +31,7 @@ void ARPMPBuilding::BeginPlay() {
 	}
 }
 
-void ARPMPBuilding::Tick(float dt) {
+void ARPMPPlatform::Tick(float dt) {
 	Super::Tick(dt);
 
 	if (HasAuthority() && mConnectionToCoreUpdated) {
@@ -40,7 +40,7 @@ void ARPMPBuilding::Tick(float dt) {
 	}
 }
 
-void ARPMPBuilding::Factory_Tick(float dt) {
+void ARPMPPlatform::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
 
 	if (HasAuthority()) {
@@ -49,7 +49,7 @@ void ARPMPBuilding::Factory_Tick(float dt) {
 	}
 }
 
-void ARPMPBuilding::SetupInitalPlacement() {
+void ARPMPPlatform::SetupInitalPlacement() {
 	if (mConnectedToCore == false) {
 		SML::Logging::info("[RefinedPower] - MPBuilding: Inital Setup");
 		TArray<AActor*> AllCoresInWorld;
@@ -64,7 +64,7 @@ void ARPMPBuilding::SetupInitalPlacement() {
 	}
 }
 
-void ARPMPBuilding::SetupConnectionToCore(ARPMPCore* MPCore){
+void ARPMPPlatform::SetupConnectionToCore(ARPMPCore* MPCore){
 
 	if (MPCore != nullptr) {
 		SML::Logging::info("[RefinedPower] - MPBuilding: Connected To Core");
@@ -78,6 +78,6 @@ void ARPMPBuilding::SetupConnectionToCore(ARPMPCore* MPCore){
 	mConnectionToCoreUpdated = true;
 }
 
-void ARPMPBuilding::Multicast_CoreConnectionUpdated_Implementation(){
+void ARPMPPlatform::Multicast_CoreConnectionUpdated_Implementation(){
 	OnRep_CoreConnectionUpdated();
 }

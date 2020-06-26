@@ -7,7 +7,7 @@
 #include "FGInventoryComponent.h"
 #include "FGInventoryLibrary.h"
 #include "FGPlayerController.h"
-#include "RPMPBuilding.h"
+#include "RPMPPlatform.h"
 
 
 ARPMPCore::ARPMPCore() {
@@ -72,22 +72,22 @@ void ARPMPCore::CacheNearbyMPBuildings()
 	TArray< AActor*> ActorsToIgnore = TArray< AActor*>{ };
 	const float radius = mPowerModuleRange->GetUnscaledSphereRadius();
 
-	UKismetSystemLibrary::SphereOverlapActors(this, ActorLocation, radius, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, mCachedNearbyMPBuildings);
+	UKismetSystemLibrary::SphereOverlapActors(this, ActorLocation, radius, ObjectTypes, ARPMPPlatform::StaticClass(), ActorsToIgnore, mCachedNearbyMPBuildings);
 
 }
 
 void ARPMPCore::ConfigureNearbyMPBuildings()
 {
 	for (AActor* mpBuilding : mCachedNearbyMPBuildings) {
-		ARPMPBuilding* RPMPBuilding = (ARPMPBuilding*)mpBuilding;
-		RPMPBuilding->SetupConnectionToCore(this);
+		ARPMPPlatform* RPMPPlatform = (ARPMPPlatform*)mpBuilding;
+		RPMPPlatform->SetupConnectionToCore(this);
 	}
 }
 
 void ARPMPCore::UnconfigureNearbyMPBuildings()
 {
 	for (AActor* mpBuilding : mCachedNearbyMPBuildings) {
-		ARPMPBuilding* RPMPBuilding = (ARPMPBuilding*)mpBuilding;
-		RPMPBuilding->SetupConnectionToCore(nullptr);
+		ARPMPPlatform* RPMPPlatform = (ARPMPPlatform*)mpBuilding;
+		RPMPPlatform->SetupConnectionToCore(nullptr);
 	}
 }

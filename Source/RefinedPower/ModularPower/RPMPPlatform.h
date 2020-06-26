@@ -6,16 +6,24 @@
 #include "FGRemoteCallObject.h"
 #include "Components/BoxComponent.h"
 #include "RPMPCore.h"
-#include "RPMPBuilding.generated.h"
+#include "RPMPPlatform.generated.h"
 
+
+UENUM(BlueprintType)
+enum class EMPPlatformType : uint8
+{
+	MP_BoilerPlatform	    UMETA(DisplayName = "Boiler"),
+	MP_ConverterPlatform	UMETA(DisplayName = "Converter"),
+	MP_CoolerPlatform	UMETA(DisplayName = "Cooler")
+};
 
 UCLASS()
-class REFINEDPOWER_API ARPMPBuilding : public AFGBuildableGenerator
+class REFINEDPOWER_API ARPMPPlatform : public AFGBuildableGenerator
 {
 	GENERATED_BODY()
 
-		ARPMPBuilding();
-	~ARPMPBuilding();
+		ARPMPPlatform();
+	~ARPMPPlatform();
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void BeginPlay() override;
@@ -38,4 +46,7 @@ class REFINEDPOWER_API ARPMPBuilding : public AFGBuildableGenerator
 			bool mConnectedToCore;
 
 		bool mConnectionToCoreUpdated;
+
+		UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+			EMPPlatformType mPlatformType;
 };
