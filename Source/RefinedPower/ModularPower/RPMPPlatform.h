@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Core.h"
-#include "Buildables/FGBuildableGenerator.h"
+#include "Buildables/FGBuildableFactory.h"
 #include "FGRemoteCallObject.h"
 #include "Components/BoxComponent.h"
 #include "RPMPCore.h"
@@ -14,11 +14,11 @@ enum class EMPPlatformType : uint8
 {
 	MP_BoilerPlatform	    UMETA(DisplayName = "Boiler"),
 	MP_ConverterPlatform	UMETA(DisplayName = "Converter"),
-	MP_CoolerPlatform	UMETA(DisplayName = "Cooler")
+	MP_CoolerPlatform		UMETA(DisplayName = "Cooler")
 };
 
 UCLASS()
-class REFINEDPOWER_API ARPMPPlatform : public AFGBuildableGenerator
+class REFINEDPOWER_API ARPMPPlatform : public AFGBuildableFactory
 {
 	GENERATED_BODY()
 
