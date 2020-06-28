@@ -91,6 +91,10 @@ void ARPMPBoilerBuilding::CollectItems()
 			}
 		}
 	}
+
+	// Copy above for InputFuelPipe
+
+	// Copy above for InputWaterPipe
 }
 
 bool ARPMPBoilerBuilding::canAddFuelItem(TSubclassOf<UFGItemDescriptor> itemClass) {

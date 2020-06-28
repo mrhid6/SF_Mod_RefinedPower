@@ -60,7 +60,7 @@ public:
 	TArray<TSubclassOf<UFGItemDescriptor>> mAllowedFuelItems;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		TArray<TSubclassOf<UFGItemDescriptor>> mAllowedWaterItems;
+		TSubclassOf<UFGItemDescriptor> mWaterItemClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 	int mCurrentEnergyValue;
