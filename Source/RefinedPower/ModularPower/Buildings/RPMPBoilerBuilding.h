@@ -8,6 +8,7 @@
 #include "FGInventoryComponent.h"
 #include "FGFactoryConnectionComponent.h"
 #include "FGPipeConnectionComponent.h"
+#include "util/Logging.h"
 #include "RPMPBoilerBuilding.generated.h"
 
 /**

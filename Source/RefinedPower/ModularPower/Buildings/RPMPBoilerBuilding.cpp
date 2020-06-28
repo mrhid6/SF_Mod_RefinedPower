@@ -6,9 +6,15 @@
 ARPMPBoilerBuilding::ARPMPBoilerBuilding() {
 	mBoilerInventory = CreateDefaultSubobject<UFGInventoryComponent>(TEXT("mBoilerInventory"));
 	mBoilerInventory->SetDefaultSize(4);
+
+	SetReplicates(true);
+	bReplicates = true;
+	mFactoryTickFunction.SetTickFunctionEnable(true);
+	mFactoryTickFunction.bCanEverTick = true;
 }
 
 void ARPMPBoilerBuilding::BeginPlay() {
+	Super::BeginPlay();
 
 	if (HasAuthority()) {
 		CacheConnections();
@@ -16,13 +22,15 @@ void ARPMPBoilerBuilding::BeginPlay() {
 
 }
 void ARPMPBoilerBuilding::Factory_Tick(float dt) {
-
+	Super::Factory_Tick(dt);
 	if (HasAuthority()) {
 		CollectItems();
 	}
 
 }
-void ARPMPBoilerBuilding::Tick(float dt) {}
+void ARPMPBoilerBuilding::Tick(float dt) {
+	Super::Tick(dt);
+}
 
 
 void ARPMPBoilerBuilding::CacheConnections() {
@@ -66,6 +74,7 @@ void ARPMPBoilerBuilding::CacheConnections() {
 
 void ARPMPBoilerBuilding::CollectItems()
 {
+
 	if (InputFuelConveyor) {
 		for (auto AllowedItem : mAllowedFuelItems) {
 
