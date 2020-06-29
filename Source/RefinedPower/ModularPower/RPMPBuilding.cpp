@@ -15,6 +15,17 @@ void ARPMPBuilding::StoreItemInInventory(UFGInventoryComponent* inventory, int I
 	}
 }
 
+void ARPMPBuilding::StoreItemStackInInventory(UFGInventoryComponent* inventory, int InvIndex, FInventoryStack ItemStack) {
+
+	if (ItemStack.HasItems() == false) {
+		return;
+	}
+
+	if (CanStoreItemInInventory(inventory, InvIndex, ItemStack.Item.ItemClass)) {
+		inventory->AddStackToIndex(InvIndex, ItemStack, true);
+	}
+}
+
 bool ARPMPBuilding::CanStoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass) {
 	FInventoryStack out_stack;
 	inventory->GetStackFromIndex(InvIndex, out_stack);
