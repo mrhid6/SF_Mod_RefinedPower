@@ -10,10 +10,11 @@
 UENUM(BlueprintType)
 enum class EMPPlatformBuildingType : uint8
 {
+	MP_Heater	    UMETA(DisplayName = "Heater"),
 	MP_Boiler	    UMETA(DisplayName = "Boiler"),
-	MP_Turbine	UMETA(DisplayName = "Turbine"),
+	MP_Turbine		UMETA(DisplayName = "Turbine"),
 	MP_Generator	UMETA(DisplayName = "Generator"),
-	MP_Cooler	UMETA(DisplayName = "Cooler")
+	MP_Cooler		UMETA(DisplayName = "Cooler")
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
