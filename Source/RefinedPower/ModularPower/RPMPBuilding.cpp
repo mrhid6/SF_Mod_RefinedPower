@@ -4,12 +4,16 @@
 #include "RPMPBuilding.h"
 
 void ARPMPBuilding::StoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass) {
+	StoreItemInInventory(inventory, InvIndex, itemClass, 1);
+}
+
+void ARPMPBuilding::StoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass, int amount) {
 	if (CanStoreItemInInventory(inventory, InvIndex, itemClass)) {
 		FInventoryItem outItem;
 		outItem.ItemClass = itemClass;
 
 		FInventoryStack itemStack;
-		itemStack.NumItems = 1;
+		itemStack.NumItems = amount;
 		itemStack.Item = outItem;
 		inventory->AddStackToIndex(InvIndex, itemStack, true);
 	}
