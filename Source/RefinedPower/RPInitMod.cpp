@@ -433,8 +433,8 @@ void ARPInitMod::loadNodes() {
 
 	if (FJsonSerializer::Deserialize(Reader, JsonObject))
 	{
-		SML::writeModConfig("DGiLzB3ZErWu2V", JsonObject.ToSharedRef());
-		TSharedRef<FJsonObject> ModJson = SML::readModConfig("DGiLzB3ZErWu2V", JsonObject.ToSharedRef());
+		SML::WriteModConfig("RefinedPower", JsonObject.ToSharedRef());
+		TSharedRef<FJsonObject> ModJson = SML::ReadModConfig("RefinedPower", JsonObject.ToSharedRef());
 
 		if (JsonObject->HasField("WaterTurbineNodes"))
 		{

@@ -37,37 +37,54 @@ public:
 
 
 	// Variables
+
+	// RPM Stuff
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category = "RefinedPower")
-	int mCurrentTurbineRPM = 0;
+		int mCurrentTurbineRPM = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-	int mYellowMinTurbineRPM = 15000;
+		int mYellowMinTurbineRPM = 15000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-	int mYellowMaxTurbineRPM = 19999;
+		int mYellowMaxTurbineRPM = 19999;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-	int mRedMinTurbineRPM = 20000;
+		int mRedMinTurbineRPM = 20000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-	int mRedMaxTurbineRPM = 25000;
+		int mRedMaxTurbineRPM = 25000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-	int mSteamConsumption = 100;
+		int mRPMDrag = 20;
 
-	int mSteamCounter = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
+		int mRPMRate = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		float mRPMMultiplier = 2;
+
+	// Steam Stuff
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		int mSteamPullAmount = 70;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		int mSteamConsumption = 25;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, SaveGame, meta = (UIMin = "0", UIMax = "1.0"), Category = "RefinedPower")
-	float mSteamDiscardPercent = 0.5;
+		float mSteamDiscardPercent = 0.5;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-	int mRPMDrag = 2;
+
+
+	// For Display On UI Fluid Modules
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category = "RefinedPower")
 		int mSteamConsumptionRate = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category = "RefinedPower")
 		int mSteamOutputRate = 0;
+
+	// Components
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		class UFGInventoryComponent* mTurbineInventory;

@@ -51,8 +51,10 @@ void ARPMPTurbineBuilding::CacheConnections() {
 		OutputSteamPipe = Cast<UFGPipeConnectionComponent>(tempComps[0]);
 	}
 
-	OutputSteamPipe->SetInventory(mTurbineInventory);
-	OutputSteamPipe->SetInventoryAccessIndex(mOutputInvIndex);
+	if (OutputSteamPipe) {
+		OutputSteamPipe->SetInventory(mTurbineInventory);
+		OutputSteamPipe->SetInventoryAccessIndex(mOutputInvIndex);
+	}
 }
 
 void ARPMPTurbineBuilding::CollectSteam(float dt)
@@ -60,9 +62,9 @@ void ARPMPTurbineBuilding::CollectSteam(float dt)
 
 	if (InputSteamPipe) {
 
-		if (CanStoreItemInInventory(mTurbineInventory, mInputInvIndex, mHighSteamItemClass)) {
+		if (CanStoreItemInInventory(mTurbineInventory, mInputInvIndex, mHighSteamItemClass, mSteamPullAmount)) {
 			FInventoryStack outStack;
-			bool pulledItem = InputSteamPipe->Factory_PullPipeInput(dt, outStack, mHighSteamItemClass, 500);
+			bool pulledItem = InputSteamPipe->Factory_PullPipeInput(dt, outStack, mHighSteamItemClass, mSteamPullAmount);
 
 			if (pulledItem) {
 
@@ -70,7 +72,6 @@ void ARPMPTurbineBuilding::CollectSteam(float dt)
 				mTurbineInventory->GetStackFromIndex(mInputInvIndex, TempOutStack);
 				if (TempOutStack.HasItems()) {
 					int ItemCount = TempOutStack.NumItems;
-					SML::Logging::info(ItemCount);
 				}
 
 				StoreItemStackInInventory(mTurbineInventory, mInputInvIndex, outStack);
@@ -81,11 +82,20 @@ void ARPMPTurbineBuilding::CollectSteam(float dt)
 
 
 void ARPMPTurbineBuilding::CalcTurbineState() {
+
+	int PrevRPM = mCurrentTurbineRPM;
+
 	if (CanStartSteamConsumption()) {
 		ConvertSteamToRPM();
 	}
+	else {
+		mSteamConsumptionRate = 0;
+	}
 
 	ReduceRPM();
+
+	int NewRPM = mCurrentTurbineRPM;
+	mRPMRate = NewRPM - PrevRPM;
 }
 
 bool ARPMPTurbineBuilding::CanStartSteamConsumption() {
@@ -104,8 +114,8 @@ void ARPMPTurbineBuilding::ConvertSteamToRPM() {
 	mTurbineInventory->GetStackFromIndex(mInputInvIndex, steamItemStack);
 	int steamItemCount = steamItemStack.NumItems;
 
-	int ItemEnergyValue = UFGItemDescriptor::GetEnergyValue(mHighSteamItemClass);
-	int ExtractAmount = 0;
+	float ItemEnergyValue = UFGItemDescriptor::GetEnergyValue(mHighSteamItemClass);
+	float ExtractAmount = 0;
 
 	if (steamItemCount >= mSteamConsumption) {
 		ExtractAmount = mSteamConsumption;
@@ -114,33 +124,35 @@ void ARPMPTurbineBuilding::ConvertSteamToRPM() {
 		ExtractAmount = steamItemCount;
 	}
 
-	if (mSteamCounter == 0) {
-		mSteamCounter = ExtractAmount;
+	SML::Logging::info("[RefinedPower] - ExtractAmount:", ExtractAmount);
 
-		mTurbineInventory->RemoveFromIndex(mInputInvIndex, ExtractAmount);
+	mSteamConsumptionRate = ((ExtractAmount * 60)) / 1000;
+	SML::Logging::info("[RefinedPower] - Consumption: ", mSteamConsumptionRate);
 
-		int OutputAmount = ExtractAmount;
+	mTurbineInventory->RemoveFromIndex(mInputInvIndex, ExtractAmount);
 
-		ExtractAmount -= (int)(ExtractAmount * mSteamDiscardPercent);
-		OutputAmount += (int)(ExtractAmount * mSteamDiscardPercent);
+	int OutputAmount = ExtractAmount;
 
-		OutputAmount /= 2;
+	ExtractAmount -= (ExtractAmount * mSteamDiscardPercent);
+	OutputAmount += (ExtractAmount * mSteamDiscardPercent);
+
+	OutputAmount /= 2;
+
+	mSteamOutputRate = ((OutputAmount * 60)) / 1000;
 
 
-		float EnergyValue = (ItemEnergyValue * ExtractAmount);
-		EnergyValue = FMath::Clamp(EnergyValue, 0.0f, 9999999.0f);
+	float EnergyValue = (ItemEnergyValue * ExtractAmount);
+	EnergyValue = FMath::Clamp(EnergyValue, 0.0f, 9999999.0f);
 
-		SML::Logging::info("[RefinedPower] - ", EnergyValue);
+	SML::Logging::info("[RefinedPower] - EnergyValue: ", EnergyValue);
 
-		mCurrentTurbineRPM += (int)EnergyValue / 3;
-		mCurrentTurbineRPM = FMath::Clamp(mCurrentTurbineRPM, 0, mRedMaxTurbineRPM);
+	int RPMToAdd = FMath::FloorToInt((EnergyValue / 3) * mRPMMultiplier);
 
-		if (CanStoreItemInInventory(mTurbineInventory, mOutputInvIndex, mLowSteamItemClass)) {
-			StoreItemInInventory(mTurbineInventory, mOutputInvIndex, mLowSteamItemClass, OutputAmount);
-		}
-	}else{
-		mSteamCounter--;
-		mSteamCounter = FMath::Clamp(mSteamCounter, 0, 9999999);
+	mCurrentTurbineRPM += RPMToAdd;
+	mCurrentTurbineRPM = FMath::Clamp(mCurrentTurbineRPM, 0, mRedMaxTurbineRPM);
+
+	if (CanStoreItemInInventory(mTurbineInventory, mOutputInvIndex, mLowSteamItemClass, OutputAmount)) {
+		StoreItemInInventory(mTurbineInventory, mOutputInvIndex, mLowSteamItemClass, OutputAmount);
 	}
 }
 

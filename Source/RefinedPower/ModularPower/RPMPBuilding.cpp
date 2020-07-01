@@ -8,7 +8,7 @@ void ARPMPBuilding::StoreItemInInventory(UFGInventoryComponent* inventory, int I
 }
 
 void ARPMPBuilding::StoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass, int amount) {
-	if (CanStoreItemInInventory(inventory, InvIndex, itemClass)) {
+	if (CanStoreItemInInventory(inventory, InvIndex, itemClass, amount)) {
 		FInventoryItem outItem;
 		outItem.ItemClass = itemClass;
 
@@ -25,12 +25,12 @@ void ARPMPBuilding::StoreItemStackInInventory(UFGInventoryComponent* inventory, 
 		return;
 	}
 
-	if (CanStoreItemInInventory(inventory, InvIndex, ItemStack.Item.ItemClass)) {
+	if (CanStoreItemInInventory(inventory, InvIndex, ItemStack.Item.ItemClass, ItemStack.NumItems)) {
 		inventory->AddStackToIndex(InvIndex, ItemStack, true);
 	}
 }
 
-bool ARPMPBuilding::CanStoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass) {
+bool ARPMPBuilding::CanStoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass, int amount) {
 	FInventoryStack out_stack;
 	inventory->GetStackFromIndex(InvIndex, out_stack);
 	if (out_stack.HasItems()) {
@@ -41,7 +41,7 @@ bool ARPMPBuilding::CanStoreItemInInventory(UFGInventoryComponent* inventory, in
 
 		int stackSize = UFGItemDescriptor::GetStackSize(out_stack.Item.ItemClass);
 
-		if (out_stack.NumItems >= stackSize) {
+		if (out_stack.NumItems >= stackSize || (out_stack.NumItems + amount) >= stackSize) {
 			return false;
 		}
 	}
