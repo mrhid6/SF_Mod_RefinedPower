@@ -7,6 +7,18 @@
 #include "FGPipeConnectionComponent.h"
 #include "RPMPTurbineBuilding.generated.h"
 
+UCLASS()
+class REFINEDPOWER_API URPMPTurbineBuildingRCO : public UFGRemoteCallObject {
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(Server, WithValidation, Reliable)
+		void SetSteamDiscard(ARPMPTurbineBuilding* panel, float value);
+
+	UPROPERTY(Replicated)
+		bool bTest = true;
+};
+
 /**
  * 
  */
@@ -26,6 +38,8 @@ public:
 	void CacheConnections();
 	void CollectSteam(float dt);
 
+	void OutputSteam(float dt);
+
 	void CalcTurbineState();
 
 	bool CanStartSteamConsumption();
@@ -34,6 +48,10 @@ public:
 	void ConvertSteamToRPM();
 
 	void ReduceRPM();
+
+	//RCO Functions
+	UFUNCTION(BlueprintCallable, Category = "RefinedPower|ModularPower|Turbine")
+	void SetSteamDiscard(float value);
 
 
 	// Variables
@@ -69,6 +87,9 @@ public:
 		int mSteamPullAmount = 70;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		int mSteamPushAmount = 70;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		int mSteamConsumption = 25;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, SaveGame, meta = (UIMin = "0", UIMax = "1.0"), Category = "RefinedPower")
@@ -79,10 +100,10 @@ public:
 	// For Display On UI Fluid Modules
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category = "RefinedPower")
-		int mSteamConsumptionRate = 0;
+		float mSteamConsumptionRate = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category = "RefinedPower")
-		int mSteamOutputRate = 0;
+		float mSteamOutputRate = 0;
 
 	// Components
 

@@ -4,7 +4,9 @@
 #include "FGPowerInfoComponent.h"
 #include "util/Logging.h"
 #include "FGPowerConnectionComponent.h"
+#include "RPMPPlacementComponent.h"
 #include "FGPlayerController.h"
+#include "RPMPBuilding.h"
 
 
 ARPMPPlatform::ARPMPPlatform() {
@@ -76,6 +78,30 @@ void ARPMPPlatform::SetupConnectionToCore(ARPMPCore* MPCore){
 	}
 
 	mConnectionToCoreUpdated = true;
+}
+
+TArray<AActor*> ARPMPPlatform::GetAttachedMPBuildings() {
+	TArray<UActorComponent*> placementComps = GetComponentsByClass(URPMPPlacementComponent::StaticClass());
+
+
+	TArray<AActor*> resActors;
+
+	for (UActorComponent* comp : placementComps) {
+		URPMPPlacementComponent* placementComp = Cast<URPMPPlacementComponent>(comp);
+
+		const TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes = TArray< TEnumAsByte< EObjectTypeQuery > >{ EObjectTypeQuery::ObjectTypeQuery1, EObjectTypeQuery::ObjectTypeQuery2 };
+		TArray< AActor*> ActorsToIgnore = TArray< AActor*>{ this };
+		TArray< AActor*> OutActors;
+
+
+		UKismetSystemLibrary::SphereOverlapActors(this, placementComp->GetComponentLocation(), 100, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, OutActors);
+
+		for (AActor* building : OutActors) {
+			resActors.Add(building);
+		}
+	};
+
+	return resActors;
 }
 
 void ARPMPPlatform::Multicast_CoreConnectionUpdated_Implementation(){

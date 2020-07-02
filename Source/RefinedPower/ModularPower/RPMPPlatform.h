@@ -40,6 +40,8 @@ class REFINEDPOWER_API ARPMPPlatform : public AFGBuildableFactory
 		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ModularPower")
 			void OnRep_CoreConnectionUpdated();
 
+		TArray<AActor*> GetAttachedMPBuildings();
+
 	protected:
 
 		UPROPERTY(BlueprintReadOnly, SaveGame, Replicated)

@@ -3,6 +3,35 @@
 
 #include "RPMPBuilding.h"
 
+void ARPMPBuilding::BeginPlay() {
+	Super::BeginPlay();
+	GetAttachedPlatform(mAttachedPlatform);
+}
+
+void ARPMPBuilding::EndPlay(const EEndPlayReason::Type endPlayReason) {
+
+	if (endPlayReason == EEndPlayReason::Destroyed) {
+		ARPMPPlatform* platform;
+		GetAttachedPlatform(platform);
+	}
+	Super::EndPlay(endPlayReason);
+}
+
+void  ARPMPBuilding::GetAttachedPlatform(ARPMPPlatform* & Platform) {
+	const TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes = TArray< TEnumAsByte< EObjectTypeQuery > >{ EObjectTypeQuery::ObjectTypeQuery1, EObjectTypeQuery::ObjectTypeQuery2 };
+	TArray< AActor*> ActorsToIgnore = TArray< AActor*>{ this };
+	TArray< AActor*> OutActors;
+
+
+	UKismetSystemLibrary::SphereOverlapActors(this, GetActorLocation(), 100, ObjectTypes, ARPMPPlatform::StaticClass(), ActorsToIgnore, OutActors);
+	if (OutActors.Num() > 0) {
+		Platform = Cast<ARPMPPlatform>(OutActors[0]);
+	}
+	else {
+		Platform = nullptr;
+	}
+}
+
 void ARPMPBuilding::StoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass) {
 	StoreItemInInventory(inventory, InvIndex, itemClass, 1);
 }

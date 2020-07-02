@@ -3,6 +3,24 @@
 
 #include "RPMPTurbineBuilding.h"
 
+
+void URPMPTurbineBuildingRCO::SetSteamDiscard_Implementation(ARPMPTurbineBuilding* panel, float value) {
+	panel->mSteamDiscardPercent = value;
+	//panel->panelStateUpdated();
+
+	panel->ForceNetUpdate();
+}
+
+bool URPMPTurbineBuildingRCO::SetSteamDiscard_Validate(ARPMPTurbineBuilding* panel, float value) {
+	return true;
+}
+
+void URPMPTurbineBuildingRCO::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(URPMPTurbineBuildingRCO, bTest);
+}
+
 ARPMPTurbineBuilding::ARPMPTurbineBuilding() {
 	mTurbineInventory = CreateDefaultSubobject<UFGInventoryComponent>(TEXT("mTurbineInventory"));
 	mTurbineInventory->SetDefaultSize(2);
@@ -26,6 +44,7 @@ void ARPMPTurbineBuilding::Factory_Tick(float dt) {
 
 	if (HasAuthority()) {
 		CollectSteam(dt);
+		OutputSteam(dt);
 		CalcTurbineState();
 	}
 
@@ -80,6 +99,25 @@ void ARPMPTurbineBuilding::CollectSteam(float dt)
 	}
 }
 
+void ARPMPTurbineBuilding::OutputSteam(float dt) {
+	FInventoryStack steamItemStack;
+	mTurbineInventory->GetStackFromIndex(mOutputInvIndex, steamItemStack);
+	int LowSteamItemCount = steamItemStack.NumItems;
+
+	if (LowSteamItemCount >= mSteamPushAmount) {
+		steamItemStack.NumItems = mSteamPushAmount;
+	}
+
+	if (OutputSteamPipe && OutputSteamPipe->IsConnected()) {
+		FInventoryStack outStack;
+		OutputSteamPipe->Factory_PushPipeOutput(dt, steamItemStack);
+
+		if (steamItemStack.HasItems()) {
+			mTurbineInventory->RemoveFromIndex(mOutputInvIndex, steamItemStack.NumItems);
+		}
+	}
+}
+
 
 void ARPMPTurbineBuilding::CalcTurbineState() {
 
@@ -126,15 +164,15 @@ void ARPMPTurbineBuilding::ConvertSteamToRPM() {
 
 	SML::Logging::info("[RefinedPower] - ExtractAmount:", ExtractAmount);
 
-	mSteamConsumptionRate = ((ExtractAmount * 60)) / 1000;
+	mSteamConsumptionRate = ((ExtractAmount * 60.0f)) / 1000.0f;
 	SML::Logging::info("[RefinedPower] - Consumption: ", mSteamConsumptionRate);
 
 	mTurbineInventory->RemoveFromIndex(mInputInvIndex, ExtractAmount);
 
-	int OutputAmount = ExtractAmount;
+	float OutputAmount = ExtractAmount;
+	OutputAmount += (ExtractAmount * mSteamDiscardPercent);
 
 	ExtractAmount -= (ExtractAmount * mSteamDiscardPercent);
-	OutputAmount += (ExtractAmount * mSteamDiscardPercent);
 
 	OutputAmount /= 2;
 
@@ -161,5 +199,16 @@ void ARPMPTurbineBuilding::ReduceRPM() {
 		mCurrentTurbineRPM -= mRPMDrag;
 
 		mCurrentTurbineRPM = FMath::Clamp(mCurrentTurbineRPM, 0, mRedMaxTurbineRPM);
+	}
+}
+
+
+// RCO Stuff
+
+void ARPMPTurbineBuilding::SetSteamDiscard(float value) {
+	auto rco = Cast<URPMPTurbineBuildingRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPMPTurbineBuildingRCO::StaticClass()));
+
+	if (rco) {
+		rco->SetSteamDiscard(this, value);
 	}
 }
