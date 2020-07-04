@@ -1,11 +1,11 @@
 // ILikeBanas
 
 
-#include "RPMPBoilerBuilding.h"
+#include "RPMPHeater.h"
 
-ARPMPBoilerBuilding::ARPMPBoilerBuilding() {
-	mBoilerInventory = CreateDefaultSubobject<UFGInventoryComponent>(TEXT("mBoilerInventory"));
-	mBoilerInventory->SetDefaultSize(4);
+ARPMPHeater::ARPMPHeater() {
+	mHeaterInventory = CreateDefaultSubobject<UFGInventoryComponent>(TEXT("mHeaterInventory"));
+	mHeaterInventory->SetDefaultSize(2);
 
 	SetReplicates(true);
 	bReplicates = true;
@@ -13,7 +13,7 @@ ARPMPBoilerBuilding::ARPMPBoilerBuilding() {
 	mFactoryTickFunction.bCanEverTick = true;
 }
 
-void ARPMPBoilerBuilding::BeginPlay() {
+void ARPMPHeater::BeginPlay() {
 	Super::BeginPlay();
 
 	if (HasAuthority()) {
@@ -21,19 +21,19 @@ void ARPMPBoilerBuilding::BeginPlay() {
 	}
 
 }
-void ARPMPBoilerBuilding::Factory_Tick(float dt) {
+void ARPMPHeater::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
 	if (HasAuthority()) {
 		CollectItems();
 	}
 
 }
-void ARPMPBoilerBuilding::Tick(float dt) {
+void ARPMPHeater::Tick(float dt) {
 	Super::Tick(dt);
 }
 
 
-void ARPMPBoilerBuilding::CacheConnections() {
+void ARPMPHeater::CacheConnections() {
 
 	TArray<UActorComponent*> tempComps;
 
@@ -49,7 +49,7 @@ void ARPMPBoilerBuilding::CacheConnections() {
 		InputFuelPipe = Cast<UFGPipeConnectionComponent>(tempComps[0]);
 	}
 
-	tag = FName(TEXT("WaterPipe"));
+	/*tag = FName(TEXT("WaterPipe"));
 	tempComps = GetComponentsByTag(UFGPipeConnectionComponent::StaticClass(), tag);
 	if (tempComps.Num() > 0) {
 		InputWaterPipe = Cast<UFGPipeConnectionComponent>(tempComps[0]);
@@ -59,7 +59,7 @@ void ARPMPBoilerBuilding::CacheConnections() {
 	tempComps = GetComponentsByTag(UFGPipeConnectionComponent::StaticClass(), tag);
 	if (tempComps.Num() > 0) {
 		OutputSteamPipe = Cast<UFGPipeConnectionComponent>(tempComps[0]);
-	}
+	}*/
 
 	tag = FName(TEXT("Co2Pipe"));
 	tempComps = GetComponentsByTag(UFGPipeConnectionComponent::StaticClass(), tag);
@@ -72,7 +72,7 @@ void ARPMPBoilerBuilding::CacheConnections() {
 	}
 }
 
-void ARPMPBoilerBuilding::CollectItems()
+void ARPMPHeater::CollectItems()
 {
 
 	if (InputFuelConveyor) {
@@ -86,7 +86,7 @@ void ARPMPBoilerBuilding::CollectItems()
 					FInventoryStack itemStack;
 					itemStack.NumItems = 1;
 					itemStack.Item = outItem;
-					mBoilerInventory->AddStackToIndex(mFuelInvIndex, itemStack, true);
+					mHeaterInventory->AddStackToIndex(mFuelInvIndex, itemStack, true);
 				}
 			}
 		}
@@ -94,12 +94,12 @@ void ARPMPBoilerBuilding::CollectItems()
 
 	// Copy above for InputFuelPipe
 
-	// Copy above for InputWaterPipe
+	// Copy above for InputWaterPipe - ***Boiler instead
 }
 
-bool ARPMPBoilerBuilding::canAddFuelItem(TSubclassOf<UFGItemDescriptor> itemClass) {
+bool ARPMPHeater::canAddFuelItem(TSubclassOf<UFGItemDescriptor> itemClass) {
 	FInventoryStack out_stack;
-	mBoilerInventory->GetStackFromIndex(mFuelInvIndex, out_stack);
+	mHeaterInventory->GetStackFromIndex(mFuelInvIndex, out_stack);
 	if (out_stack.HasItems()) {
 
 		if (itemClass != out_stack.Item.ItemClass) {
@@ -116,9 +116,9 @@ bool ARPMPBoilerBuilding::canAddFuelItem(TSubclassOf<UFGItemDescriptor> itemClas
 	return true;
 }
 
-int ARPMPBoilerBuilding::getFuelItemCount() {
+int ARPMPHeater::getFuelItemCount() {
 	FInventoryStack out_stack;
-	mBoilerInventory->GetStackFromIndex(mFuelInvIndex, out_stack);
+	mHeaterInventory->GetStackFromIndex(mFuelInvIndex, out_stack);
 	if (out_stack.HasItems()) {
 		return out_stack.NumItems;
 	}
