@@ -21,12 +21,34 @@ class REFINEDPOWER_API ARPMPBuilding : public AFGBuildableFactory
 	GENERATED_BODY()
 public:
 
+    ARPMPBuilding();
+
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-    ARPMPPlatform* mAttachedPlatform;
+    virtual void GetDismantleRefund_Implementation(TArray< FInventoryStack >& out_refund) const override;
 
+    ARPMPPlatform* mAttachedPlatform;
     void GetAttachedPlatform(ARPMPPlatform* &Platform);
+
+    //Replicated Inventory Stuff
+
+    UClass* GetReplicationDetailActorClass() const override;
+
+
+    UFUNCTION(BlueprintPure, Category = "Inventory")
+        FORCEINLINE class UFGInventoryComponent* GetMPInventory() const { return MPInventoryHandler->GetActiveInventoryComponent(); }
+
+    UPROPERTY(SaveGame)
+    class UFGInventoryComponent* MPInventoryComponent;
+
+
+    UFGReplicationDetailInventoryComponent* MPInventoryHandler;
+
+    friend class AReplicationDetailActor_MPBuilding;
+    void OnRep_ReplicationDetailActor() override;
+
+    // Util Functions
 
     void StoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass);
     void StoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass, int Amount);

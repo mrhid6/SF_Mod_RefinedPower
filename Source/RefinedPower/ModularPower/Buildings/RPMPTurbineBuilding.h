@@ -34,6 +34,8 @@ public:
 	virtual void Factory_Tick(float dt) override;
 	virtual void Tick(float dt) override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	// Functions
 	void CacheConnections();
 	void CollectSteam(float dt);
@@ -57,7 +59,7 @@ public:
 	// Variables
 
 	// RPM Stuff
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category = "RefinedPower")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower")
 		int mCurrentTurbineRPM = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
@@ -92,7 +94,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		int mSteamConsumption = 25;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, SaveGame, meta = (UIMin = "0", UIMax = "1.0"), Category = "RefinedPower")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, SaveGame, Replicated, meta = (UIMin = "0", UIMax = "1.0"), Category = "RefinedPower")
 		float mSteamDiscardPercent = 0.5;
 
 
@@ -106,9 +108,6 @@ public:
 		float mSteamOutputRate = 0;
 
 	// Components
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-		class UFGInventoryComponent* mTurbineInventory;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		TSubclassOf<UFGItemDescriptor> mHighSteamItemClass;
