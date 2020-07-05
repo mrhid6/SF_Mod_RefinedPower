@@ -6,6 +6,7 @@
 #include "Hologram/FGFactoryHologram.h"
 #include "Components/BoxComponent.h"
 #include "../RPMPPlatform.h"
+#include "../RPMPBuilding.h"
 #include "../RPMPPlacementComponent.h"
 #include "RPMPBuildingHolo.generated.h"
 
@@ -25,8 +26,6 @@ public:
 		virtual void CheckValidPlacement() override;
 
 		virtual bool IsValidHitResult(const FHitResult& hitResult) const override;
-
-		bool CheckOverlapWaterVolume();
 
 		bool CheckSnapLocations(FVector TestLocation);
 

@@ -18,6 +18,8 @@ void ARPMPBuilding::BeginPlay() {
 
 		GetAttachedPlatform(mAttachedPlatform);
 
+		TriggerUpdatePlatformAttachments();
+
 		//Initialize inventories, set default inventory sizes
 		MPInventoryComponent = UFGInventoryLibrary::CreateInventoryComponent(this, TEXT("MPInventory"));
 		MPInventoryComponent->SetDefaultSize(2);
@@ -57,15 +59,32 @@ void ARPMPBuilding::OnRep_ReplicationDetailActor() {
 void ARPMPBuilding::EndPlay(const EEndPlayReason::Type endPlayReason) {
 
 	if (endPlayReason == EEndPlayReason::Destroyed) {
-		ARPMPPlatform* platform;
-		GetAttachedPlatform(platform);
+		TriggerUpdatePlatformAttachments();
 	}
 	Super::EndPlay(endPlayReason);
 }
 
+void ARPMPBuilding::TriggerUpdatePlatformAttachments() {
+	ARPMPPlatform* platform;
+	GetAttachedPlatform(platform);
+
+	if (platform) {
+		platform->UpdatePlatformAttachments();
+	}
+}
+
 void ARPMPBuilding::GetDismantleRefund_Implementation(TArray<FInventoryStack>& out_refund) const
 {
-	GetMPInventory()->GetInventoryStacks(out_refund);
+
+	GetDismantleRefundReturns(out_refund);
+	GetDismantleBlueprintReturns(out_refund);
+
+	TArray<FInventoryStack> stacks;
+	GetMPInventory()->GetInventoryStacks(stacks);
+
+	for (FInventoryStack stack : stacks) {
+		out_refund.Add(stack);
+	}
 }
 
 void  ARPMPBuilding::GetAttachedPlatform(ARPMPPlatform* & Platform) {
@@ -80,6 +99,29 @@ void  ARPMPBuilding::GetAttachedPlatform(ARPMPPlatform* & Platform) {
 	}
 	else {
 		Platform = nullptr;
+	}
+
+	if (Platform == nullptr) {
+		FVector ForwardVector = FVector(0,0,-1);
+		FVector CompLocation = GetActorLocation();
+
+		FVector Start = (CompLocation);
+
+		FVector End = ((ForwardVector * 1000) + Start);
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(this);
+		FHitResult OutHit;
+		GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
+
+		if (OutHit.Actor != nullptr) {
+			if (OutHit.Actor->IsA(ARPMPPlatform::StaticClass())) {
+				Platform = Cast<ARPMPPlatform>(OutHit.Actor);
+			}else if (OutHit.Actor->IsA(ARPMPBuilding::StaticClass())) {
+				ARPMPBuilding* building = Cast<ARPMPBuilding>(OutHit.Actor);
+
+				building->GetAttachedPlatform(Platform);
+			}
+		}
 	}
 }
 

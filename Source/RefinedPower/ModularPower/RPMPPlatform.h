@@ -21,7 +21,7 @@ UCLASS()
 class REFINEDPOWER_API ARPMPPlatform : public AFGBuildableFactory
 {
 	GENERATED_BODY()
-
+public:
 		ARPMPPlatform();
 	~ARPMPPlatform();
 
@@ -30,7 +30,8 @@ class REFINEDPOWER_API ARPMPPlatform : public AFGBuildableFactory
 	virtual void Factory_Tick(float dt) override;
 	virtual void Tick(float dt) override;
 
-	public:
+	void UpdatePlatformAttachments();
+
 		void SetupInitalPlacement();
 		void SetupConnectionToCore(ARPMPCore* MPCore);
 

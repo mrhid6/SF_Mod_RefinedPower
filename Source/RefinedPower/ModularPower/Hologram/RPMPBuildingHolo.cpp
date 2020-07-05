@@ -27,8 +27,11 @@ void ARPMPBuildingHolo::BeginPlay() {
 
 bool ARPMPBuildingHolo::IsValidHitResult(const FHitResult& hitResult) const {
 
-	if (hitResult.Actor->IsA(ARPMPPlatform::StaticClass())) {
-		return true;
+
+	if (hitResult.IsValidBlockingHit() && hitResult.Actor != nullptr){
+		if(hitResult.Actor->IsA(ARPMPPlatform::StaticClass()) || hitResult.Actor->IsA(ARPMPBuilding::StaticClass())) {
+			return true;
+		}
 	}
 
 	return Super::IsValidHitResult(hitResult);
@@ -51,6 +54,19 @@ bool ARPMPBuildingHolo::CheckSnapLocations(FVector TestLocation){
 		mPlatform = nullptr;
 	}
 
+
+	if (mPlatform == nullptr) {
+		UKismetSystemLibrary::SphereOverlapActors(this, TestLocation, 100, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, OutActors);
+		if (OutActors.Num() > 0) {
+			ARPMPBuilding* tempBuilding = Cast<ARPMPBuilding>(OutActors[0]);
+
+			tempBuilding->GetAttachedPlatform(mPlatform);
+		}
+		else {
+			mPlatform = nullptr;
+		}
+	}
+
 	if(mPlatform){
 		TArray<UActorComponent*> placementComps = mPlatform->GetComponentsByClass(URPMPPlacementComponent::StaticClass());
 
@@ -58,6 +74,11 @@ bool ARPMPBuildingHolo::CheckSnapLocations(FVector TestLocation){
 			URPMPPlacementComponent* placementComp = Cast<URPMPPlacementComponent>(comp);
 
 			if (placementComp->mBuildingType == mHologramType) {
+
+				if (placementComp->IsOccupied()) {
+					return false;
+				}
+
 				mSnapToPoint = placementComp->GetComponentLocation();
 				mSnapPointRotation = placementComp->GetComponentRotation();
 				return true;

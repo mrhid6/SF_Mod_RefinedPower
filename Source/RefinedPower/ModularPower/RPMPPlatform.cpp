@@ -51,6 +51,16 @@ void ARPMPPlatform::Factory_Tick(float dt) {
 	}
 }
 
+void ARPMPPlatform::UpdatePlatformAttachments() {
+	TArray<AActor*> buildings = ARPMPPlatform::GetAttachedMPBuildings();
+
+	for (auto TempBuilding : buildings) {
+		ARPMPBuilding* Building = Cast<ARPMPBuilding>(TempBuilding);
+
+		Building->UpdateDependantBuildings();
+	}
+}
+
 void ARPMPPlatform::SetupInitalPlacement() {
 	if (mConnectedToCore == false) {
 		SML::Logging::info("[RefinedPower] - MPBuilding: Inital Setup");
@@ -94,10 +104,10 @@ TArray<AActor*> ARPMPPlatform::GetAttachedMPBuildings() {
 		TArray< AActor*> OutActors;
 
 
-		UKismetSystemLibrary::SphereOverlapActors(this, placementComp->GetComponentLocation(), 100, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, OutActors);
+		UKismetSystemLibrary::SphereOverlapActors(this, placementComp->GetComponentLocation(), 50, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, OutActors);
 
 		for (AActor* building : OutActors) {
-			resActors.Add(building);
+			resActors.AddUnique(building);
 		}
 	};
 

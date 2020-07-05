@@ -15,4 +15,5 @@ class REFINEDPOWER_API ARPMPBoilerBuildingHolo : public ARPMPBuildingHolo
 public:
 		ARPMPBoilerBuildingHolo();
 		~ARPMPBoilerBuildingHolo();
+
 };

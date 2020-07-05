@@ -2,6 +2,7 @@
 
 
 #include "RPMPPlacementComponent.h"
+#include "RPMPBuilding.h"
 
 // Sets default values for this component's properties
 URPMPPlacementComponent::URPMPPlacementComponent()
@@ -29,5 +30,20 @@ void URPMPPlacementComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+
+bool URPMPPlacementComponent::IsOccupied() {
+	const TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes = TArray< TEnumAsByte< EObjectTypeQuery > >{ EObjectTypeQuery::ObjectTypeQuery1, EObjectTypeQuery::ObjectTypeQuery2 };
+	TArray< AActor*> ActorsToIgnore;
+	TArray< AActor*> OutActors;
+
+
+	UKismetSystemLibrary::SphereOverlapActors(this, GetComponentLocation(), 10, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, OutActors);
+	if (OutActors.Num() > 0) {
+		return true;
+	}
+
+	return false;
 }
 

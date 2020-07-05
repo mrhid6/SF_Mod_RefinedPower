@@ -31,6 +31,9 @@ public:
     ARPMPPlatform* mAttachedPlatform;
     void GetAttachedPlatform(ARPMPPlatform* &Platform);
 
+    void TriggerUpdatePlatformAttachments();
+    virtual void UpdateDependantBuildings() {};
+
     //Replicated Inventory Stuff
 
     UClass* GetReplicationDetailActorClass() const override;

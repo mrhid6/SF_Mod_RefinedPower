@@ -23,4 +23,6 @@ public:
 
 	ARPMPTurbineBuilding* mAttachedTurbine;
 
+	virtual void UpdateDependantBuildings() override;
+
 };

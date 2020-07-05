@@ -36,4 +36,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		EMPPlatformBuildingType mBuildingType;
+
+	bool IsOccupied();
 };
