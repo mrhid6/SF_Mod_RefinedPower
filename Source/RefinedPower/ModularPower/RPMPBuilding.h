@@ -31,10 +31,15 @@ public:
     ARPMPPlatform* mAttachedPlatform;
     void GetAttachedPlatform(ARPMPPlatform* &Platform);
 
+
+
+    // Trigger Platform to update all Attached Buildings (BeginPlay/EndPlay)
     void TriggerUpdatePlatformAttachments();
+
+    // Called when platform Attachment update is run ^^
     virtual void UpdateDependantBuildings() {};
 
-    //Replicated Inventory Stuff
+    // Replicated Inventory Stuff
 
     UClass* GetReplicationDetailActorClass() const override;
 

@@ -104,7 +104,7 @@ TArray<AActor*> ARPMPPlatform::GetAttachedMPBuildings() {
 		TArray< AActor*> OutActors;
 
 
-		UKismetSystemLibrary::SphereOverlapActors(this, placementComp->GetComponentLocation(), 50, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, OutActors);
+		UKismetSystemLibrary::SphereOverlapActors(this, placementComp->GetComponentLocation(), 10, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, OutActors);
 
 		for (AActor* building : OutActors) {
 			resActors.AddUnique(building);

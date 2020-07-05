@@ -93,7 +93,7 @@ void  ARPMPBuilding::GetAttachedPlatform(ARPMPPlatform* & Platform) {
 	TArray< AActor*> OutActors;
 
 
-	UKismetSystemLibrary::SphereOverlapActors(this, GetActorLocation(), 100, ObjectTypes, ARPMPPlatform::StaticClass(), ActorsToIgnore, OutActors);
+	UKismetSystemLibrary::SphereOverlapActors(this, GetActorLocation(), 50, ObjectTypes, ARPMPPlatform::StaticClass(), ActorsToIgnore, OutActors);
 	if (OutActors.Num() > 0) {
 		Platform = Cast<ARPMPPlatform>(OutActors[0]);
 	}
@@ -102,6 +102,10 @@ void  ARPMPBuilding::GetAttachedPlatform(ARPMPPlatform* & Platform) {
 	}
 
 	if (Platform == nullptr) {
+
+		// If we cant find it do a line trace down 1000 units (Used in Heater/Boiler)
+		// TODO Optimise Units to mesh sizes
+
 		FVector ForwardVector = FVector(0,0,-1);
 		FVector CompLocation = GetActorLocation();
 
