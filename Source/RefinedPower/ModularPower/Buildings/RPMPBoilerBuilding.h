@@ -4,12 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "ModularPower/RPMPBuilding.h"
-#include "FGItemDescriptor.h"
-#include "FGInventoryComponent.h"
-#include "FGFactoryConnectionComponent.h"
-#include "FGPipeConnectionComponent.h"
 #include "RPMPHeaterBuilding.h"
-#include "util/Logging.h"
+#include "Curves/CurveFloat.h"
 #include "RPMPBoilerBuilding.generated.h"
 
 /**
@@ -35,11 +31,22 @@ public:
 	void CacheConnections();
 
 	/* Collect & Store Items*/
-	void CollectItems();
+	void CollectItems(float dt);
+
+	void OutputSteam(float dt);
 
 	void CacheHeaterBuilding();
 
+	bool CanGenerateSteam();
+	void GenerateSteam();
 	/* BurnEnergy (Deincrement mCurrentHeatValue in connected heater every second) */
+
+	// Util Functions
+
+	int getWaterItemCount();
+	int getSteamItemCount();
+
+	float GetSteamProductionCurveValue();
 
 	/*Variables*/
 
@@ -49,12 +56,33 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		TSubclassOf<UFGItemDescriptor> mSteamItemClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		int mWaterPullAmount = 100;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		int mWaterUsageAmount = 50;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		float mSteamProductionMultiplier = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		UCurveFloat* mBoilerCurve;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
+		float mWaterConsumpionRate;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
+		float mSteamProductionRate;
+
 	UFGPipeConnectionComponent* InputWaterPipe;
 	UFGPipeConnectionComponent* OutputSteamPipe;
 
 	/*the heater this boiler is connected to*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
 	ARPMPHeaterBuilding* mAttachedHeater;
 
 	int mWaterInvIndex = 0;
 	int mSteamInvIndex = 1;
+
+	int TickCounter;
 };

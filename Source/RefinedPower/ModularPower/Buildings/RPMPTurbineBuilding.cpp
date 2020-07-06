@@ -91,13 +91,6 @@ void ARPMPTurbineBuilding::CollectSteam(float dt)
 			bool pulledItem = InputSteamPipe->Factory_PullPipeInput(dt, outStack, mHighSteamItemClass, mSteamPullAmount);
 
 			if (pulledItem) {
-
-				FInventoryStack TempOutStack;
-				GetMPInventory()->GetStackFromIndex(mInputInvIndex, TempOutStack);
-				if (TempOutStack.HasItems()) {
-					int ItemCount = TempOutStack.NumItems;
-				}
-
 				StoreItemStackInInventory(GetMPInventory(), mInputInvIndex, outStack);
 			}
 		}
@@ -151,8 +144,8 @@ bool ARPMPTurbineBuilding::CanStartSteamConsumption() {
 	int OutputSteamCount = OutputSteamItemStack.NumItems;
 	int MaxOutputCount = UFGItemDescriptor::GetStackSize(mLowSteamItemClass);
 
-	SML::Logging::info(OutputSteamCount);
-	SML::Logging::info(MaxOutputCount);
+	//SML::Logging::info(OutputSteamCount);
+	//SML::Logging::info(MaxOutputCount);
 
 	return (InputSteamCount > 0 && OutputSteamCount < MaxOutputCount);
 }
@@ -175,10 +168,10 @@ void ARPMPTurbineBuilding::ConvertSteamToRPM() {
 		ExtractAmount = steamItemCount;
 	}
 
-	SML::Logging::info("[RefinedPower] - ExtractAmount:", ExtractAmount);
+	//SML::Logging::info("[RefinedPower] - ExtractAmount:", ExtractAmount);
 
 	mSteamConsumptionRate = ((ExtractAmount * 60.0f)) / 1000.0f;
-	SML::Logging::info("[RefinedPower] - Consumption: ", mSteamConsumptionRate);
+	//SML::Logging::info("[RefinedPower] - Consumption: ", mSteamConsumptionRate);
 
 	GetMPInventory()->RemoveFromIndex(mInputInvIndex, ExtractAmount);
 
@@ -195,7 +188,7 @@ void ARPMPTurbineBuilding::ConvertSteamToRPM() {
 	float EnergyValue = (ItemEnergyValue * ExtractAmount);
 	EnergyValue = FMath::Clamp(EnergyValue, 0.0f, 9999999.0f);
 
-	SML::Logging::info("[RefinedPower] - EnergyValue: ", EnergyValue);
+	//SML::Logging::info("[RefinedPower] - EnergyValue: ", EnergyValue);
 
 	int RPMToAdd = FMath::FloorToInt((EnergyValue / 3) * mRPMMultiplier);
 

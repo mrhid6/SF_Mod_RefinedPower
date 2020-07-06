@@ -7,6 +7,9 @@
 
 ARPMPBuilding::ARPMPBuilding() {
 	MPInventoryHandler = CreateDefaultSubobject<UFGReplicationDetailInventoryComponent>(TEXT("ReplicationDetailComponent_MPInventory"));
+	//Initialize inventories, set default inventory sizes
+	MPInventoryComponent = UFGInventoryLibrary::CreateInventoryComponent(this, TEXT("MPInventory"));
+	MPInventoryComponent->SetDefaultSize(2);
 
 	SetReplicates(true);
 }
@@ -20,9 +23,7 @@ void ARPMPBuilding::BeginPlay() {
 
 		TriggerUpdatePlatformAttachments();
 
-		//Initialize inventories, set default inventory sizes
-		MPInventoryComponent = UFGInventoryLibrary::CreateInventoryComponent(this, TEXT("MPInventory"));
-		MPInventoryComponent->SetDefaultSize(2);
+		
 
 		//Set main inventory reference for replication inventory handler
 		//When ReplicationDetailActor is NOT SPAWNED, these represent REAL inventory states
@@ -83,7 +84,13 @@ void ARPMPBuilding::GetDismantleRefund_Implementation(TArray<FInventoryStack>& o
 	GetMPInventory()->GetInventoryStacks(stacks);
 
 	for (FInventoryStack stack : stacks) {
-		out_refund.Add(stack);
+		if (stack.HasItems()) {
+			EResourceForm form = UFGItemDescriptor::GetForm(stack.Item.ItemClass);
+
+			if (form == EResourceForm::RF_SOLID) {
+				out_refund.Add(stack);
+			}
+		}
 	}
 }
 
@@ -162,9 +169,7 @@ void ARPMPBuilding::StoreItemStackInInventory(UFGInventoryComponent* inventory, 
 		return;
 	}
 
-	if (CanStoreItemInInventory(inventory, InvIndex, ItemStack.Item.ItemClass, ItemStack.NumItems)) {
-		inventory->AddStackToIndex(InvIndex, ItemStack, true);
-	}
+	StoreItemInInventory(inventory, InvIndex, ItemStack.Item.ItemClass, ItemStack.NumItems);
 }
 
 bool ARPMPBuilding::CanStoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass, int amount) {

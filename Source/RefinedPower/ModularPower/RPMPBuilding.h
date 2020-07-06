@@ -10,6 +10,10 @@
 #include "FGRemoteCallObject.h"
 #include "UnrealNetwork.h"
 #include "RPMPPlatform.h"
+#include "FGItemDescriptor.h"
+#include "FGInventoryComponent.h"
+#include "FGFactoryConnectionComponent.h"
+#include "FGPipeConnectionComponent.h"
 #include "RPMPBuilding.generated.h"
 
 /**

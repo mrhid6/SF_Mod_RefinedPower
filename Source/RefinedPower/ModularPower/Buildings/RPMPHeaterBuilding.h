@@ -26,6 +26,8 @@ public:
 	virtual void Factory_Tick(float dt) override;
 	virtual void Tick(float dt) override;
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	// Functions See DRAW.IO heater tab for diagram!
 
 	void CacheConnections();
@@ -34,22 +36,22 @@ public:
 	void CollectItems(float dt);
 
 	/* CanStartItemBurn (checks amount of heat & co2 in inventory) */
-	bool canBurnItem();
+	bool CanStartItemBurn();
 
 	/* StartItemBurn (Copy item energy value to mCurrentEnergyValue & mMaxEnergyValue) */
-	void burnItem();
-
-	/* HasItemBeenBurnt return if mCurrentEnergyValue = 0 */
-
-	/* Produce heat from energy and store in counter */
+	void BurnItem(float dt);
 
 	/* ProduceCo2 if needed and store in inventory */
+	void ProduceCo2();
 
+	void OutputCo2(float dt);
 
 
 	/*Util Functions*/
 
 	int getFuelItemCount();
+
+	int getCo2ItemCount();
 
 	/**********************/
 
@@ -59,10 +61,10 @@ public:
 	int getCurrentHeatValue() { return this->mCurrentHeatValue; }
 
 	/*adds to the current heat of this heater - used in the heater itself*/
-	void addHeat(int heat) { this->mCurrentHeatValue += heat; }
+	void addHeat(float heat) { this->mCurrentHeatValue += heat; mCurrentHeatValue = FMath::Clamp(mCurrentHeatValue, 0.0f, mMaxHeatValue);}
 
 	/*subtracts from the current heat of this heater - used in the connected boiler*/
-	void subtractHeat(int heat) { this->mCurrentHeatValue -= heat; }
+	void subtractHeat(float heat) { mCurrentHeatValue -= heat; mCurrentHeatValue = FMath::Clamp(mCurrentHeatValue, 0.0f, mMaxHeatValue); }
 
 	/**********************/
 
@@ -74,20 +76,24 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		TSubclassOf<UFGItemDescriptor> mCo2ItemClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
-		int mCurrentHeatValue = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower")
+		float mCurrentHeatValue = 0;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		int mMaxHeatValue = 1023; /*place holder value (needs balancing) - based on melting point of copper in Kelvin*/
+		float mMaxHeatValue = 500; /*place holder value (needs balancing) - based on melting point of copper in Kelvin*/
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
-		int mCurrentEnergyValue;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower")
+		float mCurrentEnergyValue;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
-		int mMaxEnergyValue;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower")
+		float mMaxEnergyValue;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		bool mProducesCo2 = true;
+
+	/* Amount of Co2 to generate per tick */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		int mCo2GenerationAmount = 5;
 
 
 	UFGFactoryConnectionComponent* InputFuelConveyor;
