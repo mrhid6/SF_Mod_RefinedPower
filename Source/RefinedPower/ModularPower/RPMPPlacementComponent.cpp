@@ -3,6 +3,11 @@
 
 #include "RPMPPlacementComponent.h"
 #include "RPMPBuilding.h"
+#include "Buildings/RPMPBoilerBuilding.h"
+#include "Buildings/RPMPHeaterBuilding.h"
+#include "Buildings/RPMPTurbineBuilding.h"
+#include "Buildings/RPMPGeneratorBuilding.h"
+#include "Buildings/RPMPCoolingBuilding.h"
 
 // Sets default values for this component's properties
 URPMPPlacementComponent::URPMPPlacementComponent()
@@ -40,10 +45,43 @@ bool URPMPPlacementComponent::IsOccupied() {
 
 
 	UKismetSystemLibrary::SphereOverlapActors(this, GetComponentLocation(), 10, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, OutActors);
-	if (OutActors.Num() > 0) {
-		return true;
+	bool resBool = false;
+
+	for (AActor* Actor : OutActors) {
+		ARPMPBuilding* Building = Cast<ARPMPBuilding>(Actor);
+
+		switch (mBuildingType) {
+		case EMPPlatformBuildingType::MP_Boiler:
+			if (Building->IsA(ARPMPBoilerBuilding::StaticClass())) {
+				resBool = true;
+			}
+			break;
+
+		case EMPPlatformBuildingType::MP_Heater:
+			if (Building->IsA(ARPMPHeaterBuilding::StaticClass())) {
+				resBool = true;
+			}
+			break;
+
+		case EMPPlatformBuildingType::MP_Turbine:
+			if (Building->IsA(ARPMPTurbineBuilding::StaticClass())) {
+				resBool = true;
+			}
+			break;
+
+		case EMPPlatformBuildingType::MP_Generator:
+			if (Building->IsA(ARPMPGeneratorBuilding::StaticClass())) {
+				resBool = true;
+			}
+			break;
+		case EMPPlatformBuildingType::MP_Cooler:
+			if (Building->IsA(ARPMPCoolingBuilding::StaticClass())) {
+				resBool = true;
+			}
+			break;
+		}
 	}
 
-	return false;
+	return resBool;
 }
 
