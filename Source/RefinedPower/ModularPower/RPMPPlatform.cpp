@@ -8,6 +8,12 @@
 #include "FGPlayerController.h"
 #include "RPMPBuilding.h"
 
+#include "Buildings/RPMPBoilerBuilding.h"
+#include "Buildings/RPMPHeaterBuilding.h"
+#include "Buildings/RPMPTurbineBuilding.h"
+#include "Buildings/RPMPGeneratorBuilding.h"
+#include "Buildings/RPMPCoolingBuilding.h"
+
 
 ARPMPPlatform::ARPMPPlatform() {
 
@@ -112,6 +118,100 @@ TArray<AActor*> ARPMPPlatform::GetAttachedMPBuildings() {
 	};
 
 	return resActors;
+}
+
+
+void ARPMPPlatform::AttachBuildingToComp(AActor* Actor) {
+	ARPMPBuilding* Building = Cast<ARPMPBuilding>(Actor);
+
+	if (Building) {
+
+		URPMPPlacementComponent* placementComp = nullptr;
+
+		if (Building->IsA(ARPMPBoilerBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp Boiler");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Boiler);
+		}
+
+		if (Building->IsA(ARPMPHeaterBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp heater");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Heater);
+		}
+
+		if (Building->IsA(ARPMPTurbineBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp turbine");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Turbine);
+		}
+
+		if (Building->IsA(ARPMPGeneratorBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp generator");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Generator);
+		}
+
+		if (Building->IsA(ARPMPCoolingBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp cooler");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Cooler);
+		}
+
+		if (placementComp != nullptr) {
+			placementComp->mAttachedBuilding = Building;
+		}
+
+	}
+}
+
+void ARPMPPlatform::DetachBuildingFromComp(AActor* Actor) {
+	ARPMPBuilding* Building = Cast<ARPMPBuilding>(Actor);
+
+	if (Building) {
+
+		URPMPPlacementComponent* placementComp = nullptr;
+
+		if (Building->IsA(ARPMPBoilerBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp Boiler");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Boiler);
+		}
+
+		if (Building->IsA(ARPMPHeaterBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp heater");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Heater);
+		}
+
+		if (Building->IsA(ARPMPTurbineBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp turbine");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Turbine);
+		}
+
+		if (Building->IsA(ARPMPGeneratorBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp generator");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Generator);
+		}
+
+		if (Building->IsA(ARPMPCoolingBuilding::StaticClass())) {
+			SML::Logging::info("[RefinedPower] - Attached to comp cooler");
+			placementComp = GetPlacementComponent(EMPPlatformBuildingType::MP_Cooler);
+		}
+
+		if (placementComp != nullptr) {
+			placementComp->mAttachedBuilding = nullptr;
+		}
+
+	}
+}
+
+URPMPPlacementComponent* ARPMPPlatform::GetPlacementComponent(EMPPlatformBuildingType type) {
+	TArray<UActorComponent*> comps = GetComponentsByClass(URPMPPlacementComponent::StaticClass());
+
+	if (comps.Num() > 0) {
+		for (UActorComponent* comp : comps) {
+			URPMPPlacementComponent* placementComp = Cast<URPMPPlacementComponent>(comp);
+			if (placementComp->mBuildingType == type) {
+				return placementComp;
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 void ARPMPPlatform::Multicast_CoreConnectionUpdated_Implementation(){

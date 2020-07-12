@@ -35,7 +35,8 @@ public:
     ARPMPPlatform* mAttachedPlatform;
     void GetAttachedPlatform(ARPMPPlatform* &Platform);
 
-
+    void AttachToPlacementComp();
+    void DetachFromPlacementComp();
 
     // Trigger Platform to update all Attached Buildings (BeginPlay/EndPlay)
     void TriggerUpdatePlatformAttachments();

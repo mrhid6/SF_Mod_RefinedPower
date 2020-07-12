@@ -88,6 +88,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower")
 		float mMaxEnergyValue;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, SaveGame, Replicated, Category = "RefinedPower")
+		float mEnergyValueMultiplier = 1.0f;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		bool mProducesCo2 = true;
 

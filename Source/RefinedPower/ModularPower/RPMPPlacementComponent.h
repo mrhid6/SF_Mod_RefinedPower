@@ -37,5 +37,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
 		EMPPlatformBuildingType mBuildingType;
 
+	AActor* mAttachedBuilding;
+
 	bool IsOccupied();
 };

@@ -6,6 +6,7 @@
 #include "FGRemoteCallObject.h"
 #include "Components/BoxComponent.h"
 #include "RPMPCore.h"
+#include "RPMPPlacementComponent.h"
 #include "RPMPPlatform.generated.h"
 
 
@@ -40,6 +41,11 @@ public:
 
 		UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ModularPower")
 			void OnRep_CoreConnectionUpdated();
+
+		void AttachBuildingToComp(AActor* Actor);
+		void DetachBuildingFromComp(AActor* Actor);
+
+		URPMPPlacementComponent* GetPlacementComponent(EMPPlatformBuildingType type);
 
 		TArray<AActor*> GetAttachedMPBuildings();
 

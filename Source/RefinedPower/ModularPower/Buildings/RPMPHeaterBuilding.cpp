@@ -145,6 +145,8 @@ void ARPMPHeaterBuilding::BurnItem(float dt) {
 
 		// Biomass - 4.5 Seconds;
 		mCurrentEnergyValue = UFGItemDescriptor::GetEnergyValue(FuelItemStack.Item.ItemClass) * 1.5f / 60;
+		mCurrentEnergyValue *= mEnergyValueMultiplier;
+
 		mMaxEnergyValue = mCurrentEnergyValue;
 
 		GetMPInventory()->RemoveFromIndex(mFuelInvIndex, 1);

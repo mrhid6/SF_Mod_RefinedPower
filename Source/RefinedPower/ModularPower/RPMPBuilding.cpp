@@ -21,6 +21,8 @@ void ARPMPBuilding::BeginPlay() {
 
 		GetAttachedPlatform(mAttachedPlatform);
 
+		AttachToPlacementComp();
+
 		TriggerUpdatePlatformAttachments();
 
 		
@@ -61,6 +63,7 @@ void ARPMPBuilding::EndPlay(const EEndPlayReason::Type endPlayReason) {
 
 	if (endPlayReason == EEndPlayReason::Destroyed) {
 		TriggerUpdatePlatformAttachments();
+		DetachFromPlacementComp();
 	}
 	Super::EndPlay(endPlayReason);
 }
@@ -135,6 +138,21 @@ void  ARPMPBuilding::GetAttachedPlatform(ARPMPPlatform* & Platform) {
 		}
 	}
 }
+
+void ARPMPBuilding::AttachToPlacementComp() {
+	if (mAttachedPlatform) {
+
+		mAttachedPlatform->AttachBuildingToComp(this);
+	}
+}
+
+void ARPMPBuilding::DetachFromPlacementComp() {
+	if (mAttachedPlatform) {
+		mAttachedPlatform->DetachBuildingFromComp(this);
+	}
+}
+
+
 
 void ARPMPBuilding::StoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass) {
 	StoreItemInInventory(inventory, InvIndex, itemClass, 1);

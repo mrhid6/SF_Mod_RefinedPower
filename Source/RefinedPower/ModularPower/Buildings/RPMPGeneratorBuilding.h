@@ -25,4 +25,13 @@ public:
 
 	virtual void UpdateDependantBuildings() override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		float mMaxPowerOutput;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		int mMaxRPM;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+		UCurveFloat* mGeneratorCurve;
+
 };

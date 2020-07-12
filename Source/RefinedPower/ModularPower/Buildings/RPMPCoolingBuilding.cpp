@@ -35,8 +35,6 @@ void ARPMPCoolingBuilding::Factory_Tick(float dt) {
 			mIsEmittingParticles = false;
 			mGasConsumpionRate = 0.0f;
 		}
-
-		SML::Logging::info(mIsEmittingParticles);
 	}
 
 }
