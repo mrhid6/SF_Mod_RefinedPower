@@ -2,6 +2,7 @@
 
 
 #include "RPMPBoilerBuilding.h"
+#include "../RPMPPlacementComponent.h"
 
 ARPMPBoilerBuilding::ARPMPBoilerBuilding() {
 	SetReplicates(true);
@@ -47,22 +48,20 @@ void ARPMPBoilerBuilding::UpdateDependantBuildings() {
 
 
 void ARPMPBoilerBuilding::CacheHeaterBuilding() {
-	ARPMPPlatform* platform;
-	GetAttachedPlatform(platform);
 
-	if (platform) {
-		TArray<AActor*> platformBuildings = platform->GetAttachedMPBuildings();
-		bool foundHeater = false;
-		for (AActor* building : platformBuildings) {
-			if (building->IsA(ARPMPHeaterBuilding::StaticClass())) {
-				mAttachedHeater = Cast<ARPMPHeaterBuilding>(building);
+	if (mAttachedPlatform) {
+
+		URPMPPlacementComponent* placementComp = mAttachedPlatform->GetPlacementComponent(EMPPlatformBuildingType::MP_Heater);
+
+
+		if (placementComp->mAttachedBuilding) {
+
+			if (placementComp->mAttachedBuilding->IsA(ARPMPHeaterBuilding::StaticClass())) {
+				mAttachedHeater = Cast<ARPMPHeaterBuilding>(placementComp->mAttachedBuilding);
 				SML::Logging::info("[RefinedPower] - Got Heater!");
-				foundHeater = true;
-				break;
 			}
 		}
-
-		if (foundHeater == false) {
+		else {
 			mAttachedHeater = nullptr;
 			SML::Logging::info("[RefinedPower] - No Heater!");
 		}

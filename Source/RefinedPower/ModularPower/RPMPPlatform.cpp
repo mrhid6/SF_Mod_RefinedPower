@@ -52,8 +52,6 @@ void ARPMPPlatform::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
 
 	if (HasAuthority()) {
-
-		ForceNetUpdate();
 	}
 }
 
@@ -93,6 +91,7 @@ void ARPMPPlatform::SetupConnectionToCore(ARPMPCore* MPCore){
 		mConnectedToCore = false;
 	}
 
+	ForceNetUpdate();
 	mConnectionToCoreUpdated = true;
 }
 
@@ -105,15 +104,8 @@ TArray<AActor*> ARPMPPlatform::GetAttachedMPBuildings() {
 	for (UActorComponent* comp : placementComps) {
 		URPMPPlacementComponent* placementComp = Cast<URPMPPlacementComponent>(comp);
 
-		const TArray< TEnumAsByte< EObjectTypeQuery > > ObjectTypes = TArray< TEnumAsByte< EObjectTypeQuery > >{ EObjectTypeQuery::ObjectTypeQuery1, EObjectTypeQuery::ObjectTypeQuery2 };
-		TArray< AActor*> ActorsToIgnore = TArray< AActor*>{ this };
-		TArray< AActor*> OutActors;
-
-
-		UKismetSystemLibrary::SphereOverlapActors(this, placementComp->GetComponentLocation(), 10, ObjectTypes, ARPMPBuilding::StaticClass(), ActorsToIgnore, OutActors);
-
-		for (AActor* building : OutActors) {
-			resActors.AddUnique(building);
+		if (placementComp->mAttachedBuilding) {
+			resActors.AddUnique(placementComp->mAttachedBuilding);
 		}
 	};
 
