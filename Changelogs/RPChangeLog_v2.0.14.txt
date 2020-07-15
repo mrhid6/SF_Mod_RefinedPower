@@ -2,4 +2,4 @@
 * Fixed MK1 solar UI. It now does not show a battery charge at all.
 * Removed thank you for 100k menu message.
 * Added items to resource sink
-* Fixed solar panel building collision
+* Fixed Solar panel clearance boxes for MK1 and MK2
