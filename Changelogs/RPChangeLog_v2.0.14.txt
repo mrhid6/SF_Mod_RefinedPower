@@ -1,0 +1,5 @@
+## Change Log - Version 2.0.14:
+* Fixed MK1 solar UI. It now does not show a battery charge at all.
+* Removed thank you for 100k menu message.
+* Added items to resource sink
+* Fixed solar panel building collision
