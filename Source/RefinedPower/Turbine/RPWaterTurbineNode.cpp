@@ -10,6 +10,9 @@ ARPWaterTurbineNode::ARPWaterTurbineNode()
 	PrimaryActorTick.bCanEverTick = false;
 	mCanPlacePortableMiner = false;
 
+	mPurity = EResourcePurity::RP_Pure;
+	mAmount = EResourceAmount::RA_Infinite;
+
 	SetReplicates(true);
 }
 
@@ -56,7 +59,11 @@ float ARPWaterTurbineNode::GetTypePowerProduction() const {
 	}
 }
 
-bool ARPWaterTurbineNode::CanPlaceResourceExtractor_Implementation() const { return false; }
+bool ARPWaterTurbineNode::CanPlaceResourceExtractor_Implementation() const { 
+	bool IDontCare = Super::CanPlaceResourceExtractor_Implementation();
+	return false; 
+
+}
 void ARPWaterTurbineNode::OnUse_Implementation(class AFGCharacterPlayer* byCharacter, const FUseState& state) {}
 
 void ARPWaterTurbineNode::OnHasTurbineChanged_Implementation() {};
