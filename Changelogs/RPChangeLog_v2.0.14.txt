@@ -1,5 +1,8 @@
 ## Change Log - Version 2.0.14:
-* Fixed MK1 solar UI. It now does not show a battery charge at all.
-* Removed thank you for 100k menu message.
+* Fixed MK1 solar UI. It now does not show the battery charge at all.
+* Removed thank you for 100k popup message.
 * Added items to resource sink
 * Fixed Solar panel clearance boxes for MK1 and MK2
+* Fixed clearance for MicroReactor
+* Fixed LODs on Solar Panels
+* Split Mesh assets from main mod to save space
