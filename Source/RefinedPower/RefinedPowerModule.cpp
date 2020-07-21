@@ -25,7 +25,7 @@ void GameModePostLogin(CallScope<void(*)(AFGGameMode*, APlayerController*)>& sco
 }
 
 void FRefinedPowerModule::StartupModule() {
-	SUBSCRIBE_METHOD(AFGGameMode::PostLogin, &GameModePostLogin);
+	SUBSCRIBE_VIRTUAL_FUNCTION(AFGGameMode, AFGGameMode::PostLogin, &GameModePostLogin);
 }
 
 IMPLEMENT_GAME_MODULE(FRefinedPowerModule, RefinedPower);
