@@ -107,6 +107,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, SaveGame, Category = "RefinedPower")
 		float mSteamOutputRate = 0;
 
+	// For BP Animations
+
+	bool TriggerTurbineStateUpdated = false;
+
+	UFUNCTION(NetMulticast, Reliable)
+		void Multicast_TurbineStateUpdated();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ModularPower")
+		void OnRep_TurbineStateUpdated();
+
 	// Components
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")

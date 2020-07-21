@@ -36,6 +36,8 @@ void ARPMPTurbineBuilding::BeginPlay() {
 		CacheConnections();
 	}
 
+	OnRep_TurbineStateUpdated();
+
 }
 void ARPMPTurbineBuilding::Factory_Tick(float dt) {
 	Super::Factory_Tick(dt);
@@ -49,6 +51,12 @@ void ARPMPTurbineBuilding::Factory_Tick(float dt) {
 }
 void ARPMPTurbineBuilding::Tick(float dt) {
 	Super::Tick(dt);
+	if (HasAuthority()) {
+		if (TriggerTurbineStateUpdated) {
+			TriggerTurbineStateUpdated = false;
+			Multicast_TurbineStateUpdated();
+		}
+	}
 }
 
 void ARPMPTurbineBuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const {
@@ -132,6 +140,10 @@ void ARPMPTurbineBuilding::CalcTurbineState() {
 
 	int NewRPM = mCurrentTurbineRPM;
 	mRPMRate = NewRPM - PrevRPM;
+
+	if (mRPMRate != 0) {
+		TriggerTurbineStateUpdated = true;
+	}
 }
 
 bool ARPMPTurbineBuilding::CanStartSteamConsumption() {
@@ -201,11 +213,13 @@ void ARPMPTurbineBuilding::ConvertSteamToRPM() {
 void ARPMPTurbineBuilding::ReduceRPM() {
 	if (mCurrentTurbineRPM > 0) {
 		mCurrentTurbineRPM -= mRPMDrag;
-
 		mCurrentTurbineRPM = FMath::Clamp(mCurrentTurbineRPM, 0, mRedMaxTurbineRPM);
 	}
 }
 
+void ARPMPTurbineBuilding::Multicast_TurbineStateUpdated_Implementation() {
+	OnRep_TurbineStateUpdated();
+}
 
 // RCO Stuff
 
@@ -216,3 +230,4 @@ void ARPMPTurbineBuilding::SetSteamDiscard(float value) {
 		rco->SetSteamDiscard(this, value);
 	}
 }
+

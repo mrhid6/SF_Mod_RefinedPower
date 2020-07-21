@@ -87,9 +87,16 @@ float ARPMPGeneratorBuilding::GetRPMPowerCurveValue() {
 }
 
 void ARPMPGeneratorBuilding::ConvertRPMToPower() {
+
+	float prevPowerOutput = mCurrentPowerProduction;
 	float powerOutput = GetRPMPowerCurveValue();
-	UFGPowerInfoComponent* powerInfo = GetPowerInfo();
-	if (powerInfo != nullptr) {
-		powerInfo->SetBaseProduction(powerOutput);
+	if (prevPowerOutput != powerOutput) {
+
+
+		UFGPowerInfoComponent* powerInfo = GetPowerInfo();
+		if (powerInfo != nullptr) {
+			powerInfo->SetBaseProduction(powerOutput);
+		}
+		ForceNetUpdate();
 	}
 }
