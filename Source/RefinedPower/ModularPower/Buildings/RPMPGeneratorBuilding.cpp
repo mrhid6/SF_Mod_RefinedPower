@@ -6,43 +6,90 @@
 
 
 ARPMPGeneratorBuilding::ARPMPGeneratorBuilding() {
-
+	SetReplicates(true);
+	bReplicates = true;
+	mFactoryTickFunction.SetTickFunctionEnable(true);
+	mFactoryTickFunction.bCanEverTick = true;
 }
 
 void ARPMPGeneratorBuilding::BeginPlay() {
 	Super::BeginPlay();
 
 	if (HasAuthority()) {
+
+		if (mAttachedPlatform) {
+			mPowerInfo = mAttachedPlatform->GetPowerInfo();
+		}
+
 		CacheTurbineBuilding();
 	}
 }
 
+void ARPMPGeneratorBuilding::Factory_Tick(float dt) {
+	Super::Factory_Tick(dt);
+	if (HasAuthority()) {
+		ConvertRPMToPower();
+	}
+
+}
+void ARPMPGeneratorBuilding::Tick(float dt) {
+	Super::Tick(dt);
+}
+
+void ARPMPGeneratorBuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ARPMPGeneratorBuilding, mCurrentRPM);
+	DOREPLIFETIME(ARPMPGeneratorBuilding, mCurrentPowerProduction);
+}
+
 void ARPMPGeneratorBuilding::UpdateDependantBuildings() {
 	Super::UpdateDependantBuildings();
+	if (mAttachedPlatform) {
+		mPowerInfo = mAttachedPlatform->GetPowerInfo();
+	}
 	CacheTurbineBuilding();
 }
 
 void ARPMPGeneratorBuilding::CacheTurbineBuilding() {
-	ARPMPPlatform* platform;
-	GetAttachedPlatform(platform);
 
-	if (platform) {
-		TArray<AActor*> platformBuildings = platform->GetAttachedMPBuildings();
-		bool foundTurbine = false;
-		for (AActor* building : platformBuildings) {
-			if (building->IsA(ARPMPTurbineBuilding::StaticClass())) {
-				mAttachedTurbine = Cast<ARPMPTurbineBuilding>(building);
+	if (mAttachedPlatform) {
+
+		URPMPPlacementComponent* placementComp = mAttachedPlatform->GetPlacementComponent(EMPPlatformBuildingType::MP_Turbine);
+
+
+		if (placementComp->mAttachedBuilding) {
+
+			if (placementComp->mAttachedBuilding->IsA(ARPMPTurbineBuilding::StaticClass())) {
+				mAttachedTurbine = Cast<ARPMPTurbineBuilding>(placementComp->mAttachedBuilding);
 				SML::Logging::info("[RefinedPower] - Got Turbine!");
-				foundTurbine = true;
-				break;
 			}
 		}
-
-		if (foundTurbine == false) {
+		else {
 			mAttachedTurbine = nullptr;
+			SML::Logging::info("[RefinedPower] - No Turbine!");
 		}
 	}
 	else {
 		SML::Logging::info("[RefinedPower] - CantFind Platform!");
+	}
+}
+
+
+float ARPMPGeneratorBuilding::GetRPMPowerCurveValue() {
+	if (mAttachedTurbine) {
+		mCurrentRPM = mAttachedTurbine->mCurrentTurbineRPM;
+		mCurrentPowerProduction = mGeneratorCurve->GetFloatValue(mCurrentRPM);
+		return mCurrentPowerProduction;
+	}
+
+	return 0.0f;
+}
+
+void ARPMPGeneratorBuilding::ConvertRPMToPower() {
+	float powerOutput = GetRPMPowerCurveValue();
+	UFGPowerInfoComponent* powerInfo = GetPowerInfo();
+	if (powerInfo != nullptr) {
+		powerInfo->SetBaseProduction(powerOutput);
 	}
 }

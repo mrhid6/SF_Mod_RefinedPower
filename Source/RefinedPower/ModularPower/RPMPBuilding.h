@@ -14,6 +14,7 @@
 #include "FGInventoryComponent.h"
 #include "FGFactoryConnectionComponent.h"
 #include "FGPipeConnectionComponent.h"
+#include "FGPowerInfoComponent.h"
 #include "RPMPBuilding.generated.h"
 
 /**

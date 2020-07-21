@@ -56,7 +56,7 @@ void ARPMPPlatform::Factory_Tick(float dt) {
 }
 
 void ARPMPPlatform::UpdatePlatformAttachments() {
-	TArray<AActor*> buildings = ARPMPPlatform::GetAttachedMPBuildings();
+	TArray<AActor*> buildings = GetAttachedMPBuildings();
 
 	for (auto TempBuilding : buildings) {
 		ARPMPBuilding* Building = Cast<ARPMPBuilding>(TempBuilding);
@@ -83,8 +83,11 @@ void ARPMPPlatform::SetupInitalPlacement() {
 void ARPMPPlatform::SetupConnectionToCore(ARPMPCore* MPCore){
 
 	if (MPCore != nullptr) {
-		SML::Logging::info("[RefinedPower] - MPBuilding: Connected To Core");
+		SML::Logging::info("[RefinedPower] - MPPlatform: Connected To Core");
 		mPowerInfo = MPCore->GetPowerInfo();
+
+		UpdatePlatformAttachments();
+
 		mConnectedToCore = true;
 	}
 	else {
