@@ -13,39 +13,38 @@
 UCLASS()
 class REFINEDPOWER_API ARPMPGeneratorBuilding : public ARPMPBuilding
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
-	ARPMPGeneratorBuilding();
+    ARPMPGeneratorBuilding();
 
-	virtual void BeginPlay() override;
-	virtual void Factory_Tick(float dt) override;
-	virtual void Tick(float dt) override;
+    virtual void BeginPlay() override;
+    virtual void Factory_Tick(float dt) override;
+    virtual void Tick(float dt) override;
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	void CacheTurbineBuilding();
+    void CacheTurbineBuilding();
 
-	float GetRPMPowerCurveValue();
+    float GetRPMPowerCurveValue();
 
-	void ConvertRPMToPower();
+    void ConvertRPMToPower();
 
-	ARPMPTurbineBuilding* mAttachedTurbine;
+    ARPMPTurbineBuilding* mAttachedTurbine;
 
-	virtual void UpdateDependantBuildings() override;
+    virtual void UpdateDependantBuildings() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		float mMaxPowerOutput;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    float mMaxPowerOutput;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		int mMaxRPM;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    int mMaxRPM;
 
-	UPROPERTY(BlueprintReadOnly, Replicated, Category = "RefinedPower")
-		int mCurrentRPM = 0;
+    UPROPERTY(BlueprintReadOnly, Replicated, Category = "RefinedPower")
+    int mCurrentRPM = 0;
 
-	UPROPERTY(BlueprintReadOnly, Replicated, Category = "RefinedPower")
-		float mCurrentPowerProduction = 0.0f;
+    UPROPERTY(BlueprintReadOnly, Replicated, Category = "RefinedPower")
+    float mCurrentPowerProduction = 0.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		UCurveFloat* mGeneratorCurve;
-
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    UCurveFloat* mGeneratorCurve;
 };

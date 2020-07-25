@@ -12,50 +12,58 @@
 UCLASS()
 class REFINEDPOWER_API ARPMPCoolingBuilding : public ARPMPBuilding
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
-	ARPMPCoolingBuilding();
+    ARPMPCoolingBuilding();
 
-	virtual void BeginPlay() override;
-	virtual void Factory_Tick(float dt) override;
-	virtual void Tick(float dt) override;
+    virtual void BeginPlay() override;
+    virtual void Factory_Tick(float dt) override;
+    virtual void Tick(float dt) override;
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	void CacheConnections();
+    void CacheConnections();
 
-	void CollectItems(float dt);
+    void CollectItems(float dt);
 
-	bool CanEjectGas();
+    bool CanEjectGas();
 
-	void EjectGas();
+    void EjectGas();
 
 
-	int getGasItemCount();
+    int getGasItemCount();
+
+    // Fluid Buffer
+
+    virtual bool CanTransferToFluidBuffer() override { return false; };
+
+    virtual void TransferToFluidBuffer() override
+    {
+    };
 
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		TSubclassOf<UFGItemDescriptor> mInputItemClass;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    TSubclassOf<UFGItemDescriptor> mInputItemClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		int mInputPullAmount = 200;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    int mInputPullAmount = 200;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		int mMinEjectAmount = 10000;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    int mMinEjectAmount = 10000;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		int mGasUsageAmount = 50;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    int mGasUsageAmount = 50;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
-		bool mIsEmittingParticles = false;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
-		float mGasConsumpionRate = 0.0f;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
+    bool mIsEmittingParticles = false;
 
-	bool isEjectingGas = false;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
+    float mGasConsumpionRate = 0.0f;
 
-	UFGPipeConnectionComponent* InputPipe;
+    bool isEjectingGas = false;
 
-	int mInputInvIndex = 0;
+    UFGPipeConnectionComponent* InputPipe;
+
+    int mInputInvIndex = 0;
 };

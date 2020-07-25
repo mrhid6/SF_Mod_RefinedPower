@@ -11,8 +11,8 @@
 UCLASS()
 class REFINEDPOWER_API ARPMPTurbineBuildingHolo : public ARPMPBuildingHolo
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
-	ARPMPTurbineBuildingHolo();
-	~ARPMPTurbineBuildingHolo();
+    ARPMPTurbineBuildingHolo();
+    ~ARPMPTurbineBuildingHolo();
 };

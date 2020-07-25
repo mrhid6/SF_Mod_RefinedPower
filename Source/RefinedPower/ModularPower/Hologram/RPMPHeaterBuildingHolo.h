@@ -11,8 +11,8 @@
 UCLASS()
 class REFINEDPOWER_API ARPMPHeaterBuildingHolo : public ARPMPBuildingHolo
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
-		ARPMPHeaterBuildingHolo();
-		~ARPMPHeaterBuildingHolo();
+    ARPMPHeaterBuildingHolo();
+    ~ARPMPHeaterBuildingHolo();
 };

@@ -14,75 +14,77 @@
 UCLASS()
 class REFINEDPOWER_API ARPMPBoilerBuilding : public ARPMPBuilding
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
 public:
-	
-	ARPMPBoilerBuilding();
 
-	virtual void BeginPlay() override;
-	virtual void Factory_Tick(float dt) override;
-	virtual void Tick(float dt) override;
+    ARPMPBoilerBuilding();
 
-	virtual void UpdateDependantBuildings() override;
+    virtual void BeginPlay() override;
+    virtual void Factory_Tick(float dt) override;
+    virtual void Tick(float dt) override;
 
-	// Functions See DRAW.IO heater tab for diagram!
+    virtual void UpdateDependantBuildings() override;
 
-	void CacheConnections();
+    // Functions See DRAW.IO heater tab for diagram!
 
-	/* Collect & Store Items*/
-	void CollectItems(float dt);
+    void CacheConnections();
 
-	void OutputSteam(float dt);
+    /* Collect & Store Items*/
+    void CollectItems(float dt);
 
-	void CacheHeaterBuilding();
+    void OutputSteam(float dt);
 
-	bool CanGenerateSteam();
-	void GenerateSteam();
-	/* BurnEnergy (Deincrement mCurrentHeatValue in connected heater every second) */
+    void CacheHeaterBuilding();
 
-	// Util Functions
+    bool CanGenerateSteam();
+    void GenerateSteam();
+    /* BurnEnergy (Deincrement mCurrentHeatValue in connected heater every second) */
 
-	int getWaterItemCount();
-	int getSteamItemCount();
+    // Util Functions
 
-	float GetSteamProductionCurveValue();
+    int getWaterItemCount();
+    int getSteamItemCount();
 
-	/*Variables*/
+    float GetSteamProductionCurveValue();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		TSubclassOf<UFGItemDescriptor> mWaterItemClass;
+    // Fluid Buffer
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		TSubclassOf<UFGItemDescriptor> mSteamItemClass;
+    virtual bool CanTransferToFluidBuffer() override;
+    virtual void TransferToFluidBuffer() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		int mWaterPullAmount = 100;
+    /*Variables*/
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		int mWaterUsageAmount = 50;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    TSubclassOf<UFGItemDescriptor> mWaterItemClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		float mSteamProductionMultiplier = 1.0f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    TSubclassOf<UFGItemDescriptor> mSteamItemClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		UCurveFloat* mBoilerCurve;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    int mWaterPullAmount = 100;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
-		float mWaterConsumpionRate;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    float mSteamProductionMultiplier = 1.0f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
-		float mSteamProductionRate;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    UCurveFloat* mBoilerCurve;
 
-	UFGPipeConnectionComponent* InputWaterPipe;
-	UFGPipeConnectionComponent* OutputSteamPipe;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
+    float mWaterConsumpionRate;
 
-	/*the heater this boiler is connected to*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
-	ARPMPHeaterBuilding* mAttachedHeater;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
+    float mSteamProductionRate;
 
-	int mWaterInvIndex = 0;
-	int mSteamInvIndex = 1;
+    UFGPipeConnectionComponent* InputWaterPipe;
+    UFGPipeConnectionComponent* OutputSteamPipe;
 
-	int TickCounter;
+    /*the heater this boiler is connected to*/
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RefinedPower")
+    ARPMPHeaterBuilding* mAttachedHeater;
+
+    int mWaterInvIndex = 0;
+    int mSteamInvIndex = 1;
+
+    int TickCounter;
 };

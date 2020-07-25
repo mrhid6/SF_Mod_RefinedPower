@@ -11,30 +11,31 @@
 UCLASS()
 class REFINEDPOWER_API ARPMPCore : public AFGBuildableGenerator
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	ARPMPCore();
-	~ARPMPCore();
+    ARPMPCore();
+    ~ARPMPCore();
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
-	virtual void Factory_Tick(float dt) override;
-	virtual void Tick(float dt) override;
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type endPlayReason) override;
+    virtual void Factory_Tick(float dt) override;
+    virtual void Tick(float dt) override;
 
-	public:
-		void CacheNearbyMPBuildings();
-		void ConfigureNearbyMPBuildings();
-		void UnconfigureNearbyMPBuildings();
+public:
+    void CacheNearbyMPBuildings();
+    void ConfigureNearbyMPBuildings();
+    void UnconfigureNearbyMPBuildings();
 
-	protected:
+    void UpdatePowerData();
 
-		UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-			class USphereComponent* mPowerModuleRange;
+protected:
 
-		TArray< AActor*> mCachedNearbyMPBuildings;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+    class USphereComponent* mPowerModuleRange;
 
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-			class UFGPowerConnectionComponent* FGPowerConnection;
+    TArray<AActor*> mCachedNearbyMPPlatforms;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    class UFGPowerConnectionComponent* FGPowerConnection;
 };

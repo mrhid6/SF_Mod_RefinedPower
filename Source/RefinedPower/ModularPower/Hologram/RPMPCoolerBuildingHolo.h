@@ -11,8 +11,8 @@
 UCLASS()
 class REFINEDPOWER_API ARPMPCoolerBuildingHolo : public ARPMPBuildingHolo
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
-	ARPMPCoolerBuildingHolo();
-	~ARPMPCoolerBuildingHolo();
+    ARPMPCoolerBuildingHolo();
+    ~ARPMPCoolerBuildingHolo();
 };

@@ -10,34 +10,35 @@
 UENUM(BlueprintType)
 enum class EMPPlatformBuildingType : uint8
 {
-	MP_Heater	    UMETA(DisplayName = "Heater"),
-	MP_Boiler	    UMETA(DisplayName = "Boiler"),
-	MP_Turbine		UMETA(DisplayName = "Turbine"),
-	MP_Generator	UMETA(DisplayName = "Generator"),
-	MP_Cooler		UMETA(DisplayName = "Cooler")
+    MP_Heater UMETA(DisplayName = "Heater"),
+    MP_Boiler UMETA(DisplayName = "Boiler"),
+    MP_Turbine UMETA(DisplayName = "Turbine"),
+    MP_Generator UMETA(DisplayName = "Generator"),
+    MP_Cooler UMETA(DisplayName = "Cooler")
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class REFINEDPOWER_API URPMPPlacementComponent : public USceneComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	URPMPPlacementComponent();
+public:
+    // Sets default values for this component's properties
+    URPMPPlacementComponent();
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+    // Called when the game starts
+    virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+public:
+    // Called every frame
+    virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+                               FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
-		EMPPlatformBuildingType mBuildingType;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
+    EMPPlatformBuildingType mBuildingType;
 
-	AActor* mAttachedBuilding;
+    AActor* mAttachedBuilding;
 
-	bool IsOccupied();
+    bool IsOccupied();
 };

@@ -3,7 +3,8 @@
 #include "ReplicationDetailActor_MPBuilding.generated.h"
 
 UCLASS()
-class AReplicationDetailActor_MPBuilding : public AFGReplicationDetailActor_BuildableFactory {
+class AReplicationDetailActor_MPBuilding : public AFGReplicationDetailActor_BuildableFactory
+{
     GENERATED_BODY()
 public:
     void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

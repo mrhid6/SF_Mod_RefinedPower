@@ -4,13 +4,15 @@
 #include "FGInventoryLibrary.h"
 
 //Add our fields to replicated list
-void AReplicationDetailActor_MPBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
+void AReplicationDetailActor_MPBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
     DOREPLIFETIME(AReplicationDetailActor_MPBuilding, MPInventoryComponent);
 }
 
 //Create our inventory components, copy state from original, set replicated inventory components
-void AReplicationDetailActor_MPBuilding::InitReplicationDetailActor(AFGBuildable* owningActor) {
+void AReplicationDetailActor_MPBuilding::InitReplicationDetailActor(AFGBuildable* owningActor)
+{
     Super::InitReplicationDetailActor(owningActor);
     //Remember: UPROPERTY(Replicated) will only replicate property value, not the actual component
     MPInventoryComponent = UFGInventoryLibrary::CreateInventoryComponent(this, TEXT("MPInventory"));
@@ -27,9 +29,11 @@ void AReplicationDetailActor_MPBuilding::InitReplicationDetailActor(AFGBuildable
 }
 
 //Copy replicated component values back to main inventory components
-void AReplicationDetailActor_MPBuilding::FlushReplicationActorStateToOwner() {
+void AReplicationDetailActor_MPBuilding::FlushReplicationActorStateToOwner()
+{
     Super::FlushReplicationActorStateToOwner();
-    if (mOwningBuildable) {
+    if (mOwningBuildable)
+    {
         //Copy replicated component values back to buildable inventory components
         //After that, WE NO LONGER represent a MASTER state of the inventories
         //REAL STATE is owned by the BUILDABLE inventories themselves now
@@ -38,6 +42,7 @@ void AReplicationDetailActor_MPBuilding::FlushReplicationActorStateToOwner() {
     }
 }
 
-bool AReplicationDetailActor_MPBuilding::HasCompletedInitialReplication() const {
+bool AReplicationDetailActor_MPBuilding::HasCompletedInitialReplication() const
+{
     return Super::HasCompletedInitialReplication() && MPInventoryComponent;
 }

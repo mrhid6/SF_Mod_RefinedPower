@@ -16,28 +16,27 @@
 UCLASS()
 class REFINEDPOWER_API ARPMPBuildingHolo : public AFGFactoryHologram
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 public:
-		ARPMPBuildingHolo();
-		~ARPMPBuildingHolo();
+    ARPMPBuildingHolo();
+    ~ARPMPBuildingHolo();
 
-		virtual void BeginPlay() override;
-		virtual void SetHologramLocationAndRotation(const FHitResult& hitResult) override;
-		virtual void CheckValidPlacement() override;
+    virtual void BeginPlay() override;
+    virtual void SetHologramLocationAndRotation(const FHitResult& hitResult) override;
+    virtual void CheckValidPlacement() override;
 
-		virtual bool IsValidHitResult(const FHitResult& hitResult) const override;
+    virtual bool IsValidHitResult(const FHitResult& hitResult) const override;
 
-		bool CheckSnapLocations(FVector TestLocation);
+    bool CheckSnapLocations(FVector TestLocation);
 
-		FVector mSnapToPoint = FVector(0);
-		FRotator mSnapPointRotation = FRotator(0);
+    FVector mSnapToPoint = FVector(0);
+    FRotator mSnapPointRotation = FRotator(0);
 
-		/*Array of all water volumes on map. Only call this once.*/
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-			TArray<AActor*> mCachedWaterNodeArr;
+    /*Array of all water volumes on map. Only call this once.*/
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    TArray<AActor*> mCachedWaterNodeArr;
 
-		ARPMPPlatform* mPlatform;
+    ARPMPPlatform* mPlatform;
 
-		EMPPlatformBuildingType mHologramType;
-
+    EMPPlatformBuildingType mHologramType;
 };

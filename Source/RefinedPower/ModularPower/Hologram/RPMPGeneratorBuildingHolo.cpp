@@ -3,8 +3,11 @@
 
 #include "RPMPGeneratorBuildingHolo.h"
 
-ARPMPGeneratorBuildingHolo::ARPMPGeneratorBuildingHolo() {
-	mHologramType = EMPPlatformBuildingType::MP_Generator;
+ARPMPGeneratorBuildingHolo::ARPMPGeneratorBuildingHolo()
+{
+    mHologramType = EMPPlatformBuildingType::MP_Generator;
 }
 
-ARPMPGeneratorBuildingHolo::~ARPMPGeneratorBuildingHolo() {}
+ARPMPGeneratorBuildingHolo::~ARPMPGeneratorBuildingHolo()
+{
+}

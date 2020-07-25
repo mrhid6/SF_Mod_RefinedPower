@@ -4,230 +4,267 @@
 #include "RPMPTurbineBuilding.h"
 
 
-void URPMPTurbineBuildingRCO::SetSteamDiscard_Implementation(ARPMPTurbineBuilding* panel, float value) {
-	panel->mSteamDiscardPercent = value;
-	//panel->panelStateUpdated();
+void URPMPTurbineBuildingRCO::SetSteamDiscard_Implementation(ARPMPTurbineBuilding* panel, float value)
+{
+    panel->mSteamDiscardPercent = value;
+    //panel->panelStateUpdated();
 
-	panel->ForceNetUpdate();
+    panel->ForceNetUpdate();
 }
 
-bool URPMPTurbineBuildingRCO::SetSteamDiscard_Validate(ARPMPTurbineBuilding* panel, float value) {
-	return true;
+bool URPMPTurbineBuildingRCO::SetSteamDiscard_Validate(ARPMPTurbineBuilding* panel, float value)
+{
+    return true;
 }
 
-void URPMPTurbineBuildingRCO::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+void URPMPTurbineBuildingRCO::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(URPMPTurbineBuildingRCO, bTest);
+    DOREPLIFETIME(URPMPTurbineBuildingRCO, bTest);
 }
 
-ARPMPTurbineBuilding::ARPMPTurbineBuilding() {
-
-	SetReplicates(true);
-	bReplicates = true;
-	mFactoryTickFunction.SetTickFunctionEnable(true);
-	mFactoryTickFunction.bCanEverTick = true;
+ARPMPTurbineBuilding::ARPMPTurbineBuilding()
+{
+    SetReplicates(true);
+    bReplicates = true;
+    mFactoryTickFunction.SetTickFunctionEnable(true);
+    mFactoryTickFunction.bCanEverTick = true;
 }
 
-void ARPMPTurbineBuilding::BeginPlay() {
-	Super::BeginPlay();
+void ARPMPTurbineBuilding::BeginPlay()
+{
+    Super::BeginPlay();
 
-	if (HasAuthority()) {
-		CacheConnections();
-	}
+    if (HasAuthority())
+    {
+        CacheConnections();
+    }
 
-	OnRep_TurbineStateUpdated();
-
-}
-void ARPMPTurbineBuilding::Factory_Tick(float dt) {
-	Super::Factory_Tick(dt);
-
-	if (HasAuthority()) {
-		CollectSteam(dt);
-		OutputSteam(dt);
-		CalcTurbineState();
-	}
-
-}
-void ARPMPTurbineBuilding::Tick(float dt) {
-	Super::Tick(dt);
-	if (HasAuthority()) {
-		if (TriggerTurbineStateUpdated) {
-			TriggerTurbineStateUpdated = false;
-			Multicast_TurbineStateUpdated();
-		}
-	}
+    OnRep_TurbineStateUpdated();
 }
 
-void ARPMPTurbineBuilding::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+void ARPMPTurbineBuilding::Factory_Tick(float dt)
+{
+    Super::Factory_Tick(dt);
 
-	DOREPLIFETIME(ARPMPTurbineBuilding, mCurrentTurbineRPM)
-	DOREPLIFETIME(ARPMPTurbineBuilding, mSteamDiscardPercent)
+    if (HasAuthority())
+    {
+        CollectSteam(dt);
+        OutputSteam(dt);
+        CalcTurbineState();
+    }
+}
+
+void ARPMPTurbineBuilding::Tick(float dt)
+{
+    Super::Tick(dt);
+    if (HasAuthority())
+    {
+        if (TriggerTurbineStateUpdated)
+        {
+            TriggerTurbineStateUpdated = false;
+            Multicast_TurbineStateUpdated();
+        }
+    }
+}
+
+void ARPMPTurbineBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ARPMPTurbineBuilding, mCurrentTurbineRPM)
+    DOREPLIFETIME(ARPMPTurbineBuilding, mSteamDiscardPercent)
 }
 
 
-void ARPMPTurbineBuilding::CacheConnections() {
+void ARPMPTurbineBuilding::CacheConnections()
+{
+    TArray<UActorComponent*> tempComps;
 
-	TArray<UActorComponent*> tempComps;
+    FName tag = FName(TEXT("SteamInput"));
+    tempComps = GetComponentsByTag(UFGPipeConnectionComponent::StaticClass(), tag);
+    if (tempComps.Num() > 0)
+    {
+        InputSteamPipe = Cast<UFGPipeConnectionComponent>(tempComps[0]);
+    }
 
-	FName tag = FName(TEXT("SteamInput"));
-	tempComps = GetComponentsByTag(UFGPipeConnectionComponent::StaticClass(), tag);
-	if (tempComps.Num() > 0) {
-		InputSteamPipe = Cast<UFGPipeConnectionComponent>(tempComps[0]);
-	}
+    tag = FName(TEXT("SteamOutput"));
+    tempComps = GetComponentsByTag(UFGPipeConnectionComponent::StaticClass(), tag);
+    if (tempComps.Num() > 0)
+    {
+        OutputSteamPipe = Cast<UFGPipeConnectionComponent>(tempComps[0]);
+    }
 
-	tag = FName(TEXT("SteamOutput"));
-	tempComps = GetComponentsByTag(UFGPipeConnectionComponent::StaticClass(), tag);
-	if (tempComps.Num() > 0) {
-		OutputSteamPipe = Cast<UFGPipeConnectionComponent>(tempComps[0]);
-	}
-
-	if (OutputSteamPipe) {
-		OutputSteamPipe->SetInventory(GetMPInventory());
-		OutputSteamPipe->SetInventoryAccessIndex(mOutputInvIndex);
-	}
+    if (OutputSteamPipe)
+    {
+        OutputSteamPipe->SetInventory(GetMPInventory());
+        OutputSteamPipe->SetInventoryAccessIndex(mOutputInvIndex);
+    }
 }
 
 void ARPMPTurbineBuilding::CollectSteam(float dt)
-{	
+{
+    if (InputSteamPipe)
+    {
+        if (CanStoreItemInInventory(GetMPInventory(), mInputInvIndex, mHighSteamItemClass, mSteamPullAmount))
+        {
+            FInventoryStack outStack;
+            bool pulledItem = InputSteamPipe->
+                Factory_PullPipeInput(dt, outStack, mHighSteamItemClass, mSteamPullAmount);
 
-	if (InputSteamPipe) {
-
-		if (CanStoreItemInInventory(GetMPInventory(), mInputInvIndex, mHighSteamItemClass, mSteamPullAmount)) {
-			FInventoryStack outStack;
-			bool pulledItem = InputSteamPipe->Factory_PullPipeInput(dt, outStack, mHighSteamItemClass, mSteamPullAmount);
-
-			if (pulledItem) {
-				StoreItemStackInInventory(GetMPInventory(), mInputInvIndex, outStack);
-			}
-		}
-	}
+            if (pulledItem)
+            {
+                StoreItemStackInInventory(GetMPInventory(), mInputInvIndex, outStack);
+            }
+        }
+    }
 }
 
-void ARPMPTurbineBuilding::OutputSteam(float dt) {
-	FInventoryStack steamItemStack;
-	GetMPInventory()->GetStackFromIndex(mOutputInvIndex, steamItemStack);
-	int LowSteamItemCount = steamItemStack.NumItems;
+void ARPMPTurbineBuilding::OutputSteam(float dt)
+{
+    FInventoryStack steamItemStack;
+    GetMPInventory()->GetStackFromIndex(mOutputInvIndex, steamItemStack);
 
-	if (LowSteamItemCount >= mSteamPushAmount) {
-		steamItemStack.NumItems = mSteamPushAmount;
-	}
+    if (OutputSteamPipe && OutputSteamPipe->IsConnected())
+    {
+        FInventoryStack outStack;
+        int32 TakenAmount = OutputSteamPipe->Factory_PushPipeOutput(dt, steamItemStack);
 
-	if (OutputSteamPipe && OutputSteamPipe->IsConnected()) {
-		FInventoryStack outStack;
-		int32 TakenAmount = OutputSteamPipe->Factory_PushPipeOutput(dt, steamItemStack);
-
-		if (steamItemStack.HasItems() && TakenAmount > 0) {
-			GetMPInventory()->RemoveFromIndex(mOutputInvIndex, TakenAmount);
-		}
-	}
+        if (steamItemStack.HasItems() && TakenAmount > 0)
+        {
+            GetMPInventory()->RemoveFromIndex(mOutputInvIndex, TakenAmount);
+        }
+    }
 }
 
 
-void ARPMPTurbineBuilding::CalcTurbineState() {
+void ARPMPTurbineBuilding::CalcTurbineState()
+{
+    int PrevRPM = mCurrentTurbineRPM;
 
-	int PrevRPM = mCurrentTurbineRPM;
+    TransferToFluidBuffer();
 
-	if (CanStartSteamConsumption()) {
-		ConvertSteamToRPM();
-	}
-	else {
-		mSteamConsumptionRate = 0;
-	}
+    if (CanStartSteamConsumption())
+    {
+        ConvertSteamToRPM();
+    }
+    else
+    {
+        mSteamConsumptionRate = 0;
+    }
 
-	ReduceRPM();
+    ReduceRPM();
 
-	int NewRPM = mCurrentTurbineRPM;
-	mRPMRate = NewRPM - PrevRPM;
+    int NewRPM = mCurrentTurbineRPM;
+    mRPMRate = NewRPM - PrevRPM;
 
-	if (mRPMRate != 0) {
-		TriggerTurbineStateUpdated = true;
-	}
+    if (mRPMRate != 0)
+    {
+        TriggerTurbineStateUpdated = true;
+    }
 }
 
-bool ARPMPTurbineBuilding::CanStartSteamConsumption() {
-	FInventoryStack InputSteamItemStack;
-	GetMPInventory()->GetStackFromIndex(mInputInvIndex, InputSteamItemStack);
-	int InputSteamCount = InputSteamItemStack.NumItems;
+bool ARPMPTurbineBuilding::CanStartSteamConsumption()
+{
+    FInventoryStack OutputSteamItemStack;
+    GetMPInventory()->GetStackFromIndex(mOutputInvIndex, OutputSteamItemStack);
+    int OutputSteamCount = OutputSteamItemStack.NumItems;
+    int MaxOutputCount = UFGItemDescriptor::GetStackSize(mLowSteamItemClass);
 
-	FInventoryStack OutputSteamItemStack;
-	GetMPInventory()->GetStackFromIndex(mOutputInvIndex, OutputSteamItemStack);
-	int OutputSteamCount = OutputSteamItemStack.NumItems;
-	int MaxOutputCount = UFGItemDescriptor::GetStackSize(mLowSteamItemClass);
+    //SML::Logging::info(OutputSteamCount);
+    //SML::Logging::info(MaxOutputCount);
 
-	//SML::Logging::info(OutputSteamCount);
-	//SML::Logging::info(MaxOutputCount);
-
-	return (InputSteamCount > 0 && OutputSteamCount < MaxOutputCount);
+    return (mCurrentFluidBufferAmount > 0 && OutputSteamCount < MaxOutputCount);
 }
 
-void ARPMPTurbineBuilding::ConvertSteamToRPM() {
+void ARPMPTurbineBuilding::ConvertSteamToRPM()
+{
+    // New Shiney
+    float ExtractAmount = (float)FMath::Min(mCurrentFluidBufferAmount, mAmountFromBufferToTake);
 
-	
-
-	FInventoryStack steamItemStack;
-	GetMPInventory()->GetStackFromIndex(mInputInvIndex, steamItemStack);
-	int steamItemCount = steamItemStack.NumItems;
-
-	float ItemEnergyValue = UFGItemDescriptor::GetEnergyValue(mHighSteamItemClass);
-	float ExtractAmount = 0;
-
-	if (steamItemCount >= mSteamConsumption) {
-		ExtractAmount = mSteamConsumption;
-	}
-	else {
-		ExtractAmount = steamItemCount;
-	}
-
-	//SML::Logging::info("[RefinedPower] - ExtractAmount:", ExtractAmount);
-
-	mSteamConsumptionRate = ((ExtractAmount * 60.0f)) / 1000.0f;
-	//SML::Logging::info("[RefinedPower] - Consumption: ", mSteamConsumptionRate);
-
-	GetMPInventory()->RemoveFromIndex(mInputInvIndex, ExtractAmount);
-
-	float OutputAmount = ExtractAmount;
-	OutputAmount += (ExtractAmount * mSteamDiscardPercent);
-
-	ExtractAmount -= (ExtractAmount * mSteamDiscardPercent);
-
-	OutputAmount /= 2;
-
-	mSteamOutputRate = ((OutputAmount * 60)) / 1000;
+    mCurrentFluidBufferAmount -= ExtractAmount;
+    mCurrentFluidBufferAmount = FMath::Clamp(mCurrentFluidBufferAmount, 0, mFluidBufferToLoad);
 
 
-	float EnergyValue = (ItemEnergyValue * ExtractAmount);
-	EnergyValue = FMath::Clamp(EnergyValue, 0.0f, 9999999.0f);
+    // Old Shit
 
-	//SML::Logging::info("[RefinedPower] - EnergyValue: ", EnergyValue);
+    float ItemEnergyValue = UFGItemDescriptor::GetEnergyValue(mHighSteamItemClass);
 
-	int RPMToAdd = FMath::FloorToInt((EnergyValue / 3) * mRPMMultiplier);
+    mSteamConsumptionRate = ((ExtractAmount * 60.0f)) / 1000.0f;
 
-	mCurrentTurbineRPM += RPMToAdd;
-	mCurrentTurbineRPM = FMath::Clamp(mCurrentTurbineRPM, 0, mRedMaxTurbineRPM);
+    float OutputAmount = ExtractAmount;
+    OutputAmount += (ExtractAmount * mSteamDiscardPercent);
 
-	StoreItemInInventory(GetMPInventory(), mOutputInvIndex, mLowSteamItemClass, OutputAmount);
+    ExtractAmount -= (ExtractAmount * mSteamDiscardPercent);
+
+    OutputAmount /= 2;
+
+    mSteamOutputRate = ((OutputAmount * 60)) / 1000;
+
+
+    float EnergyValue = (ItemEnergyValue * ExtractAmount);
+    EnergyValue = FMath::Clamp(EnergyValue, 0.0f, 9999999.0f);
+
+    //SML::Logging::info("[RefinedPower] - EnergyValue: ", EnergyValue);
+
+    int RPMToAdd = FMath::FloorToInt((EnergyValue / 3) * mRPMMultiplier);
+
+    mCurrentTurbineRPM += RPMToAdd;
+    mCurrentTurbineRPM = FMath::Clamp(mCurrentTurbineRPM, 0, mRedMaxTurbineRPM);
+
+    StoreItemInInventory(GetMPInventory(), mOutputInvIndex, mLowSteamItemClass, OutputAmount);
 }
 
-void ARPMPTurbineBuilding::ReduceRPM() {
-	if (mCurrentTurbineRPM > 0) {
-		mCurrentTurbineRPM -= mRPMDrag;
-		mCurrentTurbineRPM = FMath::Clamp(mCurrentTurbineRPM, 0, mRedMaxTurbineRPM);
-	}
+void ARPMPTurbineBuilding::ReduceRPM()
+{
+    if (mCurrentTurbineRPM > 0)
+    {
+        mCurrentTurbineRPM -= mRPMDrag;
+        mCurrentTurbineRPM = FMath::Clamp(mCurrentTurbineRPM, 0, mRedMaxTurbineRPM);
+    }
 }
 
-void ARPMPTurbineBuilding::Multicast_TurbineStateUpdated_Implementation() {
-	OnRep_TurbineStateUpdated();
+void ARPMPTurbineBuilding::Multicast_TurbineStateUpdated_Implementation()
+{
+    OnRep_TurbineStateUpdated();
 }
 
 // RCO Stuff
 
-void ARPMPTurbineBuilding::SetSteamDiscard(float value) {
-	auto rco = Cast<URPMPTurbineBuildingRCO>(Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(URPMPTurbineBuildingRCO::StaticClass()));
+void ARPMPTurbineBuilding::SetSteamDiscard(float value)
+{
+    auto rco = Cast<URPMPTurbineBuildingRCO>(
+        Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(
+            URPMPTurbineBuildingRCO::StaticClass()));
 
-	if (rco) {
-		rco->SetSteamDiscard(this, value);
-	}
+    if (rco)
+    {
+        rco->SetSteamDiscard(this, value);
+    }
 }
 
+
+// Fluid Buffer
+
+bool ARPMPTurbineBuilding::CanTransferToFluidBuffer()
+{
+    FInventoryStack InputSteamItemStack;
+    GetMPInventory()->GetStackFromIndex(mInputInvIndex, InputSteamItemStack);
+    int InputSteamCount = InputSteamItemStack.NumItems;
+
+    if (InputSteamCount > mFluidBufferToLoad)
+    {
+        return (mCurrentFluidBufferAmount == 0);
+    }
+    return false;
+}
+
+void ARPMPTurbineBuilding::TransferToFluidBuffer()
+{
+    if (CanTransferToFluidBuffer())
+    {
+        GetMPInventory()->RemoveFromIndex(mInputInvIndex, mFluidBufferToLoad);
+        mCurrentFluidBufferAmount = mFluidBufferToLoad;
+    }
+}
