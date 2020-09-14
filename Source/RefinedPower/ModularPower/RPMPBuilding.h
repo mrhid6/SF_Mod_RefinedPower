@@ -136,6 +136,21 @@ public:
     UFUNCTION(BlueprintCallable, Category="RefinedPower" )
     void UI_SetParticlesEnabled(bool enabled);
 
+    // Consumption & Production Rates 
+    UPROPERTY(BlueprintReadOnly, Replicated)
+    float mConsumptionRate = 0.0f;
+    
+    UPROPERTY(SaveGame)
+    float mConsumptionTotal = 0.0f;
+    
+    UPROPERTY(BlueprintReadOnly, Replicated)
+    float mProductionRate = 0.0f;
+    
+    UPROPERTY(SaveGame)
+    float mProductionTotal = 0.0f;
+
+    void CalculateUsageRates();
+
     // Util Functions
 
     void StoreItemInInventory(UFGInventoryComponent* inventory, int InvIndex, TSubclassOf<UFGItemDescriptor> itemClass);

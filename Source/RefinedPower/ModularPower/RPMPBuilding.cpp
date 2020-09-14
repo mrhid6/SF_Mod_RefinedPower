@@ -70,6 +70,12 @@ void ARPMPBuilding::BeginPlay()
         //When ReplicationDetailActor is NOT SPAWNED, these represent REAL inventory states
         //But when one appears, it will copy state from then and from that moment we ARE NOT the owner of the inventories
         MPInventoryHandler->SetMainInventoryComponent(MPInventoryComponent);
+
+        CalculateUsageRates();
+        
+        FTimerHandle timerHandle;
+        GetWorld()->GetTimerManager().SetTimer(timerHandle, this, &ARPMPBuilding::CalculateUsageRates,
+                                           60.0f, true);
     }
 }
 
@@ -89,6 +95,8 @@ void ARPMPBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 
     DOREPLIFETIME(ARPMPBuilding, mCurrentFluidBufferAmount)
     DOREPLIFETIME(ARPMPBuilding, mIsMPBuildingRunning)
+    DOREPLIFETIME(ARPMPBuilding, mConsumptionRate)
+    DOREPLIFETIME(ARPMPBuilding, mProductionRate)
 }
 
 void ARPMPBuilding::Tick(float dt)
@@ -356,4 +364,23 @@ void ARPMPBuilding::UI_SetParticlesEnabled(bool enabled)
     {
         rco->SetParticlesEnabled(this, enabled);
     }
+}
+
+void ARPMPBuilding::CalculateUsageRates()
+{
+    mConsumptionRate = (mConsumptionTotal  / 60.0f) / 1000.0f;
+    mProductionRate = (mProductionTotal  / 60.0f) / 1000.0f;
+
+
+    /*SML::Logging::info("#####################");
+    SML::Logging::info("Consumption:");
+    SML::Logging::info(mConsumptionTotal);
+    SML::Logging::info("Production:");
+    SML::Logging::info(mProductionTotal);
+    SML::Logging::info("#####################");*/
+
+    mConsumptionTotal = 0.0f;
+    mProductionTotal = 0.0f;
+    
+
 }

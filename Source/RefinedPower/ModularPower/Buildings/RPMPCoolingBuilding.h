@@ -41,6 +41,10 @@ public:
 
     virtual bool CheckMPBuildingRunningState() override;
 
+    UPROPERTY(SaveGame)
+    float mGasTotalConsumptionAmount = 0.0f;
+    UPROPERTY(SaveGame)
+    float mGasTotalConsumptionTicksAmount = 0.0f;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
@@ -48,9 +52,6 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
     int mInputPullAmount = 200;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
-    float mGasConsumpionRate = 0.0f;
 
     UFGPipeConnectionComponent* InputPipe;
 

@@ -72,12 +72,6 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
     UCurveFloat* mBoilerCurve;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
-    float mWaterConsumpionRate;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated,  Category = "RefinedPower")
-    float mSteamProductionRate;
-
     UFGPipeConnectionComponent* InputWaterPipe;
     UFGPipeConnectionComponent* OutputSteamPipe;
 

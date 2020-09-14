@@ -98,21 +98,9 @@ void ARPSolarPanel::BeginPlay()
                                                true);
     }
 
-    if (mSolarController && mRotatesTowardSun)
-    {
-        FTransform panelTemp = GetActorTransform();
-        FTransform supportTemp = GetActorTransform();
-        FVector position1 = panelTemp.TransformPosition(FVector(0, -631, 407));
-        FVector position2 = panelTemp.TransformPosition(FVector(0, -631, 255));
+    SpawnPanel();
 
-        panelTemp.SetLocation(position1);
-        supportTemp.SetLocation(position2);
-
-
-        mSolarController->SpawnIM(panelTemp, supportTemp, GetUniqueID());
-
-       // SML::Logging::info("[RefinedPower] - Spawned SolarPanel Panel!");
-    }
+    
 }
 
 void ARPSolarPanel::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -128,6 +116,11 @@ void ARPSolarPanel::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 void ARPSolarPanel::Tick(float dt)
 {
     Super::Tick(dt);
+    
+    if (HasAuthority())
+    {
+        GetSolarController();
+    }
 }
 
 void ARPSolarPanel::Factory_Tick(float dt)
@@ -136,8 +129,6 @@ void ARPSolarPanel::Factory_Tick(float dt)
     if (HasAuthority())
     {
         SetPowerOutput();
-
-        ForceNetUpdate();
     }
 }
 
@@ -254,11 +245,56 @@ void ARPSolarPanel::UpdateLineTraceRotation()
     DetectObjectsInWay();
 }
 
+void ARPSolarPanel::SpawnPanel()
+{
+    
+    if (mSolarController && mRotatesTowardSun && hasSpawnedPanel == false)
+    {
+        FTransform panelTemp = GetActorTransform();
+        FTransform supportTemp = GetActorTransform();
+        FVector position1 = panelTemp.TransformPosition(FVector(0, -631, 407));
+        FVector position2 = panelTemp.TransformPosition(FVector(0, -631, 255));
+
+        panelTemp.SetLocation(position1);
+        supportTemp.SetLocation(position2);
+
+
+        mSolarController->SpawnIM(panelTemp, supportTemp, GetUniqueID());
+
+        hasSpawnedPanel = true;
+        SML::Logging::info("[RP] - Spawned SolarPanel Panel!");
+    }else
+    {
+        /*SML::Logging::info("########################");
+        SML::Logging::info("[RP] - controller:");
+        SML::Logging::info((mSolarController == nullptr));
+        SML::Logging::info("[RP] - rotates:");
+        SML::Logging::info(mRotatesTowardSun);
+        SML::Logging::info("[RP] - hasSpawned:");
+        SML::Logging::info(hasSpawnedPanel);
+        SML::Logging::info("########################");*/
+
+        if(mRotatesTowardSun){
+            FTimerManager& TimerManager = this->GetWorldTimerManager();
+            FTimerHandle TimerHandle;
+            TimerManager.SetTimer(TimerHandle, this, &ARPSolarPanel::SpawnPanel, 0.5f, false);
+        }
+    }
+}
+
 ARPSolarController* ARPSolarPanel::GetSolarController()
 {
     if (mSolarController == nullptr)
     {
         mSolarController = ARPSolarController::Get(GetWorld());
+
+        if(mSolarController == nullptr)
+        {
+            SML::Logging::info("[RP] - Still Cant Get Controller!");
+        }else
+        {
+            SML::Logging::info("[RP] - Got Controller!");
+        }
     }
 
     return mSolarController;

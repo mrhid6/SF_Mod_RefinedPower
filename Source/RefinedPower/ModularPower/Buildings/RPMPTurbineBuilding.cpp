@@ -49,7 +49,7 @@ void ARPMPTurbineBuilding::Factory_Tick(float dt)
     Super::Factory_Tick(dt);
 
     if (HasAuthority())
-    {
+    {        
         CollectSteam(dt);
         OutputSteam(dt);
         CalcTurbineState();
@@ -75,8 +75,6 @@ void ARPMPTurbineBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
     DOREPLIFETIME(ARPMPTurbineBuilding, mCurrentTurbineRPM)
     DOREPLIFETIME(ARPMPTurbineBuilding, mSteamDiscardPercent)
-    DOREPLIFETIME(ARPMPTurbineBuilding, mSteamConsumptionRate)
-    DOREPLIFETIME(ARPMPTurbineBuilding, mSteamOutputRate)
 }
 
 
@@ -153,10 +151,6 @@ void ARPMPTurbineBuilding::CalcTurbineState()
     {
         ConvertSteamToRPM();
     }
-    else
-    {
-        mSteamConsumptionRate = 0;
-    }
 
     int NewRPM = mCurrentTurbineRPM;
     mRPMRate = NewRPM - PrevRPM;
@@ -193,7 +187,7 @@ void ARPMPTurbineBuilding::ConvertSteamToRPM()
 
     float ItemEnergyValue = UFGItemDescriptor::GetEnergyValue(mHighSteamItemClass);
 
-    mSteamConsumptionRate = ((ExtractAmount * 60.0f)) / 1000.0f;
+    mConsumptionTotal += ExtractAmount;
 
     float OutputAmount = ExtractAmount;
     OutputAmount += (ExtractAmount * mSteamDiscardPercent);
@@ -201,8 +195,7 @@ void ARPMPTurbineBuilding::ConvertSteamToRPM()
     ExtractAmount -= (ExtractAmount * mSteamDiscardPercent);
 
     OutputAmount /= 2;
-
-    mSteamOutputRate = ((OutputAmount * 60)) / 1000;
+    mProductionTotal += OutputAmount;
 
 
     float EnergyValue = (ItemEnergyValue * ExtractAmount);
@@ -277,16 +270,6 @@ void ARPMPTurbineBuilding::TransferToFluidBuffer()
 int ARPMPTurbineBuilding::netFunc_getCurrentRPM()
 {
     return mCurrentTurbineRPM;
-}
-
-float ARPMPTurbineBuilding::netFunc_getSteamConsumptionRate()
-{
-    return mSteamConsumptionRate * 60.0f;
-}
-
-float ARPMPTurbineBuilding::netFunc_getSteamOutputRate()
-{
-    return mSteamOutputRate * 60.0f;
 }
 
 float ARPMPTurbineBuilding::netFunc_getSteamDiscardPercent()

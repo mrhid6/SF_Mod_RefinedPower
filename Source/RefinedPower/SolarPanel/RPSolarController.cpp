@@ -48,7 +48,7 @@ ARPSolarController* ARPSolarController::Get(UWorld* world)
     }
     else
     {
-        //SML::Logging::info("CantFind Controller!");
+        SML::Logging::info("[RP] - CantFind Controller!");
     }
 
     return nullptr;

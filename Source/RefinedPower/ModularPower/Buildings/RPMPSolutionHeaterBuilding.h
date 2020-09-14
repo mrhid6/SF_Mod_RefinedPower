@@ -16,6 +16,7 @@ class REFINEDPOWER_API ARPMPSolutionHeaterBuilding : public ARPMPHeaterBuilding
 
 	ARPMPSolutionHeaterBuilding();
 	
+	virtual void BeginPlay() override;
 	virtual void Factory_Tick(float dt) override;
 	
 	/* CanStartItemBurn (checks amount of heat & co2 in inventory) */
@@ -29,4 +30,6 @@ class REFINEDPOWER_API ARPMPSolutionHeaterBuilding : public ARPMPHeaterBuilding
 
 	virtual bool CanTransferToFluidBuffer() override;
 	virtual void TransferToFluidBuffer() override;
+
+	
 };

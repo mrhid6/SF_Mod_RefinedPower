@@ -158,7 +158,10 @@ float ARPTurbineBaseActor::getTurbineActualPowerProduction()
     float powerOutput = 0.0f;
     if (mTurbineType == ETurbineType::RP_Wind)
     {
-        powerOutput = mTurbinePowerProduction / float(getNearbyWindTurbinesCount() + 1);
+        float degradeMultiplier = float(getNearbyWindTurbinesCount()) / mMaxWindTurbinesInArea;
+        float PowerReduction = mTurbinePowerProduction * degradeMultiplier;
+        
+        powerOutput = mTurbinePowerProduction - PowerReduction;
     }
     else
     {

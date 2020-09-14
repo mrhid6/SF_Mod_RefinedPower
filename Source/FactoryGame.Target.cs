@@ -14,6 +14,6 @@ public class FactoryGameTarget : TargetRules
 		//to get attachable module dll for mod loading
 		LinkType = TargetLinkType.Modular;
 		//Add your Mod modules here after FactoryGame and SML
-		ExtraModuleNames.AddRange(new[] {"FactoryGame", "SML", "RefinedPower"});
+		ExtraModuleNames.AddRange(new[] {"FactoryGame", "SML", "RefinedPower", "FicsitFarming"});
 	}
 }

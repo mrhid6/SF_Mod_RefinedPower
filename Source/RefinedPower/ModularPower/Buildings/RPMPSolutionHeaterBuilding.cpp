@@ -11,31 +11,24 @@ ARPMPSolutionHeaterBuilding::ARPMPSolutionHeaterBuilding()
     mFactoryTickFunction.bCanEverTick = true;
 }
 
+void ARPMPSolutionHeaterBuilding::BeginPlay()
+{
+    Super::BeginPlay();
+}
+
 void ARPMPSolutionHeaterBuilding::Factory_Tick(float dt)
 {
     Super::Factory_Tick(dt);
 
     if (HasAuthority())
     {
-        CollectItems(dt);
-        OutputCo2(dt);
-
         TransferToFluidBuffer();
-
-        if (CanStartItemBurn())
-        {
-            BurnItem(dt);
-        }
-        else
-        {
-            subtractHeat(0.0166f);
-        }
     }
 }
 
 bool ARPMPSolutionHeaterBuilding::CanStartItemBurn()
 {
-    if ((mCurrentFluidBufferAmount > 0 || mCurrentEnergyValue > 0) && getCo2ItemCount() < 50000)
+    if ((mCurrentFluidBufferAmount > 0 || mCurrentEnergyValue > 0) && (getCo2ItemCount() < 50000 && getCo2ItemCount() + mOutputGenerationAmount < 50000))
     {
         return (mCurrentHeatValue < mMaxHeatValue);
     }
@@ -55,15 +48,18 @@ void ARPMPSolutionHeaterBuilding::BurnItem(float dt)
         float ExtractAmount = (float)FMath::Min(mCurrentFluidBufferAmount, mAmountFromBufferToTake);
         
         // Biomass - 4.5 Seconds;
-        mCurrentEnergyValue = UFGItemDescriptor::GetEnergyValue(FuelItemStack.Item.ItemClass) * 1.5f / 60;
+        float itemEnergyValue = UFGItemDescriptor::GetEnergyValue(FuelItemStack.Item.ItemClass);
+        mCurrentEnergyValue = (itemEnergyValue / 60.0f);
         mCurrentEnergyValue *= ExtractAmount;
         mCurrentEnergyValue *= mEnergyValueMultiplier;
+
+        //SML::Logging::info(mCurrentEnergyValue);
 
         mMaxEnergyValue = mCurrentEnergyValue;
 
         // Remove fluid from buffer
 
-        mLiquidFuelConsumptionRate = (ExtractAmount * 60.0f) / 1000.0f;
+        mConsumptionTotal += ExtractAmount;
         
         mCurrentFluidBufferAmount -= ExtractAmount;
         mCurrentFluidBufferAmount = FMath::Clamp(mCurrentFluidBufferAmount, 0.0f, mFluidBufferToLoad);
@@ -71,10 +67,11 @@ void ARPMPSolutionHeaterBuilding::BurnItem(float dt)
     else
     {
         // Item is still being burnt
-        mCurrentEnergyValue -= (1.0f * dt);
-
+        mCurrentEnergyValue -= 0.0166666f;
+        
         mCurrentEnergyValue = FMath::Clamp(mCurrentEnergyValue, 0.0f, mMaxEnergyValue);
-        addHeat(0.0166f);
+        //SML::Logging::info(mCurrentEnergyValue);
+        addHeat(0.0166666f);
         
         ProduceCo2();
     }
@@ -103,4 +100,3 @@ void ARPMPSolutionHeaterBuilding::TransferToFluidBuffer()
         mCurrentFluidBufferAmount = mFluidBufferToLoad;
     }
 }
-

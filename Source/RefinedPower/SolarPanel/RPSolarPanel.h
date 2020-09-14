@@ -71,6 +71,8 @@ public:
 
     void UpdateLineTraceRotation();
 
+    void SpawnPanel();
+
     UPROPERTY(BlueprintReadOnly, SaveGame, Replicated)
     bool mPanelEnabled = true;
 
@@ -147,4 +149,6 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     class UFGPowerConnectionComponent* FGPowerConnection;
+
+    bool hasSpawnedPanel = false;
 };

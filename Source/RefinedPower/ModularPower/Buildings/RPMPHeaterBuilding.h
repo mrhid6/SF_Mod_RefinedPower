@@ -124,15 +124,6 @@ public:
     int mOutputGenerationAmount = 5;
 
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
-    float mLiquidFuelConsumptionRate = 0.0f;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
-    float mCo2ProductionRate = 0.0f;
-
-    UPROPERTY(SaveGame)
-    float mCo2TotalProductionAmount = 0.0f;
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
     bool mIsFluidHeater = false;
     

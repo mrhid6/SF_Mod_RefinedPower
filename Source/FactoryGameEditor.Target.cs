@@ -8,6 +8,6 @@ public class FactoryGameEditorTarget : TargetRules
 	public FactoryGameEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-        ExtraModuleNames.AddRange( new string[] { "FactoryGame", "SML", "RefinedPower" } );
+        ExtraModuleNames.AddRange( new string[] { "FactoryGame", "SML", "RefinedPower", "FicsitFarming" } );
 	}
 }

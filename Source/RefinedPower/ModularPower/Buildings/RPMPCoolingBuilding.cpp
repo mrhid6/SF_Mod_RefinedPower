@@ -19,6 +19,7 @@ void ARPMPCoolingBuilding::BeginPlay()
     {
         GetMPInventory()->SetDefaultSize(1);
         CacheConnections();
+        
     }
 }
 
@@ -29,14 +30,10 @@ void ARPMPCoolingBuilding::Factory_Tick(float dt)
     {
         CollectItems(dt);
         TransferToFluidBuffer();
-
+        
         if (CanEjectGas())
         {
             EjectGas();
-        }
-        else
-        {
-            mGasConsumpionRate = 0.0f;
         }
     }
 }
@@ -50,7 +47,6 @@ void ARPMPCoolingBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(ARPMPCoolingBuilding, mGasConsumpionRate)
 }
 
 void ARPMPCoolingBuilding::CacheConnections()
@@ -99,7 +95,8 @@ void ARPMPCoolingBuilding::EjectGas()
     mCurrentFluidBufferAmount -= ExtractAmount;
     mCurrentFluidBufferAmount = FMath::Clamp(mCurrentFluidBufferAmount, 0.0f, mFluidBufferToLoad);
 
-    mGasConsumpionRate = (ExtractAmount * 60.0f) / 1000.0f;
+    mConsumptionTotal += ExtractAmount;
+    
     mCurrentFluidBufferAmount -= ExtractAmount;
 
     mCurrentFluidBufferAmount = FMath::Clamp(mCurrentFluidBufferAmount, 0.0f, mFluidBufferToLoad);

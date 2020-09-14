@@ -19,9 +19,6 @@ void ARPMPHeaterBuilding::BeginPlay()
     {
         GetMPInventory()->mItemFilter.BindUFunction(this, "FilterFuelClasses");
         CacheConnections();
-        FTimerHandle timerHandle;
-        GetWorld()->GetTimerManager().SetTimer(timerHandle, this, &ARPMPHeaterBuilding::UpdateCo2ProductionRate,
-                                           60.0f, true);
     }
 }
 
@@ -32,7 +29,7 @@ void ARPMPHeaterBuilding::Factory_Tick(float dt)
     {
         CollectItems(dt);
         OutputCo2(dt);
-
+        
         if (CanStartItemBurn())
         {
             BurnItem(dt);
@@ -56,10 +53,7 @@ void ARPMPHeaterBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
     DOREPLIFETIME(ARPMPHeaterBuilding, mCurrentHeatValue)
     DOREPLIFETIME(ARPMPHeaterBuilding, mCurrentEnergyValue)
     DOREPLIFETIME(ARPMPHeaterBuilding, mMaxEnergyValue)
-    DOREPLIFETIME(ARPMPHeaterBuilding, mLiquidFuelConsumptionRate)
-    DOREPLIFETIME(ARPMPHeaterBuilding, mCo2ProductionRate)
 }
-
 
 void ARPMPHeaterBuilding::CacheConnections()
 {
@@ -171,7 +165,7 @@ int ARPMPHeaterBuilding::getCo2ItemCount()
 
 bool ARPMPHeaterBuilding::CanStartItemBurn()
 {
-    if ((getFuelItemCount() > 0 || mCurrentEnergyValue > 0) && getCo2ItemCount() < 50000)
+    if ((getFuelItemCount() > 0 || mCurrentEnergyValue > 0) && (getCo2ItemCount() < 50000 && getCo2ItemCount() + mOutputGenerationAmount < 50000))
     {
         return (mCurrentHeatValue < mMaxHeatValue);
     }
@@ -188,23 +182,23 @@ void ARPMPHeaterBuilding::BurnItem(float dt)
         GetMPInventory()->GetStackFromIndex(mInputInvIndex, FuelItemStack);
 
         // Biomass - 4.5 Seconds;
-        mCurrentEnergyValue = UFGItemDescriptor::GetEnergyValue(FuelItemStack.Item.ItemClass) * 1.5f / 60;
+        mCurrentEnergyValue = UFGItemDescriptor::GetEnergyValue(FuelItemStack.Item.ItemClass) / 60;
         mCurrentEnergyValue *= mEnergyValueMultiplier;
-
-        //SML::Logging::info(mCurrentEnergyValue);
 
         mMaxEnergyValue = mCurrentEnergyValue;
 
         GetMPInventory()->RemoveFromIndex(mInputInvIndex, 1);
 
+        mConsumptionTotal += 1.0f;
+
         ProduceNukeWaste();
     }
     else
     {
-        mCurrentEnergyValue -= (1.0f * dt);
+        mCurrentEnergyValue -= 0.0166666f;
 
         mCurrentEnergyValue = FMath::Clamp(mCurrentEnergyValue, 0.0f, mMaxEnergyValue);
-        addHeat(0.0166f);
+        addHeat(0.0166666f);
         
         ProduceCo2();
     }
@@ -218,7 +212,7 @@ void ARPMPHeaterBuilding::ProduceCo2()
         {
             StoreItemInInventory(GetMPInventory(), mOutputInvIndex, mCo2ItemClass, mOutputGenerationAmount);
 
-            mCo2TotalProductionAmount += mOutputGenerationAmount;
+            mProductionTotal += mOutputGenerationAmount;
         }
     }
 }
@@ -238,12 +232,6 @@ void ARPMPHeaterBuilding::OutputCo2(float dt)
 {
     FInventoryStack co2ItemStack;
     GetMPInventory()->GetStackFromIndex(mOutputInvIndex, co2ItemStack);
-    int co2ItemCount = co2ItemStack.NumItems;
-
-    if (co2ItemCount >= mOutputGenerationAmount)
-    {
-        co2ItemStack.NumItems = mOutputGenerationAmount;
-    }
 
     if (OutputCo2Pipe && OutputCo2Pipe->IsConnected())
     {
@@ -290,11 +278,4 @@ bool ARPMPHeaterBuilding::CheckMPBuildingRunningState()
     }
 
     return false;
-}
-
-
-void ARPMPHeaterBuilding::UpdateCo2ProductionRate()
-{
-    mCo2ProductionRate = mCo2TotalProductionAmount / 60.0f / 60.0f / 60.0f;
-    mCo2TotalProductionAmount = 0.0f;
 }

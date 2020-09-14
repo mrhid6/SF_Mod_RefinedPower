@@ -32,15 +32,10 @@ void ARPMPBoilerBuilding::Factory_Tick(float dt)
         OutputSteam(dt);
 
         TransferToFluidBuffer();
-
+        
         if (CanGenerateSteam())
         {
             GenerateSteam();
-        }
-        else
-        {
-            mWaterConsumpionRate = 0.0f;
-            mSteamProductionRate = 0.0f;
         }
     }
 }
@@ -54,8 +49,6 @@ void ARPMPBoilerBuilding::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(ARPMPBoilerBuilding, mWaterConsumpionRate)
-    DOREPLIFETIME(ARPMPBoilerBuilding, mSteamProductionRate)
 }
 
 void ARPMPBoilerBuilding::UpdateDependantBuildings()
@@ -186,12 +179,10 @@ void ARPMPBoilerBuilding::GenerateSteam()
 
     mCurrentFluidBufferAmount -= ExtractAmount;
     mCurrentFluidBufferAmount = FMath::Clamp(mCurrentFluidBufferAmount, 0.0f, mFluidBufferToLoad);
-
-    mWaterConsumpionRate = (ExtractAmount * 60.0f) / 1000.0f;
-
     float SteamAmount = (ExtractAmount * GetSteamProductionCurveValue()) * mSteamProductionMultiplier;
-
-    mSteamProductionRate = (SteamAmount * 60.0f) / 1000.0f;
+    
+    mConsumptionTotal += ExtractAmount;
+    mProductionTotal += SteamAmount;
 
     StoreItemInInventory(GetMPInventory(), mSteamInvIndex, mSteamItemClass, SteamAmount);
 }

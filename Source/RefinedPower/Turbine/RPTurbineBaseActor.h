@@ -90,7 +90,7 @@ protected:
     float mMaxTurbinePowerProduction;
 
     /** Is this turbine based on height eg higher height = more power */
-    UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
     bool mIsHeightBasedTurbine;
 
     /** The type of Turbine, Wind Or Water */
@@ -104,11 +104,11 @@ protected:
     int mWindTurbinesInArea;
 
     /** The max amount of other wind turbines in the area */
-    UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
     int mMaxWindTurbinesInArea;
 
     /** The max amount of other wind turbines in the area */
-    UPROPERTY(EditDefaultsOnly, Category = "RefinedPower")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
     float mAreaOfWindTurbines = 5600;
 
     void calcNearbyWindTurbines();

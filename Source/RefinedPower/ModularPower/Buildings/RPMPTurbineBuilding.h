@@ -89,18 +89,9 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
     int mSteamPullAmount = 70;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, SaveGame, Replicated, meta = (UIMin = "0", UIMax = "1.0"), Category =
+    UPROPERTY(BlueprintReadOnly, SaveGame, Replicated, meta = (UIMin = "0", UIMax = "1.0"), Category =
         "RefinedPower")
-    float mSteamDiscardPercent = 0.5;
-
-
-    // For Display On UI Fluid Modules
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
-    float mSteamConsumptionRate = 0;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, Category = "RefinedPower")
-    float mSteamOutputRate = 0;
+    float mSteamDiscardPercent = 0.0f;
 
     // For BP Animations
 
@@ -115,12 +106,6 @@ public:
     // FIN Intergration
     UFUNCTION()
     int netFunc_getCurrentRPM();
-
-    UFUNCTION()
-    float netFunc_getSteamConsumptionRate();
-
-    UFUNCTION()
-    float netFunc_getSteamOutputRate();
 
     UFUNCTION()
     float netFunc_getSteamDiscardPercent();
