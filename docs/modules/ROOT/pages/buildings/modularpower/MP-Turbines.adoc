@@ -1,0 +1,26 @@
+= Modular Power Turbines
+
+## Building Information:
+Modular Power Turbines convert High Pressure Steam to produce RPM and Low Pressure Steam.
+
+RPM is used with the attached Generators you can lower or raise the RPM by discarding any steam and sending it directly out the output connection.
+
+The Low Pressure Steam must be piped out the turbines into a Steam cooling tower or used to create water. If the low pressure steam is not removed from the turbine the RPM will slowly decrease and eventually stop.
+
+## Building Usage Rates:
+
+|===
+| Building Name   | Item Tested         | Consumption | Production 
+
+| Turbine Mk1     | High Pressure Steam | ~25/Min     | ~15/Min    
+
+| Turbine Mk2     | High Pressure Steam | ~45/Min     | ~22/Min    
+|===
+
+## Building Cost:
+
+TBD
+
+## Building Tier:
+
+TBD

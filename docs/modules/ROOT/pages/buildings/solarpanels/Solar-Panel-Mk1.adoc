@@ -1,0 +1,15 @@
+= Solar Panel Mk1
+
+## Building Information
+
+Generates 20MW during the day! Has a slider to set how much power you want to be maintained as an output!
+
+Some renewable power from the binary star system of Akycha!
+
+## Building Cost
+
+4 Photovoltaic Cells
+
+## Building Unlock Tier:Tier 3
+
+image::https://github.com/mrhid6/sf_mod_refinedpower/raw/master/Images/SolarPanelMk1.png[]

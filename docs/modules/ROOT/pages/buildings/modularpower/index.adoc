@@ -1,0 +1,11 @@
+= Modular Power
+
+## Design Concept:
+Ficsit pioneers can have a deconstructed version of any in-game power generator. We have taken each deconstructed element and created a new building for each:
+
+* Heater
+* Boiler
+* Turbine
+* Generator
+* Chimney 
+ 

@@ -1,0 +1,8 @@
+= Change Log - Version 2.1.4
+* Fixed clearance issue, removed for now.
+* Fixed UI showing incorrect consumption & production amounts.
+* Balance Changes to Co2 generation & Chimneys
+* Balance Changes to Solution Heater
+* Balance Changes to Coal Heater
+
+**NOTE:** UI will take an average of the last minutes worth of Fuel/Co2/Steam consumption/production. You will need to wait a minute for this to show the value in the UI.

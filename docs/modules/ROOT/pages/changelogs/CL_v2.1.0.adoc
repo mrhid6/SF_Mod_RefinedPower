@@ -1,0 +1,41 @@
+= Change Log - Version 2.1.0
+## General Changes:
+* Arc Reactor UI Update
+* ADA Audio Messages for milestones
+* Carbon Item Icons Fixed
+
+
+## Modular Power Update:
+### New Buildings:
+* Platforms:
+    * Boiler Platform
+    * Converter Platform
+    * Cooler Platform
+* Heaters:
+    * Biomass Heater
+    * Coal Heater
+    * Solution Heater
+    * Nuclear Heater
+* Boilers:
+    * Boiler Mk1
+    * Boiler Mk2
+* Turbines:
+    * Turbine Mk1
+    * Turbine Mk2
+* Generators:
+    * LV Generator
+    * MV Generator
+    * HV Generator
+* Chimneys:
+    * Steam Chimney
+    * Co2 Chimney
+
+### New Items:
+* Co2
+* High Pressure Steam
+* Low Pressure Steam
+
+### New Recipes
+* Co2 + Limestone -> Carbon Dust
+* Carbon Dust + Iron Ingot -> Steel
+* Low Pressure Steam -> Water

@@ -1,0 +1,61 @@
+= Modular Power Heaters
+
+## Building Information:
+Heaters are used to burn fuel to make heat, currently there is 4 variants of heaters. Biomass, Coal, Solution & Nuclear.
+
+Once the heater reaches 100c the attached Boiler will then start producing Steam, the temperature will reach 1024c for the nuclear heater and 500c for the rest.
+
+The heater will produce Co2 which will need to be handled wither by venting through a chimney or turned into Carbon Dust, if the Co2 is not resolved and fills the heater, it will stop producing heat and slowly cool.
+
+## Building Usage Rates:
+|===
+| Building Name   | Item Tested       | Consumption | Production
+
+| Biomass Heater  | Soild Biofuel     | ~36/Min     | ~48/Min    
+
+| Coal Heater     | Coal              | ~20/Min     | ~75/Min    
+
+| Solution Heater | Fuel              | ~14/Min     | ~98/Min    
+
+| Nuclear Heater  | Nuclear Fuel Rods | ~0.5/Min    | ~10/Min    
+|===
+
+## Building Cost:
+TBD
+
+## Variants:
+
+### Biomass Heater
+The biomass heater can produce 500c heat and can be fed with the following items:
+
+* Fabric
+* Leaves
+* Mycelia
+* Vines
+* Flower Petals
+* Wood
+* Biomass
+* Alien Organs
+* Alien Carapace
+* Solid Biofuel
+* Packaged Liquid Biofuel
+
+### Coal Heater
+The coal heater can produce 500c heat and can be fed with the following items:
+
+* Coal
+* Compacted Coal
+* Petrolium Coke
+
+### Solution Heater
+The Solution heater can produce 500c heat and can be fed with the following items:
+
+* Fuel
+* Liquid Biofuel
+* Turbo Fuel
+
+### Nuclear Heater
+The Nuclear heater can produce 1024c heat and can be fed with the following items:
+
+* Nuclear Fuel Rods
+* Advanced Reactor Cores

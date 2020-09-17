@@ -1,0 +1,25 @@
+= Refined Power
+
+image::https://raw.githubusercontent.com/mrhid6/SF_Mod_RefinedPower/master/Images/RP_SMR_004-1.png[200,200]
+
+
+== Introduction:
+Ficsit pioneers can now have refined power production that can provide a variety of power generators either to power your outposts or power your main factories.
+
+== Multiplayer support:
+
+Refined Power has always had multiplayer support as a high priority for any update and this will not change in the slightest. To make sure that playing with your friends is possible and to have a fun experience! While multiplayer support isn't 100% finished yet, we do hope we can fix these little bugs in the future!
+
+image::https://raw.githubusercontent.com/deantendo/community/master/com_mp_yes.png[]
+
+== Team:
+
+* **Mrhid6** - Author
+* **Trunkyredstone** - C++ Dev
+* **Iamlegend_tv** - Mod Dev
+* **I'm_a_chicken29** - Mod Dev
+* **Tom** - 3D Artist
+* **Vasillo** 3D Artist
+* **Deantendo** - User Interfaces
+
+

@@ -1,0 +1,12 @@
+= Arc Reactor
+
+## Building Information:
+Arc reactor must be provided with 20 of Advanced Reactor Core & 20m^3 Reactor Coolant before it will start. Core levels must maintain above 10, and coolant above 10m^3, otherwise the reactor will shutdown.
+
+Once shutdown has started it cannot be switched back on until it is fully switched off.
+
+Reactor will consume 0.25 Cores per minute at 100% utilization, and 5m^3 of coolant per minute at max capacity.
+
+## Building Cost:
+
+image::https://github.com/mrhid6/sf_mod_refinedpower/raw/master/Images/ArcReactor.png[]

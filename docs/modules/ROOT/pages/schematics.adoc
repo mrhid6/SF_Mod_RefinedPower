@@ -1,0 +1,31 @@
+= Schematics 
+
+== Tier 1
+* Wind Turbine Mk1
+
+== Tier 3
+* Water Turbine Mk1
+* Scanner upgrade Water turbine node
+
+== Tier 5
+* Wind Turbine Mk2
+* Wind Turbine Mk3
+* Solar Panel Mk1
+* Solar Panel Mk2
+* Scanner upgrade Element65
+
+== Tier 7
+* Micro Reactor
+* Arc Reactor
+* Dyson Sphere Hangar 1
+* Dyson Sphere Hangar 2
+* Dyson Sphere Hangar 3
+* Dyson Sphere Hangar 4
+* Refined E65
+* Unfiltered Deuterium
+* Liquid Deuterium
+* Advanced Reactor Casing
+* Advanced Reactor Core
+* Coolant Powder
+* Cloudy Coolant
+* Reactor Coolant

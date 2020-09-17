@@ -1,0 +1,16 @@
+= Automated Biomass Burner
+
+## Building Info
+
+Burns the biomass in your world to convert it into power and has an automated input for a higher building cost!
+
+Burn baby burn.
+
+## Building Cost
+
+8 reinforced iron plates & 6 Rotors
+
+## Building Unlock Tier: Tier 2
+
+Currently No picture for it as of yet (WIP)
+

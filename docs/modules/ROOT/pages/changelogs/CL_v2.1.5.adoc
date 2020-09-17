@@ -1,0 +1,4 @@
+= Change Log - Version 2.1.5
+* Changed MP Turbine Slider to Dial (Hover & Scroll or Type Percent)
+* Solar Panel Mk1 UI no longer shows maintain slider.
+* Solar Panel Mk1 clearance fixed.

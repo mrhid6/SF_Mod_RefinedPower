@@ -1,0 +1,5 @@
+= Solar Panels
+
+Currently solar panels are a Work-In-Progress building but still produce power correctly.
+
+Solar panels take energy from the sun based on time of day, power production is variable depending on the time of day. Some solar panels work during the night.

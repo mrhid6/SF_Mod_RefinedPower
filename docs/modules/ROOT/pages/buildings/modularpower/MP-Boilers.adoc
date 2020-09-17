@@ -1,0 +1,19 @@
+= Modular Power Boilers
+
+## Building Information:
+Boilers are placed on top of Heaters and will turn Water into High Pressure Steam. There is currently 2 variants of boilers, Mk1 & Mk2.
+
+The Mk1 will consume approx 44m3/min water and produce approx 72m3/min High Pressure Steam.
+
+The Mk2 will consume approx 77m3/min water and produce approx 123m3/min High Pressure Steam.
+
+
+## Building Usage Rates:
+
+|===
+| Building Name  | Item Tested | Consumption | Production  
+
+| Boiler Mk1     | Water       | ~44/Min     | ~72/Min     
+
+| Boiler Mk2     | Water       | ~77/Min     | ~123/Min    
+|===

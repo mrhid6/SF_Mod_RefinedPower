@@ -1,0 +1,16 @@
+= Wind Turbine Mk2
+
+## Building Information
+
+Can Generate 200MW. If more than 1 turbine is in its range it will produce less. Maxes out at 4 turbines and generates no power at all. Mk2 wind turbine is renewable power for your factory that needs no input of items.
+
+Can be daisy-chained up to 2 power lines.
+
+## Building Cost
+
+50 Concrete, 100 Steel Pipes, 40 encased industrial Beams & 20 Motors
+
+## Building Unlock Tier: Tier 5
+
+
+image::https://github.com/mrhid6/sf_mod_refinedpower/raw/master/Images/WindTurbineMk2.png[]

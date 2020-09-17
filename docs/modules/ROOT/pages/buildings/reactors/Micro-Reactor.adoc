@@ -1,0 +1,15 @@
+= Micro Reactor
+
+## Building Info
+
+Micro Reactor is capable of generating 1GW of power with 100 Reactor cores. With no waste!
+
+Reactor must be filled with at least 70 Core before the reactor can heat up, Only when the heat is at its max is when it will produce power.
+
+## Building Cost
+
+40 Supercomputers, 80 Alclad Aluminum sheets & 60 A.I. Limiters
+
+## Building Unlock Tier: Tier 7
+
+image::https://github.com/mrhid6/sf_mod_refinedpower/raw/master/Images/MicroReactor.png[]

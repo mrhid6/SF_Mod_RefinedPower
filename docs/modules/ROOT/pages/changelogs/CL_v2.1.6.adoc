@@ -1,0 +1,5 @@
+= Change Log - Version 2.1.6 & 2.1.7
+* Fixed MP Turbine steam discard affecting RPM rates.
+* MP Turbine dial will now save Steam Discard when using input box
+* Wind Turbine UI now closes when X button is pressed
+* Solar Panels now find the SolarController correctly

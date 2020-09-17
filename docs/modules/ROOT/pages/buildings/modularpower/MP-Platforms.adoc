@@ -1,0 +1,15 @@
+= Modular Power Platforms
+
+## Building Information:
+These buildings are used for the new Modular Power buildings, there are currently 3 different variants of platforms. Boiler, Converter, & Cooler platforms.
+
+## Variants:
+
+### Boiler Platform:
+These platforms are used with the Modular Power Heaters on the bottom and Boilers on top of the heater.
+
+### Converter Platform:
+These platforms are used for the Modular Power Turbines & Generators.
+
+### Cooler Platform:
+These platforms are used for the Co2 Chimney or Steam Chimney.

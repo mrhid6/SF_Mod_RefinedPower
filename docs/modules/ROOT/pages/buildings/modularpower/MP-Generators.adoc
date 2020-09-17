@@ -1,0 +1,26 @@
+= Modular Power Generators
+
+## Building Information:
+Generators are built on the Converter Platform and can only function if attached to a Turbine.
+
+## Building Cost:
+TDB
+
+## RPM Sweetspots:
+
+|===
+| Variant | Min | Max
+
+| LV | 2300 | 2600
+
+| MV | 3100 | 3300
+
+| HV | 4000 | 5000
+|===
+
+## Variants:
+### LV
+
+### MV
+
+### HV

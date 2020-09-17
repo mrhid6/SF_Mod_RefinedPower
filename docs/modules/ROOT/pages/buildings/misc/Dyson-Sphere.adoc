@@ -1,0 +1,15 @@
+= Dyson Sphere
+
+## Building Information:
+The dyson sphere works as a resource sink and is capable of producing 1TW of power.
+
+There are 4 Build stages to "build the dyson sphere".
+
+Once all 4 build stages are completed it will then produce power you will then need to provide the items before the cargo departure or the power output will be decreased.
+
+When you first unlock the dyson sphere you will only have Hangar1 unlocked and will only produce max of 250GW, Unlocking all 4 hangars will give you 1TW of power.
+
+
+Hangars can be unlocked from the HUB and each hangar will increase the Cargo Departure time allowing for more time to fill the dyson sphere.
+
+## Building Cost:

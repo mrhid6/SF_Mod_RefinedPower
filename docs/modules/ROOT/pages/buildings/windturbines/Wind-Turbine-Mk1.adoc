@@ -1,0 +1,17 @@
+= Wind Turbine Mk1
+
+## Building Information
+
+Can Generate power from 10MW-30MW depending on the height. If more than 1 turbine is in its range it will produce less. Maxes out at 4 turbines and generates no power at all.
+
+Mk1 wind turbine is renewable power for your factory that needs no input of items.
+
+It can be daisy-chained up to 2 power lines.
+
+## Building Cost:
+
+20 Iron Plates & 30 Iron Rods
+
+## Building Unlock Tier: Tier 1
+
+image::https://github.com/mrhid6/sf_mod_refinedpower/raw/master/Images/WindTurbine.png[]

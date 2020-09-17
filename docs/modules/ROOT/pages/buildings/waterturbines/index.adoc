@@ -1,0 +1,5 @@
+= Water Turbines
+
+## Water Turbine Mechanics
+Water turbines Now can only be placed on dedicated nodes in flowing water F.e Rivers, creaks and water falls with each of them giving a different amount of power from 50, 20 and 8Mw.
+

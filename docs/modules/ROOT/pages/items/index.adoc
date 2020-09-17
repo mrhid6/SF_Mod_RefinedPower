@@ -1,0 +1,18 @@
+= Items
+
+## Resources:
+### Element 65
+
+## Parts:
+### Photovolic Cells
+### Carbon Dust
+### Carbon Mesh
+### Reinforced Carbon-Carbon
+
+## Fluids:
+### Refined E65
+### Unfiltered Deterium
+### Liquid Deterium
+### Co2
+### High Pressure Steam
+### Low Pressure Steam

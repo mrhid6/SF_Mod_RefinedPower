@@ -1,0 +1,14 @@
+= Water Turbine Mk1
+
+## Building Information
+
+Mk.1 water turbines can only be placed on dedicated nodes placed all around the world that can be found by the scanner! There are in total 413 Water turbine nodes all around the world. Water turbines Generate 8, 20, 50MW depending on the node it is placed on based on water speed
+
+Some sploosh power for your factory with no item input!
+
+## Building cost
+50 steel pipes & 150 copper wire
+
+## Building unlock tier: Tier 3
+
+image::https://github.com/mrhid6/sf_mod_refinedpower/raw/master/Images/WaterTurbine.png[]
