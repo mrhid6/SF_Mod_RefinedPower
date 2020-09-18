@@ -5,12 +5,12 @@
 
 == Tier 3
 * Water Turbine Mk1
+* Solar Panel Mk1
 * Scanner upgrade Water turbine node
 
 == Tier 5
 * Wind Turbine Mk2
 * Wind Turbine Mk3
-* Solar Panel Mk1
 * Solar Panel Mk2
 * Scanner upgrade Element65
 
