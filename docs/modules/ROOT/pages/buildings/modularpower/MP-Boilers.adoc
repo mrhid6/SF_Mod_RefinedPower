@@ -7,6 +7,18 @@ The Mk1 will consume approx 44m3/min water and produce approx 72m3/min High Pres
 
 The Mk2 will consume approx 77m3/min water and produce approx 123m3/min High Pressure Steam.
 
+## Building Cost:
+
+Boiler MK1 : 
+20 Copper Sheet
+12 Reinforced Iron Plate
+4  Modular Frame
+
+Boiler MK2 :
+100 Copper Sheet
+20  Reinforced Iron Plate
+4   Heavy Modular Frame
+
 
 ## Building Usage Rates:
 
