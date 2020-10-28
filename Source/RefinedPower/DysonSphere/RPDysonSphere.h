@@ -38,7 +38,7 @@ class REFINEDPOWER_API URPDysonSphereRCO : public UFGRemoteCallObject
     GENERATED_BODY()
 
 public:
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void ResetFailedDysonSphere(ARPDysonSphere* reactor);
 
 
@@ -113,13 +113,13 @@ public:
                             int InputItemIndex);
     void ClearRepairItemCount();
 
-    UFUNCTION(NetMulticast, Reliable)
+    UFUNCTION(NetMulticast, Unreliable)
     void Multicast_UpdateHangarLights();
 
-    UFUNCTION(NetMulticast, Reliable)
+    UFUNCTION(NetMulticast, Unreliable)
     void Multicast_StartShipAnimation();
 
-    UFUNCTION(NetMulticast, Reliable)
+    UFUNCTION(NetMulticast, Unreliable)
     void Multicast_UpdateLightBeam();
 
     UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|DysonSphere")

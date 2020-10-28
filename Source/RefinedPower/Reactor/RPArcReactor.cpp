@@ -444,7 +444,5 @@ void ARPArcReactor::Factory_Tick(float dt)
     {
         CalcReactorState();
         CacheFuelAndCoolantAmount();
-
-        ForceNetUpdate();
     }
 }

@@ -34,7 +34,7 @@ public:
 
     virtual void UpdateDependantBuildings() override;
 
-    UFUNCTION(NetMulticast, Reliable)
+    UFUNCTION(NetMulticast, Unreliable)
     void Multicast_RPMChanged();
 
     bool TriggerRPMChanged = false;

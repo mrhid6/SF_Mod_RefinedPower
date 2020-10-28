@@ -35,8 +35,16 @@ public:
     virtual void TickComponent(float DeltaTime, ELevelTick TickType,
                                FActorComponentTickFunction* ThisTickFunction) override;
 
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
     EMPPlatformBuildingType mBuildingType;
+
+    UFUNCTION()
+    void OnRep_IsOccupied();
+	
+    UPROPERTY(ReplicatedUsing=OnRep_IsOccupied)
+    bool mOccupied = false;
 
     AActor* mAttachedBuilding;
 

@@ -25,7 +25,7 @@ class REFINEDPOWER_API URPTurbineBaseRCO : public UFGRemoteCallObject
     GENERATED_BODY()
 
 public:
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void SetTurbineEnabled(ARPTurbineBaseActor* turbine, bool enabled);
 
     UPROPERTY(Replicated)
@@ -46,6 +46,8 @@ public:
     virtual bool ShouldSave_Implementation() const override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+    void LineTraceToGround();
+    
     virtual void calculateTurbinePowerProduction();
     float getTurbineBasePowerProduction();
     float getTurbineHeightPowerProduction();
@@ -110,6 +112,9 @@ protected:
     /** The max amount of other wind turbines in the area */
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RefinedPower")
     float mAreaOfWindTurbines = 5600;
+
+    UPROPERTY(BlueprintReadOnly, Replicated, Category = "RefinedPower")
+    float mDistanceFromRound = 0.0f;
 
     void calcNearbyWindTurbines();
 };

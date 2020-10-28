@@ -36,4 +36,10 @@ public:
 
     UFUNCTION(BlueprintCallable, Category="RefinedPower")
     void FinishedSpawningNodes();
+
+    UFUNCTION(BlueprintCallable, Category="RefinedPower")
+    FString DumpPPSettings(FPostProcessSettings PPSettings);
+    
+    UFUNCTION(BlueprintCallable, Category="RefinedPower")
+    void DumpUObject(UObject* object);
 };

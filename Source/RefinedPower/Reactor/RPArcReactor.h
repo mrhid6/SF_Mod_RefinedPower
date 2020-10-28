@@ -22,10 +22,10 @@ class REFINEDPOWER_API URPArcReactorRCO : public UFGRemoteCallObject
     GENERATED_BODY()
 
 public:
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void SetParticlesEnabled(ARPArcReactor* reactor, bool enabled);
 
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void SetSoundEnabled(ARPArcReactor* reactor, bool enabled);
 
     UPROPERTY(Replicated)

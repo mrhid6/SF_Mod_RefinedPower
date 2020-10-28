@@ -143,6 +143,7 @@ void ARPMPPlatform::AttachBuildingToComp(AActor* Actor)
 
         if (placementComp != nullptr)
         {
+            placementComp->mOccupied = true;
             placementComp->mAttachedBuilding = Building;
         }
     }
@@ -188,6 +189,7 @@ void ARPMPPlatform::DetachBuildingFromComp(AActor* Actor)
 
         if (placementComp != nullptr)
         {
+            placementComp->mOccupied = false;
             placementComp->mAttachedBuilding = nullptr;
         }
     }

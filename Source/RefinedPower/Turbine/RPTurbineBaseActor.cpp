@@ -8,6 +8,8 @@
 #include "UnrealNetwork.h"
 #include "Engine.h"
 #include "FGPlayerController.h"
+#include "FGResourceNode.h"
+#include "LandscapeProxy.h"
 
 
 void URPTurbineBaseRCO::SetTurbineEnabled_Implementation(ARPTurbineBaseActor* turbine, bool enabled)
@@ -53,6 +55,7 @@ void ARPTurbineBaseActor::BeginPlay()
     if (HasAuthority())
     {
         FGPowerConnection->SetPowerInfo(GetPowerInfo());
+        LineTraceToGround();
     }
 
     calcNearbyWindTurbines();
@@ -75,6 +78,48 @@ void ARPTurbineBaseActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
     DOREPLIFETIME(ARPTurbineBaseActor, mTurbineEnabled);
     DOREPLIFETIME(ARPTurbineBaseActor, mWindTurbinesInArea);
+    DOREPLIFETIME(ARPTurbineBaseActor, mDistanceFromRound);
+}
+
+void ARPTurbineBaseActor::LineTraceToGround()
+{
+
+    if(mIsHeightBasedTurbine == false)
+    {
+        return;
+    }
+    
+    FVector Start = GetActorLocation();
+    FVector End = Start - FVector(0,0,50000);
+
+    FHitResult outHit;
+
+    const TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes = TArray<TEnumAsByte<EObjectTypeQuery>>{
+        EObjectTypeQuery::ObjectTypeQuery1, EObjectTypeQuery::ObjectTypeQuery2
+    };
+
+    TArray<AActor*> ActorsToIgnore;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsToIgnore);
+
+    TArray<AActor*> ActorsToInclude;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALandscapeProxy::StaticClass(), ActorsToInclude);
+
+    for(auto landscape: ActorsToInclude)
+    {
+        ActorsToIgnore.Remove(landscape);
+    }
+    
+    UKismetSystemLibrary::LineTraceSingleForObjects(GetWorld(), Start, End, ObjectTypes, true, ActorsToIgnore,EDrawDebugTrace::None,outHit, true);
+
+    if(outHit.bBlockingHit)
+    {
+        ALandscapeProxy* LandscapeActor = Cast<ALandscapeProxy>(outHit.Actor);
+
+        if(LandscapeActor != nullptr)
+        {
+            mDistanceFromRound = outHit.Distance;
+        }
+    }
 }
 
 bool ARPTurbineBaseActor::ShouldSave_Implementation() const

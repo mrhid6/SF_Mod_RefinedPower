@@ -69,7 +69,7 @@ public:
     UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower")
     void OnSpinRateChanged();
 
-    UFUNCTION(Client, Reliable)
+    UFUNCTION(Client, Unreliable)
     void Client_SpinRateChanged();
 
     void ChargeReactor();

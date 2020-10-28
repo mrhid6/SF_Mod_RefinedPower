@@ -58,7 +58,6 @@ ARPSolarController* ARPSolarController::Get(UWorld* world)
 void ARPSolarController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    ForceNetUpdate();
 }
 
 void ARPSolarController::EndPlay(const EEndPlayReason::Type endPlayReason)

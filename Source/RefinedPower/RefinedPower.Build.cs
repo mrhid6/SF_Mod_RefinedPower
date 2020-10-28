@@ -28,7 +28,8 @@ public class RefinedPower : ModuleRules
             "AssetRegistry",
             "GameplayTasks",
             "AnimGraphRuntime",
-            "Slate", "SlateCore"
+            "Slate", "SlateCore",
+			"Landscape"
         });
 
         if (Target.Type == TargetRules.TargetType.Editor)

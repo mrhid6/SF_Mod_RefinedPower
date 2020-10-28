@@ -28,10 +28,10 @@ class REFINEDPOWER_API URPMPBuildingRCO : public UFGRemoteCallObject
     GENERATED_BODY()
 
 public:
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void SetSoundEnabled(ARPMPBuilding* Building, bool enabled);
 
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void SetParticlesEnabled(ARPMPBuilding* Building, bool enabled);
 
     UPROPERTY(Replicated)
@@ -69,7 +69,7 @@ public:
     };
 
 
-    UFUNCTION(NetMulticast, Reliable)
+    UFUNCTION(NetMulticast, Unreliable)
     void Multicast_RunningStateChanged();
 
     UFUNCTION(BlueprintImplementableEvent, Category="RefinedPower")

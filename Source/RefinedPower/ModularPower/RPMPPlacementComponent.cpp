@@ -12,6 +12,9 @@ URPMPPlacementComponent::URPMPPlacementComponent()
     // off to improve performance if you don't need them.
     PrimaryComponentTick.bCanEverTick = true;
 
+    bReplicates = true;
+    SetIsReplicated(true);
+
     // ...
 }
 
@@ -33,8 +36,18 @@ void URPMPPlacementComponent::TickComponent(float DeltaTime, ELevelTick TickType
     // ...
 }
 
+void URPMPPlacementComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(URPMPPlacementComponent, mOccupied);
+}
+
 
 bool URPMPPlacementComponent::IsOccupied()
 {
-    return (mAttachedBuilding != nullptr);
+    return mOccupied;
+}
+
+void URPMPPlacementComponent::OnRep_IsOccupied()
+{
 }

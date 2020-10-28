@@ -144,7 +144,6 @@ void ARPMPGeneratorBuilding::ConvertRPMToPower()
         {
             powerInfo->SetBaseProduction(powerOutput);
         }
-        ForceNetUpdate();
     }
 }
 

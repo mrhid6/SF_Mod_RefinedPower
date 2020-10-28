@@ -2,6 +2,7 @@
 
 
 #include "RPInitMod.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "FGCharacterPlayer.h"
 #include "FGResourceScanner.h"
@@ -503,4 +504,62 @@ void ARPInitMod::FinishedSpawningNodes()
     {
         //SML::Logging::info("[RefinedPower] - Cant get PC!");
     }
+}
+
+FString ARPInitMod::DumpPPSettings(FPostProcessSettings PPSettings)
+{
+    UScriptStruct* Struct = PPSettings.StaticStruct();
+    FString Output = TEXT("");
+    Struct->ExportText(Output, &PPSettings, nullptr, this, (PPF_ExportsNotFullyQualified | PPF_Copy | PPF_Delimited | PPF_IncludeTransient || PPF_ParsingDefaultProperties), nullptr);
+
+    
+    return Output;
+}
+
+void ARPInitMod::DumpUObject(UObject* object)
+{
+    UClass *cl = object->GetClass();
+    
+    	if (cl)
+    	{
+
+    		for (TFieldIterator<UBoolProperty> Property(cl); Property; ++Property)
+    		{
+    			// "Converting" bool to string
+    			FName const PropertyName = Property->GetFName();
+    			FString value = Property->GetPropertyValue_InContainer(object) ? "true" : "false";
+    			SML::Logging::info(TCHAR_TO_UTF8(*PropertyName.ToString()));
+    			SML::Logging::info(TCHAR_TO_UTF8(*value));
+    		}
+
+    		for (TFieldIterator<UFloatProperty> Property(cl); Property; ++Property)
+    		{
+    			// "Converting" bool to string
+    			FName const PropertyName = Property->GetFName();
+    			float value = Property->GetPropertyValue_InContainer(object);
+    			
+    			SML::Logging::info(TCHAR_TO_UTF8(*PropertyName.ToString()));
+    			SML::Logging::info(value);
+    		}
+
+    		for (TFieldIterator<UUInt32Property> Property(cl); Property; ++Property)
+    		{
+    			// "Converting" bool to string
+    			FName const PropertyName = Property->GetFName();
+    			uint32 value = Property->GetPropertyValue_InContainer(object);
+    			
+    			SML::Logging::info(TCHAR_TO_UTF8(*PropertyName.ToString()));
+    			SML::Logging::info(value);
+    		}
+
+    		for (TFieldIterator<UIntProperty> Property(cl); Property; ++Property)
+    		{
+    			// "Converting" bool to string
+    			FName const PropertyName = Property->GetFName();
+    			int value = Property->GetPropertyValue_InContainer(object);
+    			
+    			SML::Logging::info(TCHAR_TO_UTF8(*PropertyName.ToString()));
+    			SML::Logging::info(value);
+    		}
+    	} 
 }

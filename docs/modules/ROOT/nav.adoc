@@ -32,3 +32,4 @@
 ** xref:changelogs/CL_v2.1.4.adoc[v2.1.4]
 ** xref:changelogs/CL_v2.1.5.adoc[v2.1.5]
 ** xref:changelogs/CL_v2.1.6.adoc[v2.1.6]
+** xref:changelogs/CL_v2.1.8.adoc[v2.1.8]

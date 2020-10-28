@@ -244,8 +244,7 @@ void ARPDysonSphere::CalcUnlockedHangars()
             mHangar4Enabled = true;
         }
     }
-
-    ForceNetUpdate();
+    
     mTriggerHangarLightEvent = true;
 }
 
@@ -283,8 +282,6 @@ void ARPDysonSphere::CalcDysonSphereState(float dt)
     default:
         break;
     }
-
-    ForceNetUpdate();
 }
 
 void ARPDysonSphere::SetDysonSphereState(EDysonSphereState state)

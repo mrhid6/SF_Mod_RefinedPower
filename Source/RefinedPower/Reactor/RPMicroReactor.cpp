@@ -243,6 +243,5 @@ void ARPMicroReactor::Factory_Tick(float dt)
         CalcReactorState();
         CacheFuelAmount();
 
-        ForceNetUpdate();
     }
 }

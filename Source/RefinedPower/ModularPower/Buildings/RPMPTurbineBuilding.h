@@ -13,7 +13,7 @@ class REFINEDPOWER_API URPMPTurbineBuildingRCO : public UFGRemoteCallObject
     GENERATED_BODY()
 
 public:
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void SetSteamDiscard(ARPMPTurbineBuilding* panel, float value);
 
     UPROPERTY(Replicated)
@@ -97,7 +97,7 @@ public:
 
     bool TriggerTurbineStateUpdated = false;
 
-    UFUNCTION(NetMulticast, Reliable)
+    UFUNCTION(NetMulticast, Unreliable)
     void Multicast_TurbineStateUpdated();
 
     UFUNCTION(BlueprintImplementableEvent, Category = "RefinedPower|ModularPower")

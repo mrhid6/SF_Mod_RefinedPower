@@ -147,7 +147,6 @@ void ARPFusionReactor::Factory_Tick(float dt)
             }
         }
 
-        ForceNetUpdate();
     }
 }
 

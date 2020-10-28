@@ -31,13 +31,13 @@ class REFINEDPOWER_API URPSolarPanelRCO : public UFGRemoteCallObject
     GENERATED_BODY()
 
 public:
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void SetPanelEnabled(ARPSolarPanel* panel, bool enabled);
 
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void SetMaintainMW(ARPSolarPanel* panel, float amount);
 
-    UFUNCTION(Server, WithValidation, Reliable)
+    UFUNCTION(Server, WithValidation, Unreliable)
     void SetAmountToStore(ARPSolarPanel* panel, float amount);
 
     UPROPERTY(Replicated)
