@@ -10,6 +10,6 @@ Some Renewable power from the binary star system of Akycha!
 
 10 Batteries & 42 Photovoltaic Cells
 
-## Building Unlock Tier: Tier 3
+## Building Unlock Tier: Tier 5
 
 image::https://github.com/mrhid6/sf_mod_refinedpower/raw/master/Images/SolarPanelMk2.png[]
