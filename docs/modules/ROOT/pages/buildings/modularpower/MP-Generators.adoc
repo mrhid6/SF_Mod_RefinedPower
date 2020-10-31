@@ -18,6 +18,11 @@ TDB
 | HV | 4000 | 5000
 |===
 
+
+### Efficiency notice:
+For maximum power generation efficiency, please operate this equipment within specified limits as described in the installer's manual.
+Failure to operate this equipment within documented limits will significantly reduce power generation capability and void the warranty.
+
 ## Variants:
 ### LV
 
