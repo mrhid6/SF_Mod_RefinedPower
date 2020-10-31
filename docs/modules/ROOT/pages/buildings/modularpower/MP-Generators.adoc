@@ -20,8 +20,7 @@ TDB
 
 
 ### Efficiency notice:
-For maximum power generation efficiency, please operate this equipment within specified limits as described in the installer's manual.
-Failure to operate this equipment within documented limits will significantly reduce power generation capability and void the warranty.
+These machines will not produce power if run outside optimal RPM limits, see the above "RPM Sweetspots" table.
 
 ## Variants:
 ### LV
