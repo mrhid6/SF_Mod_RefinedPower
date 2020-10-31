@@ -22,7 +22,7 @@ TDB
 ### Efficiency notice:
 These machines will not produce specification power if run outside optimal RPM limits, see the above "RPM Sweetspots" table.
 
-For instance, the MV generator will not produce specification power if the RPM exceeds ~3200 or falls below 3100 based on version 2.1.8 hardware. Running a MV generator at 5000 RPM will produce no power at all.
+For instance, the MV generator will not produce specified power if the RPM exceeds ~3200 or falls below 3100 based on version 2.1.8 hardware. Running a MV generator at 5000 RPM will produce no power at all.
 
 
 ## Variants:
