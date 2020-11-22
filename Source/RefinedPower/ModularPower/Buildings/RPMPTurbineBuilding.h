@@ -110,6 +110,8 @@ public:
     UFUNCTION()
     float netFunc_getSteamDiscardPercent();
 
+	UFUNCTION(float)
+		float netFunc_setSteamDiscardPercent();
     
     // Fluid Buffer
 

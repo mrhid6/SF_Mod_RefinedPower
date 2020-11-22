@@ -276,3 +276,14 @@ float ARPMPTurbineBuilding::netFunc_getSteamDiscardPercent()
 {
     return mSteamDiscardPercent;
 }
+
+void ARPMTurbineBuilding::netFunc_setSteamDiscardPercent(float value) {
+	auto rco = Cast<URPMPTurbineBuildingRCO>(
+		Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(
+			URPMPTurbineBuildingRCO::StaticClass()));
+
+	if (rco)
+	{
+		rco->SetSteamDiscard(this, value);
+	}
+}
