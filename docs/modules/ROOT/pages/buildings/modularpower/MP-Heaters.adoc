@@ -8,6 +8,9 @@ Once the heater reaches 100c the attached Boiler will then start producing Steam
 The heater will produce Co2 which will need to be handled wither by venting through a chimney or turned into Carbon Dust, if the Co2 is not resolved and fills the heater, it will stop producing heat and slowly cool.
 
 ## Building Usage Rates:
+
+> The Consumption only applies when heating (below 500/1024 °C). When the Heater is fully heated the consumption and production is halved.
+
 |===
 | Building Name   | Item Tested       | Consumption | Production
 
@@ -15,7 +18,9 @@ The heater will produce Co2 which will need to be handled wither by venting thro
 
 | Coal Heater     | Coal              | ~20/Min     | ~75/Min    
 
-| Solution Heater | Fuel              | ~14/Min     | ~98/Min    
+| Solution Heater | Fuel              | ~14/Min     | ~98/Min 
+
+| Solution Heater | Turbo Fuel        | ~4.2/Min    | ~32/Min    
 
 | Nuclear Heater  | Nuclear Fuel Rods | ~0.5/Min    | ~10/Min    
 |===
