@@ -147,7 +147,7 @@ void ARPMPTurbineBuilding::CalcTurbineState()
     
     TransferToFluidBuffer();
 
-    if (CanStartSteamConsumption())
+    if (CanStartSteamConsumption() && !m_Standby)
     {
         ConvertSteamToRPM();
     }
@@ -278,12 +278,11 @@ float ARPMPTurbineBuilding::netFunc_getSteamDiscardPercent()
 }
 
 void ARPMTurbineBuilding::netFunc_setSteamDiscardPercent(float value) {
-	auto rco = Cast<URPMPTurbineBuildingRCO>(
-		Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(
-			URPMPTurbineBuildingRCO::StaticClass()));
+    auto rco = Cast<URPMPTurbineBuildingRCO>(
+        Cast<AFGPlayerController>(GetWorld()->GetFirstPlayerController())->GetRemoteCallObjectOfClass(
+            URPMPTurbineBuildingRCO::StaticClass()));
 
-	if (rco)
-	{
-		rco->SetSteamDiscard(this, value);
-	}
+    if (rco) {
+        rco->SetSteamDiscard(this, value);
+    }
 }
