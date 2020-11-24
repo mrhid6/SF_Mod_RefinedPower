@@ -147,7 +147,7 @@ void ARPMPTurbineBuilding::CalcTurbineState()
     
     TransferToFluidBuffer();
 
-    if (CanStartSteamConsumption() && GetProductionIndicatorStatus() != EProductionStatus.IS_STANDBY)
+    if (CanStartSteamConsumption() && GetProductionIndicatorStatus() != EProductionStatus::IS_STANDBY)
     {
         ConvertSteamToRPM();
     }
