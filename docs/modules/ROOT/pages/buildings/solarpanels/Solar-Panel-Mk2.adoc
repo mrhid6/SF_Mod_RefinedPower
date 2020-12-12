@@ -2,7 +2,7 @@
 
 ## Building Information
 
-Generates 90MW during the day and some at night! Has a slider to set how much power you want to be maintained as an output! Has a higher efficiency due to its sun-tracking solar panel, which brings efficiency up to 69%!
+Generates 40MW during the day and some at night! Has a slider to set how much power you want to be maintained as an output! Has a higher efficiency due to its sun-tracking solar panel, which brings efficiency up to 69%!
 
 Some Renewable power from the binary star system of Akycha!
 

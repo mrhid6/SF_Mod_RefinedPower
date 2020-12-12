@@ -2,7 +2,7 @@
 
 ## Building Information
 
-Can Generate 200MW. If more than 1 turbine is in its range it will produce less. Maxes out at 4 turbines and generates no power at all. Mk2 wind turbine is renewable power for your factory that needs no input of items.
+Can Generate 75MW. If more than 1 turbine is in its range it will produce less. Maxes out at 4 turbines and generates no power at all. Mk2 wind turbine is renewable power for your factory that needs no input of items.
 
 Can be daisy-chained up to 2 power lines.
 

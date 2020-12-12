@@ -1,0 +1,13 @@
+= Change log - Version 2.1.9
+
+* Reinforced Carbon-Carbon Recipe rebalance
+* MK1 Solar Panel Nerf From 20MW To 8MW
+* MK2 Solar Panel Nerf From 100MW To 40MW
+* Wind Turbine MK2 Nerf From 100MW To 75MW
+* Wind Turbine Mk3 Nerf From 300MW To 150MW
+* Wind Turbine MK2 Recipe Change.
+* Wind Turbine MK2 Clearance box shrunk.
+* MK1 & MK2 Wind Turbines now use Vertex animation rather than skeletal meshes.
+* Modular Power consumption / Production rates now show.
+
+Huge special thanks to ben for helping us out with the vertex animation and other background stuff and ofc to our lovely Patrons aswell! we wouldn't be as motivated without all of you, You are a wonderful person

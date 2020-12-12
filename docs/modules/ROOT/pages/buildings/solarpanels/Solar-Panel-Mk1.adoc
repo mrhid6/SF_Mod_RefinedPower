@@ -2,7 +2,7 @@
 
 ## Building Information
 
-Generates 20MW during the day! Has a slider to set how much power you want to be maintained as an output!
+Generates 8MW during the day! Has a slider to set how much power you want to be maintained as an output!
 
 Some renewable power from the binary star system of Akycha!
 
