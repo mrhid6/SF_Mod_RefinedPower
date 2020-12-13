@@ -17,7 +17,6 @@ AFGJumpPadLauncherHologram::AFGJumpPadLauncherHologram() : Super() {
 	this->mDestinationMeshHeightOffset = 400;
 	this->mTrajectoryMeshSeparationDistance = 200;
 	this->mNumArrows = 5;
-	this->mTrajectorySearchFrequency = 0.100000001490116;
 	this->mMaxPlacementFloorAngle = 35;
 	this->mValidHitClasses.Add(AFGBuildableFoundation::StaticClass()); this->mValidHitClasses.Add(AFGBuildableRailroadTrack::StaticClass()); this->mValidHitClasses.Add(AFGBuildableRoad::StaticClass()); this->mValidHitClasses.Add(AFGBuildableWall::StaticClass()); this->mValidHitClasses.Add(AFGBuildableFoundation::StaticClass());
 	this->mUseBuildClearanceOverlapSnapp = true;

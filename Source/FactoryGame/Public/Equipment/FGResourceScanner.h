@@ -80,8 +80,6 @@ public:
 	/** Sets the status of mIsPressingScan */
 	UFUNCTION( BlueprintCallable, Category = "Resource Scanner" )
 	void SetPressingScan( bool isPressingScan ) { mIsPressingScan = isPressingScan; }
-
-	FORCEINLINE void GenerateNodeClustersAccessor() { GenerateNodeClusters();}
 protected:
 	/** server notified of when a scanning was made */
 	UFUNCTION( Reliable, Server, WithValidation )
@@ -96,6 +94,9 @@ protected:
 	virtual void OnScanPressed();
 	virtual void OnScanReleased();
 
+public: // MODDING EDIT accessor
+	FORCEINLINE void GenerateNodeClustersAccessor() { GenerateNodeClusters(); }
+protected:
 	/** Constructs the list of nodes cluster used when scanning */
 	void GenerateNodeClusters();
 

@@ -3,8 +3,10 @@
 #include "FGBuildableGeneratorFuel.h"
 #include "FGFactoryHologram.h"
 #include "FGPowerInfoComponent.h"
+#include "FGReplicationDetailInventoryComponent.h"
 
 AFGBuildableGeneratorFuel::AFGBuildableGeneratorFuel() : Super() {
+	this->mFuelInventoryHandler = CreateDefaultSubobject<UFGReplicationDetailInventoryComponent>(TEXT("FuelInventoryHandler"));
 	this->mFuelResourceForm = EResourceForm::RF_SOLID;
 	this->mPowerProductionExponent = 1.29999995231628;
 	this->mPowerConsumptionExponent = 1.60000002384186;
@@ -19,6 +21,7 @@ AFGBuildableGeneratorFuel::AFGBuildableGeneratorFuel() : Super() {
 	this->mMaxPotential = 1;
 	this->mMaxPotentialIncreasePerCrystal = 0.5;
 	this->mFluidStackSizeDefault = EStackSize::SS_FLUID;
+	this->mFluidStackSizeMultiplier = 1;
 	this->mSignificanceRange = 18000;
 	this->mHologramClass = AFGFactoryHologram::StaticClass();
 	this->MaxRenderDistance = -1;

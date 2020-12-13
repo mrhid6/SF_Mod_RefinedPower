@@ -383,7 +383,7 @@ public:
 
 private:
 	friend class FSavedMove_FGMovement;
-
+public: // MODDING EDIT public
 	/** A cached instance of the equipment that issued jet pack thrust */
 	UPROPERTY()
 	class AFGJetPack* mCachedJetPack;

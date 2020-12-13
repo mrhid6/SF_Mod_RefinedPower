@@ -7,6 +7,7 @@
 
 AFGBuildableJumppad::AFGBuildableJumppad() : Super() {
 	this->mChargeRateMultiplier = 1;
+	this->mLaunchAngle = -1;
 	this->mLauncherMeshComponent = CreateDefaultSubobject<UHierarchicalInstancedStaticMeshComponent>(TEXT("LauncherMeshComponent")); this->mLauncherMeshComponent->SetupAttachment(this->RootComponent);
 	this->mLauncherBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LauncherBox")); this->mLauncherBox->SetupAttachment(this->mLauncherMeshComponent);
 	this->mTrajectoryMeshScale.X = 1; this->mTrajectoryMeshScale.Y = 1; this->mTrajectoryMeshScale.Z = 1;
@@ -24,6 +25,7 @@ AFGBuildableJumppad::AFGBuildableJumppad() : Super() {
 	this->mMaxPotential = 1;
 	this->mMaxPotentialIncreasePerCrystal = 0.5;
 	this->mFluidStackSizeDefault = EStackSize::SS_FLUID;
+	this->mFluidStackSizeMultiplier = 1;
 	this->mSignificanceRange = 18000;
 	this->mHologramClass = AFGFactoryHologram::StaticClass();
 	this->MaxRenderDistance = -1;

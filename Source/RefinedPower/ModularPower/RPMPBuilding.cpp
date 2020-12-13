@@ -372,12 +372,12 @@ void ARPMPBuilding::CalculateUsageRates()
     mProductionRate = (mProductionTotal  / 60.0f) / 1000.0f;
 
 
-    /*SML::Logging::info("#####################");
+    SML::Logging::info("#####################");
     SML::Logging::info("Consumption:");
     SML::Logging::info(mConsumptionTotal);
     SML::Logging::info("Production:");
     SML::Logging::info(mProductionTotal);
-    SML::Logging::info("#####################");*/
+    SML::Logging::info("#####################");
 
     mConsumptionTotal = 0.0f;
     mProductionTotal = 0.0f;

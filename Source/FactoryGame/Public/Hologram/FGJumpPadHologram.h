@@ -28,7 +28,7 @@ public:
 protected:
 	void DisplayNearbyJumpPadTrajectories();
 
-public:
+private:
 	// The radius in which we looks for other jump pad's trajectories to display.
 	UPROPERTY( EditDefaultsOnly, Category="JumpPad")
 	float mTrajectorySearchRadius;

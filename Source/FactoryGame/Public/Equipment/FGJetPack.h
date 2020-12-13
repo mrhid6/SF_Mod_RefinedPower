@@ -82,7 +82,7 @@ private:
 
 	/** The player is holding down the thrust key and wants to thrust */
 	bool mWantsToThrust;
-
+public:	// MODDING EDIT public
 	/** A cached instance of the instigators movementcomponent */
 	class UFGCharacterMovementComponent* mCachedMovementComponent;
 
