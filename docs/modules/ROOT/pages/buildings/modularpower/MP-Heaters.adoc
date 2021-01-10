@@ -15,7 +15,7 @@ The heater will produce Co2 which will need to be handled wither by venting thro
 
 | Coal Heater     | Coal              | ~20/Min     | ~75/Min    
 
-| Solution Heater | Fuel              | ~14/Min     | ~98/Min    
+| Solution Heater | Fuel              | ~7/Min     | ~56/Min    
 
 | Nuclear Heater  | Nuclear Fuel Rods | ~0.5/Min    | ~10/Min    
 |===
