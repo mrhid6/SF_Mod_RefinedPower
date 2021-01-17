@@ -2,9 +2,9 @@
 
 ## Building Information
 
-Can Generate 150MW. If more than 1 turbine is in its range it will produce less. Maxes out at 4 turbines and generates no power at all. Can be daisy-chained up to 2 power lines.
+Generates 150MW.
 
-Mk3 wind turbine is renewable power for your factory that needs no input of items.
+The minimum radius for no proximity overlap reduction is 85m. Every turbine within this range will reduce production by 50%.
 
 ## Building Cost
 
