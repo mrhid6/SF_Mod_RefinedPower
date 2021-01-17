@@ -13,3 +13,11 @@ When you first unlock the dyson sphere you will only have Hangar1 unlocked and w
 Hangars can be unlocked from the HUB and each hangar will increase the Cargo Departure time allowing for more time to fill the dyson sphere.
 
 ## Building Cost:
+To build the sphere :
+100 Supercomputer, 100 Heavy Modular Frame, 60 A.I. Limiter, 500 Quickwire, 50 High-speed Connector
+
+To complete each build stage :
+2000 Iron Plate, 20 000 Screw, 900 Iron Rod, 1000 Concrete, 3000 Steel Beam, 100 Supercomputer, 1500 Alclad Aluminum Sheet, 100 Turbo Motor, 2000 Steel Pipe, 300 A.I. Limiter, 500 Crystal Oscillator, 1000 Heavy Modular Frame, 1000 Encased Industrial Beam, 100 High-Speed Connector, 25 Advanced Reactor Core, 300 Carbon Mesh, 200 Reinforced Carbon-Carbon, 400 Reinforced Iron Plate, 100 Modular Frame, 300 Plastic
+
+To produce 1 TW, every 10 minutes :
+1600 Iron Plate, 19 500 Screw, 720 Iron Rod, 800 Concrete, 2400 Steel Beam, 20 Supercomputer, 1200 Alclad Aluminum Sheet, 40 Turbo Motor, 1450 Steel Pipe, 240 A.I. Limiter, 80 Crystal Oscillator, 100 Heavy Modular Frame, 600 Encased Industrial Beam, 80 High-Speed Connector, 20 Advanced Reactor Core, 240 Carbon Mesh, 160 Reinforced Carbon-Carbon, 320 Reinforced Iron Plate, 80 Modular Frame, 240 Plastic
