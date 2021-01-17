@@ -2,11 +2,9 @@
 
 ## Building Information
 
-Can Generate power from 10MW-30MW depending on the height. If more than 1 turbine is in its range it will produce less. Maxes out at 4 turbines and generates no power at all.
+Generates 10MW-30MW depending on the height.
 
-Mk1 wind turbine is renewable power for your factory that needs no input of items.
-
-It can be daisy-chained up to 2 power lines.
+The minimum radius for no proximity overlap reduction is 31m. Every turbine within this range will reduce production by 25%.
 
 ## Building Cost:
 
