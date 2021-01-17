@@ -1,12 +1,10 @@
 = Wind Turbines
 
+## Building Information :
+
+Wind turbines are renewable sources of power for your factory, that need no input of items.
+All turbines can be daisy-chained up to 2 power lines.
+
 ## Wind Turbine Mechanics
-Wind turbines have a area of effect. This means that the power production will decrease per amount of turbines in the area of effect. The area effect allows for a maximum of 4 turbines before it stop producing.
 
-Having 4 turbines in an area will produce the same amount as one turbine.
-
-The area of effect is as follows:
-
-* Mk1 3 foundations.
-* Mk2 6 foundations.
-* Mk3 10 foundations.
+Wind turbines have a proximity overlap reduction. This means that the power production will decrease depending on the amount of turbines within a certain radius. If there are 3 or more other identical turbines within this radius, the turbine will stop producing power. 
