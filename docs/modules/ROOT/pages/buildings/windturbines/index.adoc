@@ -3,7 +3,7 @@
 ## Building Information :
 
 Wind turbines are renewable sources of power for your factory, that need no input of items.
-
+All turbines can be daisy-chained up to 2 power lines.
 
 ## Wind Turbine Mechanics
 
