@@ -1,0 +1,36 @@
+{
+	"FileVersion": 3,
+	"Version": 3,
+	"VersionName": "3.0.0",
+	"SemVersion": "3.0.0",
+	"FriendlyName": "Refined Power",
+	"Description": "The Refined Power mod.",
+	"Category": "Modding",
+	"CreatedBy": "Refined R&D",
+	"CreatedByURL": "https://github.com/mrhid6",
+	"DocsURL": "https://docs.ficsit.app",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [{
+		"Name": "RefinedPower",
+		"Type": "Runtime",
+		"LoadingPhase": "Default"
+	}],
+	"Plugins": [{
+			"Name": "ModularUI",
+			"SemVersion": "^2.0.0",
+			"bIsOptional": false,
+			"bIsBasePlugin": false,
+			"Enabled": true
+		},
+		{
+			"Name": "SML",
+			"Enabled": true,
+			"SemVersion": "^3.0.0"
+		}
+	]
+}
