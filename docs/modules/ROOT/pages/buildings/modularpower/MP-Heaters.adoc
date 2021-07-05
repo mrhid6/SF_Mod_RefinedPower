@@ -9,15 +9,17 @@ The heater will produce Co2 which will need to be handled wither by venting thro
 
 ## Building Usage Rates:
 |===
-| Building Name   | Item Tested       | Consumption | Production
+| Building Name   | Item Tested       | Consumption Startup |  Consumption | Production
 
-| Biomass Heater  | Soild Biofuel     | ~36/Min     | ~48/Min    
+| Biomass Heater  | Soild Biofuel     | ~72/Min             | ~36/Min      | ~48/Min    
 
-| Coal Heater     | Coal              | ~20/Min     | ~75/Min    
+| Coal Heater     | Coal              | ~23/Min             | ~10/Min     | ~75/Min    
 
-| Solution Heater | Fuel              | ~14/Min     | ~98/Min    
+| Solution Heater | Fuel              | ~17/Min             | ~8.5/Min    | ~98/Min    
 
-| Nuclear Heater  | Nuclear Fuel Rods | ~0.5/Min    | ~10/Min    
+| Solution Heater | Turbo Fuel        | ~4/Min              | ~2/Min      | ~60/Min   
+
+| Nuclear Heater  | Nuclear Fuel Rods | ~0.6/Min            | ~0.3/Min    | ~3/Min    
 |===
 
 ## Building Cost:
